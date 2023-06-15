@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-center">
+    <div class="row">
+        <div class="col-md-6">
+            <form>
+                <h1 class="h3 mb-3 fw-normal">Ya se encuentra registrado?</h1>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Email</label>
+                </div>
+                <div class="mt-2 form-floating">
+                    <input type="password" class="form-control"
+                        id="floatingPassword" placeholder="Password">
+                    <label for="floatingPassword">Contraseña</label>
+                </div>
+                <button class="mt-2 w-100 btn btn-lg btn-primary" type="submit">Ingresar!</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="w-25 btn-group-vertical p-5" role="group" aria-label="Basic
+                example">
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[0].email, usuariosDePrueba[0].pass)">Paciente 1</button>
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[1].email, usuariosDePrueba[1].pass)">Paciente 2</button>
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[2].email, usuariosDePrueba[2].pass)">Paciente 3</button>
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[3].email, usuariosDePrueba[3].pass)">Especialista 1</button>
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[4].email, usuariosDePrueba[4].pass)">Especialista 2</button>
+                <button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[5].email, usuariosDePrueba[5].pass)">Administrador</button>
+            </div>
+        </div>
+    </div>
+</div>

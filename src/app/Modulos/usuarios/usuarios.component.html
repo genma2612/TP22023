@@ -1,0 +1,150 @@
+<div class="container-fluid py-2">
+    <div class="row">
+        <div class="col-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Crear
+                Usuario</button>
+        </div>
+        <div class="col-10">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                      Administradores
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table *ngIf="coleccionUsuarios" class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Edad</th>
+                                    <th scope="col">DNI</th>
+                                    <th scope="col">Mail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of coleccionUsuarios; let i = index">
+                                    <ng-container *ngIf="item.rol == 'administrador'">
+                                        <td>{{item.nombre}}</td>
+                                        <td>{{item.apellido}}</td>
+                                        <td>{{item.edad}}</td>
+                                        <td>{{item.dni}}</td>
+                                        <td>{{item.email}}</td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Especialistas
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table *ngIf="coleccionUsuarios" class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Edad</th>
+                                    <th scope="col">DNI</th>
+                                    <th scope="col">Especialidad</th>
+                                    <th scope="col">Mail</th>
+                                    <th scope="col">Acceso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of coleccionUsuarios; let i = index">
+                                    <ng-container *ngIf="item.rol == 'especialista'">
+                                        <td>{{item.nombre}}</td>
+                                        <td>{{item.apellido}}</td>
+                                        <td>{{item.edad}}</td>
+                                        <td>{{item.dni}}</td>
+                                        <td>{{item.especialidad}}</td>
+                                        <td>{{item.email}}</td>
+                                        <td><a name="" id="" class="btn btn-sm" [ngClass]="item.tieneAcceso ? 'btn-danger' : 'btn-success'" (click)="cambiarAcceso(item)" role="button">
+                                            <div *ngIf="item.tieneAcceso; else sino">Quitar acceso</div>
+                                            <ng-template  #sino>Dar acceso</ng-template>
+                                        </a></td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Pacientes
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table *ngIf="coleccionUsuarios" class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Edad</th>
+                                    <th scope="col">DNI</th>
+                                    <th scope="col">Obra Social</th>
+                                    <th scope="col">N° Afiliado</th>
+                                    <th scope="col">Mail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of coleccionUsuarios; let i = index">
+                                    <ng-container *ngIf="item.rol == 'paciente'">
+                                        <td>{{item.nombre}}</td>
+                                        <td>{{item.apellido}}</td>
+                                        <td>{{item.edad}}</td>
+                                        <td>{{item.dni}}</td>
+                                        <td>{{item.obraSocial}}</td>
+                                        <td>{{item.numAfiliado}}</td>
+                                        <td>{{item.email}}</td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="btn-group" role="group" aria-label="Button group name">
+                    <button type="button" (click)="cambiarTipo('administrador')"
+                        class="btn btn-primary">Administrador</button>
+                    <button type="button" (click)="cambiarTipo('especialista')"
+                        class="btn btn-primary">Especialista</button>
+                    <button type="button" (click)="cambiarTipo('paciente')" class="btn btn-primary">Paciente</button>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <app-crear-usuario [tipo]="tipoUsuario"></app-crear-usuario>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

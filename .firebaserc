@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tp2-2023": {
+      "hosting": {
+        "TP22023": [
+          "tp2-2023"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tp2-2023"
+  }
+}

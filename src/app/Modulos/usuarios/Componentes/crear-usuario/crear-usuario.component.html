@@ -1,0 +1,104 @@
+<div class="d-flex justify-content-center">
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
+        <h1 class="h3 mb-3 fw-normal">Ingrese sus datos:</h1>
+        <div class="row">
+            <div class="col">
+                <input type="text" formControlName="nombre" class="form-control" placeholder="Nombre">
+                <small class="invalid" *ngIf="formulario.controls['nombre'].errors?.['required'] && formulario.controls['nombre'].touched">Ingrese su nombre</small>
+            </div>
+            <div class="col">
+                <input type="text" formControlName="apellido" class="form-control" placeholder="Apellido">
+                <small class="invalid" *ngIf="formulario.controls['apellido'].errors?.['required'] && formulario.controls['apellido'].touched">Ingrese su apellido</small>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div class="row">
+            <div class="col">
+                <input type="number" formControlName="edad" class="form-control" placeholder="Edad">
+                <small class="invalid" *ngIf="formulario.controls['edad'].errors?.['required'] && formulario.controls['edad'].touched">Ingrese su edad (Mayores de edad)</small>
+                <small class="invalid" *ngIf="formulario.controls['edad'].errors?.['min'] || formulario.controls['edad'].errors?.['max'] && formulario.controls['edad'].touched">La edad debe ser de 18 a 99 años</small>
+            </div>
+            <div class="col">
+                <input type="number" formControlName="dni" class="form-control" placeholder="DNI sin puntos ni coma">
+                <small class="invalid" *ngIf="formulario.controls['dni'].errors?.['required'] && formulario.controls['dni'].touched">Ingrese un DNI correcto sin puntos ni comas</small>
+                <small class="invalid" *ngIf="formulario.controls['dni'].errors?.['min'] || formulario.controls['dni'].errors?.['max'] && formulario.controls['dni'].touched">El DNI debe ser > 1000000 y < 99999999</small>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div *ngIf="tipo == 'paciente'" class="row">
+            <div class="col">
+                <input type="text" formControlName="obraSocial" class="form-control" placeholder="Obra Social">
+                <small class="invalid" *ngIf="formulario.controls['obraSocial'].errors?.['required'] && formulario.controls['obraSocial'].touched">Ingrese su obra social</small>
+            </div>
+            <div class="col">
+                <input type="number" formControlName="numAfiliado" class="form-control" placeholder="Número de afiliado">
+                <small class="invalid" *ngIf="formulario.controls['numAfiliado'].errors?.['required'] && formulario.controls['numAfiliado'].touched">Ingrese su numero de afiliado</small>
+                <small class="invalid" *ngIf="formulario.controls['numAfiliado'].errors?.['min'] || formulario.controls['numAfiliado'].errors?.['max'] && formulario.controls['numAfiliado'].touched">Debe estar en el rango de 1000 a 9999</small>
+            </div>
+            <p></p>
+        </div>
+
+        <div *ngIf="tipo == 'especialista'" class="row">
+            <div class="col">
+                <select class="form-select" formControlName="especialidad">
+                    <option selected value="">Especialidad</option>
+                    <option value="cardiólogo">Cardiólogo</option>
+                    <option value="alergista">Alergista</option>
+                    <option value="traumatologo">Traumatólogo</option>
+                  </select>
+                  <small class="invalid" *ngIf="formulario.controls['especialidad'].errors?.['required'] && formulario.controls['especialidad'].touched">Seleccione una especialidad</small>
+            </div>
+            <div class="col">
+                <div class="form-check">
+                <input class="form-check-input" (change)="agregarOpcionPersonal()" type="checkbox">
+                <input type="text" formControlName="especialidadPersonalizada" class="form-control"  placeholder="Otra opción">
+                <small class="invalid" *ngIf="formulario.controls['especialidadPersonalizada'].errors?.['required'] && formulario.controls['especialidadPersonalizada'].touched">Ingrese su especialidad</small>
+                </div>
+            </div>
+            <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <input type="email" formControlName="email" class="form-control" placeholder="nombre@ejemplo.com">
+                <small class="invalid" *ngIf="formulario.controls['email'].errors?.['required'] && formulario.controls['email'].touched">Ingrese su correo electrónico</small>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div class="row">
+            <div class="col">
+                <input type="password" formControlName="pass" class="form-control" placeholder="Contraseña"  (change)="onPasswordChange()">
+                <small class="invalid" *ngIf="formulario.controls['pass'].errors?.['required'] && formulario.controls['pass'].touched">Ingrese su contraseña</small>
+                <small class="invalid" *ngIf="confirm_password.hasError('mismatch') && formulario.controls['pass'].touched"><p></p> Las contraseñas no coinciden.</small>
+            </div>
+            <div class="col">
+                <input type="password" formControlName="passConfirm" class="form-control" placeholder="Repita su contraseña"  (change)="onPasswordChange()">
+                <small class="invalid" *ngIf="formulario.controls['passConfirm'].errors?.['required'] && formulario.controls['passConfirm'].touched">Repita su contraseña</small>
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col">
+                <input type="file" (change)="actualizarArchivo($event, 'image1')" formControlName="image1" class="form-control" placeholder="Imagen 1">
+            </div>
+            <div *ngIf="tipo =='paciente'" class="col">
+                <input type="file" (change)="actualizarArchivo($event, 'image2')" formControlName="image2" class="form-control" placeholder="Imagen 2">
+            </div>
+        </div>
+        <p></p>
+        FORMULARIO VALIDO? - {{formulario.valid}}
+        <p></p>
+
+        <div class="btn-group text-end" role="group" aria-label="Basic example">
+            <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Registrar {{tipo}}</button>
+            <!--button type="button" class="btn btn-info" (click)="loguear(usuariosDePrueba[2].email, usuariosDePrueba[2].pass)">Admin</button-->
+        </div>
+
+    </form>
+</div>
