@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,23 +8,17 @@ import { Component } from '@angular/core';
 })
 export class SidebarComponent {
 
-  menu_btn = document.querySelector("#menu-btn");
-  sidebar = document.querySelector("#sidebar");
-  container = document.querySelector(".my-container");
 
 
-  constructor() {
-    if (this.menu_btn != null) {
-      this.menu_btn.addEventListener("click", () => {
-        if (this.sidebar != null)
-          this.sidebar.classList.toggle("active-nav");
-        if (this.container)
-          this.container.classList.toggle("active-cont");
-      });
-    }
-
+  constructor(private userAuth:UserAuthService) {
   }
 
 
+  esAdmin(){
+    if(this.userAuth.hayUsuarioLogueado)
+      return this.userAuth.usuarioLogueado.rol == 'administrador';
+    else 
+      return false;
+  }
 
 }
