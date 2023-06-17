@@ -8,13 +8,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <div class="navbar-nav administrador">
+                <div *ngIf="esAdmin()" class="navbar-nav administrador">
                     <li class="nav-item">
-                        <a class="nav-link active" routerLink="usuarios" aria-current="page" href="#">Usuarios</a>
+                        <a class="nav-link active" routerLink="usuarios" aria-current="page">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" routerLink="usuarios" aria-current="page">Turnos</a>
                     </li>
                 </div>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mi Perfil</a>
+                    <a class="nav-link" routerLink="perfil">Mi Perfil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Mis Turnos</a>
