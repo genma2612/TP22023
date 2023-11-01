@@ -2,7 +2,7 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-crear-usuario',
@@ -15,6 +15,8 @@ export class CrearUsuarioComponent {
   formulario!: FormGroup;
   image1!: File;
   image2!: File;
+  especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
+
 
   constructor(private _Activatedroute: ActivatedRoute,
     private router: Router,
@@ -41,7 +43,7 @@ export class CrearUsuarioComponent {
       'dni': ['22222222', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
       'obraSocial': ["222222", Validators.required],
       'numAfiliado': ["2222", [Validators.required, Validators.min(1000), Validators.max(9999)]],
-      'especialidad': ["Cardiólogo", Validators.required],
+      'especialidades': this.fb.array([], [Validators.required]),
       'especialidadPersonalizada': ["", Validators.required],
       'email': ['asdf@gmail.com', [Validators.required, Validators.email]],
       'pass': ['111111', Validators.required],
@@ -65,7 +67,7 @@ export class CrearUsuarioComponent {
   setUserCategoryValidators() {
     const obraSocialControl = this.formulario.get('obraSocial');
     const numAfiliadoControl = this.formulario.get('numAfiliado');
-    const especialidadControl = this.formulario.get('especialidad');
+    const especialidadControl = this.formulario.get('especialidades');
     const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
     const image2 = this.formulario.get('image2');
     especialidadPersonalizadaControl?.disable(); // Siempre la deshabilito por defecto, sea paciente o especialista
@@ -84,41 +86,38 @@ export class CrearUsuarioComponent {
     }
   }
 
-  agregarOpcionPersonal() {
-    const especialidadControl = this.formulario.get('especialidad');
-    const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
-    if (especialidadControl?.enabled) {
-      especialidadControl?.disable()
-      especialidadPersonalizadaControl?.enable();
+  onCheckboxChange(e: any) {
+    const checkArray: FormArray = this.formulario.get('especialidades') as FormArray;
+    checkArray.markAsTouched();
+    if (e.target.checked) {
+      checkArray.push(new FormControl(e.target.value));
+    } else {
+      let i: number = 0;
+      checkArray.controls.forEach((item: any) => {
+        if (item.value == e.target.value) {
+          checkArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
     }
-    else {
-      especialidadControl?.enable();
-      especialidadPersonalizadaControl?.disable();
-    }
-    especialidadControl?.updateValueAndValidity();
-    especialidadPersonalizadaControl?.updateValueAndValidity();
   }
 
-  /* Opcion de arriba no utiliza observable
-  opcionDelMenuOPersonalizada() {
-    const especialidadControl = this.formulario.get('especialidad');
+  agregarOpcionPersonal() {
+    const especialidades = this.formulario.get('especialidades');
     const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
-    especialidadPersonalizadaControl?.disable();
-    this.formulario.get('check')?.valueChanges
-      .subscribe(value => {
-        if (value) {
-          // enable the input when new value is true
-          especialidadControl?.disable();
-          especialidadPersonalizadaControl?.enable();
-        } else {
-          // disable the input when new value is false
-          especialidadControl?.enable();
-          especialidadPersonalizadaControl?.disable();
-        }
-        especialidadControl?.updateValueAndValidity();
-        especialidadPersonalizadaControl?.updateValueAndValidity();
-      });
-  }*/
+    if (especialidadPersonalizadaControl?.disabled) {
+      especialidadPersonalizadaControl?.enable()
+      especialidades?.clearValidators();
+      especialidades?.updateValueAndValidity();
+    }
+    else {
+      especialidadPersonalizadaControl?.disable();
+      especialidades?.setValidators([Validators.required]);
+      especialidades?.updateValueAndValidity();
+    }
+    especialidadPersonalizadaControl?.updateValueAndValidity();
+  }
 
   onPasswordChange() {
     if (this.confirm_password.value == this.password.value) {
@@ -165,20 +164,21 @@ export class CrearUsuarioComponent {
   crearUsuario(form: any, tipo: string) {
     let usuario:Usuario|Paciente|Especialista;
     if (tipo == 'especialista') {
-      if (form.especialidad == undefined) {
-        form.especialidad = form.especialidadPersonalizada;
+      const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
+      if (especialidadPersonalizadaControl?.enabled) {
+        form.especialidades.push(especialidadPersonalizadaControl.value);
         delete form['especialidadPersonalizada']
       }
       usuario = new Especialista(
-        '', 
-        'especialista', 
-        form.email, 
-        form.nombre, 
+        '',
+        'especialista',
+        form.email,
+        form.nombre,
         form.apellido,
         form.edad,
         form.dni,
         '','',
-        form.especialidad,
+        form.especialidades,
         true);
     }
     else if (tipo == 'paciente') {
@@ -240,16 +240,9 @@ export class CrearUsuarioComponent {
 
               }))
 
-          //
-          //this.auth.guardarUsuarioEnFirestore(usuario)
-          //  .then(() => console.log('Registrado y guardado en Firebase'))
-          //  .catch(error => console.info(error))
         }
       )
       .catch(error => console.info(error));
-
-    //let teset: Especialista = form; // Tipificar objeto segun interfaces
-    //this.auth.SignUp(form, tipo)
 
   }
 

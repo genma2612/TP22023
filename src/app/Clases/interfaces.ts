@@ -57,7 +57,7 @@ export class Paciente extends Usuario {
 }
 
 export class Especialista extends Usuario {
-    especialidad:string;
+    especialidades:string[];
     tieneAcceso:boolean;
 
     constructor(
@@ -70,11 +70,11 @@ export class Especialista extends Usuario {
         dni:number,
         imagenUno:string,
         imagenDos:string,
-        especialidad:string,
+        especialidades:string[],
         tieneAcceso:boolean
     ){
         super(uid,rol,email,nombre,apellido,edad,dni,imagenUno,imagenDos);
-        this.especialidad = especialidad;
+        this.especialidades = especialidades;
         this.tieneAcceso = tieneAcceso;
     }
 }

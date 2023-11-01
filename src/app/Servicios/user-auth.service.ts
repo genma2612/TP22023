@@ -18,7 +18,8 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  sendEmailVerification
 } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
 import { Storage, ref, uploadBytes, getDownloadURL, listAll } from '@angular/fire/storage';
@@ -55,6 +56,7 @@ export class UserAuthService {
         this.isLogged = false;
         console.info('El usuario deslogueó');
         this.objUsuarioLogueado = undefined;
+        localStorage.removeItem('usuarioActual');
         console.info(this.objUsuarioLogueado);
       }
     })
@@ -66,14 +68,16 @@ export class UserAuthService {
     return createUserWithEmailAndPassword(this.auth, correo, password);
   }
 
+  enviarEmailDeVerificacion(user:any){
+    return sendEmailVerification(user);
+  }
+
   ingresar(correo: string, password: string) {
     return signInWithEmailAndPassword(this.auth, correo, password);
   }
 
-  salir() {
-    return signOut(this.auth).then(
-      () => this.deleteFromLocalstorage()
-    );
+  async salir() {
+    return await signOut(this.auth);
   }
 
   //Firestore

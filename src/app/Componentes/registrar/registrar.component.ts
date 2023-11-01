@@ -2,7 +2,7 @@ import { UserAuthService } from './../../Servicios/user-auth.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Component({
   selector: 'app-registrar',
@@ -13,7 +13,8 @@ export class RegistrarComponent implements OnInit {
   tipo: string | null;
   formulario!: FormGroup;
   image1!: File;
-  image2!: File;
+  image2!: File; 
+  especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
 
   constructor(private _Activatedroute: ActivatedRoute,
     private router: Router,
@@ -22,6 +23,7 @@ export class RegistrarComponent implements OnInit {
   ) {
     this.tipo = this._Activatedroute.snapshot.paramMap.get("tipo");
   }
+
 
   ngOnInit(): void {
     this.setearValidaciones();
@@ -36,7 +38,7 @@ export class RegistrarComponent implements OnInit {
       'dni': ['22222222', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
       'obraSocial': ["222222", Validators.required],
       'numAfiliado': ["2222", [Validators.required, Validators.min(1000), Validators.max(9999)]],
-      'especialidad': ["Cardiólogo", Validators.required],
+      'especialidades': this.fb.array([], [Validators.required]),
       'especialidadPersonalizada': ["", Validators.required],
       'email': ['asdf@gmail.com', [Validators.required, Validators.email]],
       'pass': ['111111', Validators.required],
@@ -53,14 +55,13 @@ export class RegistrarComponent implements OnInit {
     else {
       this.image2 = $event.target.files[0];
     }
-
   }
 
   //Esta función agrega o quita validaciones según el registro sea del tipo Paciente o Especialista
   setUserCategoryValidators() {
     const obraSocialControl = this.formulario.get('obraSocial');
     const numAfiliadoControl = this.formulario.get('numAfiliado');
-    const especialidadControl = this.formulario.get('especialidad');
+    const especialidadControl = this.formulario.get('especialidades');
     const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
     const image2 = this.formulario.get('image2');
     especialidadPersonalizadaControl?.disable(); // Siempre la deshabilito por defecto, sea paciente o especialista
@@ -79,41 +80,39 @@ export class RegistrarComponent implements OnInit {
     }
   }
 
+  onCheckboxChange(e: any) {
+    const checkArray: FormArray = this.formulario.get('especialidades') as FormArray;
+    checkArray.markAsTouched();
+    if (e.target.checked) {
+      checkArray.push(new FormControl(e.target.value));
+    } else {
+      let i: number = 0;
+      checkArray.controls.forEach((item: any) => {
+        if (item.value == e.target.value) {
+          checkArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+  }
+
   agregarOpcionPersonal() {
-    const especialidadControl = this.formulario.get('especialidad');
+    const especialidades = this.formulario.get('especialidades');
     const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
-    if (especialidadControl?.enabled) {
-      especialidadControl?.disable()
-      especialidadPersonalizadaControl?.enable();
+    if (especialidadPersonalizadaControl?.disabled) {
+      especialidadPersonalizadaControl?.enable()
+      especialidades?.clearValidators();
+      especialidades?.updateValueAndValidity();
     }
     else {
-      especialidadControl?.enable();
       especialidadPersonalizadaControl?.disable();
+      especialidades?.setValidators([Validators.required]);
+      especialidades?.updateValueAndValidity();
     }
-    especialidadControl?.updateValueAndValidity();
     especialidadPersonalizadaControl?.updateValueAndValidity();
   }
 
-  /* Opcion de arriba no utiliza observable
-  opcionDelMenuOPersonalizada() {
-    const especialidadControl = this.formulario.get('especialidad');
-    const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
-    especialidadPersonalizadaControl?.disable();
-    this.formulario.get('check')?.valueChanges
-      .subscribe(value => {
-        if (value) {
-          // enable the input when new value is true
-          especialidadControl?.disable();
-          especialidadPersonalizadaControl?.enable();
-        } else {
-          // disable the input when new value is false
-          especialidadControl?.enable();
-          especialidadPersonalizadaControl?.disable();
-        }
-        especialidadControl?.updateValueAndValidity();
-        especialidadPersonalizadaControl?.updateValueAndValidity();
-      });
-  }*/
 
   onPasswordChange() {
     if (this.confirm_password.value == this.password.value) {
@@ -139,6 +138,7 @@ export class RegistrarComponent implements OnInit {
     };
   }
 
+
   // getting the form control elements
   get password(): AbstractControl {
     return this.formulario.controls['pass'];
@@ -160,8 +160,9 @@ export class RegistrarComponent implements OnInit {
   crearUsuario(form: any, tipo: string) {
     let usuario: Paciente | Especialista;
     if (tipo == 'especialista') {
-      if (form.especialidad == undefined) {
-        form.especialidad = form.especialidadPersonalizada;
+      const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
+      if (especialidadPersonalizadaControl?.enabled) {
+        form.especialidades.push(especialidadPersonalizadaControl.value);
         delete form['especialidadPersonalizada']
       }
       usuario = new Especialista(
@@ -173,7 +174,7 @@ export class RegistrarComponent implements OnInit {
         form.edad,
         form.dni,
         '','',
-        form.especialidad,
+        form.especialidades,
         false);
     }
     else if (tipo == 'paciente') {
@@ -193,11 +194,16 @@ export class RegistrarComponent implements OnInit {
 
     delete form['passConfirm'];
 
+    console.info(usuario!);
+
+    
+
     this.auth.registrar({ correo: form.email, password: form.pass })
       .then(
         (userCredential) => {
           usuario.uid = userCredential.user.uid;
-
+          this.auth.enviarEmailDeVerificacion(userCredential.user).then(()=>
+          console.info('se envió el mail'));
           //
 
 
@@ -222,18 +228,9 @@ export class RegistrarComponent implements OnInit {
                 }
 
               }))
-
-          //
-          //this.auth.guardarUsuarioEnFirestore(usuario)
-          //  .then(() => console.log('Registrado y guardado en Firebase'))
-          //  .catch(error => console.info(error))
         }
       )
       .catch(error => console.info(error));
-
-    //let teset: Especialista = form; // Tipificar objeto segun interfaces
-    //this.auth.SignUp(form, tipo)
-
   }
 
 }

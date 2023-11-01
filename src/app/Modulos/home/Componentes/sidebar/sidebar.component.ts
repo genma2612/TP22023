@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ export class SidebarComponent {
 
 
 
-  constructor(private userAuth:UserAuthService) {
+  constructor(private userAuth:UserAuthService, private ruteador:Router) {
   }
 
 
@@ -19,6 +20,12 @@ export class SidebarComponent {
       return this.userAuth.usuarioLogueado.rol == 'administrador';
     else 
       return false;
+  }
+
+  salir(){
+    this.userAuth.salir().then(()=>
+      this.ruteador.navigate(['/welcome'])
+    );
   }
 
 }

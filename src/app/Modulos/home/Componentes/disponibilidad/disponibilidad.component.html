@@ -1,103 +1,48 @@
-<form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
+<form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)"
+    novalidate>
 
-    <div class="row">
+        <div *ngFor="let dia of dias" id="{{dia}}">
 
-
-        <div class="col-6">
-            <div class="mb-3">
-
-
-
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="mb-3">
-
-
-
-            </div>
-
-        </div>
-
-
-
-
-    </div>
-
-            <div class="form-check">
-                <input class="form-check-input" formControlName="Lunes" form type="checkbox"
-                    value="" id="">
-                <label class="form-check-label" for="">
-                    Lunes
+            <div class="form-check form-switch form-check-inline">
+                <input class="form-check-input" formControlName="{{dia}}" form
+                    type="checkbox"
+                    value id>
+                <label class="form-check-label" for>
+                    {{dia}}
                 </label>
             </div>
 
-            <div id="checkLunes">
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Lunes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="LunesMatutino">
-                    <label class="form-check-label" for="LunesMatutino">
+            <div id="{{dia}}+check">
+                <div class="form-check form-check-inline">
+                    <input [disabled]="!formulario.controls[dia].value"
+                        class="form-check-input" type="radio"
+                        name="flexRadioDefault" id="{{dia}}Matutino">
+                    <label class="form-check-label" for="{{dia}}Matutino">
                         8:00hs - 14:00hs
                     </label>
                 </div>
 
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Lunes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="LunesVespertino">
-                    <label class="form-check-label" for="LunesVespertino">
+                <div *ngIf="dia != 'Sábado'" class="form-check form-check-inline">
+                    <input [disabled]="!formulario.controls[dia].value"
+                        class="form-check-input" type="radio"
+                        name="flexRadioDefault" id="{{dia}}Vespertino">
+                    <label class="form-check-label" for="{{dia}}Vespertino">
                         14:00hs - 19:00hs
                     </label>
                 </div>
 
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Lunes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="LunesFull">
-                    <label class="form-check-label" for="LunesFull">
+                <div *ngIf="dia != 'Sábado'" class="form-check form-check-inline">
+                    <input [disabled]="!formulario.controls[dia].value"
+                        class="form-check-input" type="radio"
+                        name="flexRadioDefault" id="L{{dia}}Full">
+                    <label class="form-check-label" for="{{dia}}Full">
                         Full time
                     </label>
                 </div>
             </div>
 
+        </div>
 
-            <div class="form-check">
-                <input class="form-check-input" formControlName="Martes" form type="checkbox"
-                    value="" id="">
-                <label class="form-check-label" for="">
-                    Martes
-                </label>
-            </div>
-
-            <div id="checkMartes">
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Martes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="MartesMatutino">
-                    <label class="form-check-label" for="MartesMatutino">
-                        8:00hs - 14:00hs
-                    </label>
-                </div>
-
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Martes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="MartesVespertino">
-                    <label class="form-check-label" for="MartesVespertino">
-                        14:00hs - 19:00hs
-                    </label>
-                </div>
-
-                <div class="form-check">
-                    <input [disabled]="!formulario.controls['Martes'].value" class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="LunesFull">
-                    <label class="form-check-label" for="MartesFull">
-                        Full time
-                    </label>
-                </div>
-            </div>
-
-
-
-    <button class="btn btn-primary" type="submit">Guardar</button>
-
-
+        <button class="btn btn-primary" type="submit">Guardar</button>
 
 </form>

@@ -11,6 +11,7 @@ export class DisponibilidadComponent {
 
   formulario!: FormGroup;
   isEnabled = false;
+  dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
 
   constructor(private fb: FormBuilder){
     this.formulario = this.fb.group({
@@ -19,7 +20,7 @@ export class DisponibilidadComponent {
       'Miercoles': [false, [Validators.required]],
       'Jueves': [false, [Validators.required]],
       'Viernes': [false, [Validators.required]],
-      'Sabado': [false, [Validators.required]],
+      'Sábado': [false, [Validators.required]],
     });
   }
 
@@ -30,10 +31,6 @@ export class DisponibilidadComponent {
 
   onSubmit(f: any) {
     console.info(f);
-    console.info('asdasd');
-    //this.router.navigate(['welcome']);
-    //this.formulario.controls['email'].setValue(email);
-    //this.formulario.controls['password'].setValue(password);
   }
 
 }

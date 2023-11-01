@@ -7,6 +7,7 @@ import { SidebarComponent } from './Componentes/sidebar/sidebar.component';
 import { MiPerfilComponent } from './Pages/mi-perfil/mi-perfil.component';
 import { DisponibilidadComponent } from './Componentes/disponibilidad/disponibilidad.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DetallePerfilComponent } from './Componentes/detalle-perfil/detalle-perfil.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     SidebarComponent,
     MiPerfilComponent,
-    DisponibilidadComponent
+    DisponibilidadComponent,
+    DetallePerfilComponent
   ],
   imports: [
     CommonModule,

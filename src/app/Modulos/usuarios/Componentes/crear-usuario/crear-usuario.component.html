@@ -44,19 +44,41 @@
 
         <div *ngIf="tipo == 'especialista'" class="row">
             <div class="col">
-                <select class="form-select" formControlName="especialidad">
-                    <option selected value="">Especialidad</option>
-                    <option value="cardiólogo">Cardiólogo</option>
-                    <option value="alergista">Alergista</option>
-                    <option value="traumatologo">Traumatólogo</option>
-                  </select>
-                  <small class="invalid" *ngIf="formulario.controls['especialidad'].errors?.['required'] && formulario.controls['especialidad'].touched">Seleccione una especialidad</small>
+                <div class="dropdown text-start">
+                    <button class="btn btn-primary dropdown-toggle"
+                        type="button" data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                        Especialidades
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item text-start"
+                            *ngFor="let especialidad of especialidades">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                    (change)="onCheckboxChange($event)"
+                                    type="checkbox" value="{{especialidad}}"
+                                    id="flexCheck{{especialidad}}" formArrayName="especialidades">
+                                <label class="form-check-label"
+                                    for="flexCheck{{especialidad}}">
+                                    {{especialidad}}
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <small class="invalid"
+                    *ngIf="formulario.controls['especialidades'].errors?.['required'] && formulario.controls['especialidades'].touched">Seleccione al menos una especialidad</small>
             </div>
             <div class="col">
                 <div class="form-check">
-                <input class="form-check-input" (change)="agregarOpcionPersonal()" type="checkbox">
-                <input type="text" formControlName="especialidadPersonalizada" class="form-control"  placeholder="Otra opción">
-                <small class="invalid" *ngIf="formulario.controls['especialidadPersonalizada'].errors?.['required'] && formulario.controls['especialidadPersonalizada'].touched">Ingrese su especialidad</small>
+                    <input class="form-check-input"
+                        (change)="agregarOpcionPersonal()" type="checkbox">
+                    <input type="text"
+                        formControlName="especialidadPersonalizada"
+                        class="form-control" placeholder="Otra opción">
+                    <small class="invalid"
+                        *ngIf="formulario.controls['especialidadPersonalizada'].errors?.['required'] && formulario.controls['especialidadPersonalizada'].touched">Ingrese
+                        su especialidad</small>
                 </div>
             </div>
             <p></p>
