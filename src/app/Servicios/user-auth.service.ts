@@ -29,23 +29,19 @@ import { Storage, ref, uploadBytes, getDownloadURL, listAll } from '@angular/fir
 })
 export class UserAuthService {
 
-  private isLogged: boolean = false;
   private objUsuarioLogueado: any = undefined;
 
   constructor(private auth: Auth, private firestore: Firestore, private storage:Storage) {
-    this.auth.onAuthStateChanged(status => {
+    /* 
+    this.auth.onIdTokenChanged(status => {
       if (status != null) {
         // Al chequear que el usuario esté, lo trae de Firestore 
         // Registrar lo guarda al momento de autentificar con Google
         // Luego, lo guarda en en localstorage, cambia los atributos
         // Y guarda el usuario para poder acceder a él desde otros componentes
-
-
-
         this.traerUsuarioDeFirestore(status).then(
           snapshot => {
             this.objUsuarioLogueado = snapshot.data();
-            this.isLogged = true;
             this.saveToLocalstorage(snapshot.data());
             //this.guardarInicioDeSesion(snapshot.data());
           }
@@ -53,13 +49,13 @@ export class UserAuthService {
 
       }
       else {
-        this.isLogged = false;
-        console.info('El usuario deslogueó');
+        //console.info('El usuario deslogueó');
         this.objUsuarioLogueado = undefined;
-        localStorage.removeItem('usuarioActual');
-        console.info(this.objUsuarioLogueado);
+        //localStorage.removeItem('usuarioActual');
+        //console.info(this.objUsuarioLogueado);
       }
     })
+    */
   }
 
   //Fire Auth
@@ -77,6 +73,7 @@ export class UserAuthService {
   }
 
   async salir() {
+    localStorage.removeItem('usuarioActual');
     return await signOut(this.auth);
   }
 
@@ -140,12 +137,12 @@ export class UserAuthService {
   }
 
   get hayUsuarioLogueado() { //Armar observable para que retorne el usuario logueado?
-    return this.isLogged;
+    return JSON.parse(localStorage.getItem('usuarioActual')!) != null;
   }
 
   get usuarioLogueado() {
-    return this.objUsuarioLogueado;
-    //return JSON.parse(localStorage.getItem('usuarioActual')!);
+    //return this.objUsuarioLogueado;
+    return JSON.parse(localStorage.getItem('usuarioActual')!);
   }
 
   guardarMensaje(elemento: any) {

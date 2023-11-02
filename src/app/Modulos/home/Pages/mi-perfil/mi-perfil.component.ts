@@ -12,7 +12,7 @@ export class MiPerfilComponent {
 
   constructor(private userAuth: UserAuthService){
     this.perfilActual = this.userAuth.usuarioLogueado;
-    console.info(this.perfilActual);
+    //console.info(this.perfilActual);
   }
 
 }

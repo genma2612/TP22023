@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <img src="../../../assets/medical-symbol-icon.png" style="max-width:32px; max-height:100px">
-        <a class="navbar-brand" href="#">OnLine Clínica Médica</a>
+        <a class="navbar-brand">OnLine Clínica Médica</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -19,11 +19,11 @@
                 <li class="nav-item">
                     <a class="nav-link" routerLink="perfil">Mi Perfil</a>
                 </li>
-                <li class="nav-item">
+                <li *ngIf="!esAdmin()" class="nav-item">
                     <a class="nav-link" href="#">Mis Turnos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Solicitar Turno</a>
+                    <a class="nav-link"  routerLink="solicitarTurno">Solicitar Turno</a>
                 </li>
             </ul>
             <a class="btn btn-danger btn-sm " (click)="salir()" role="button">Salir</a>

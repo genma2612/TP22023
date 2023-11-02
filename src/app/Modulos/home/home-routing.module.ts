@@ -4,11 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { MiPerfilComponent } from './Pages/mi-perfil/mi-perfil.component';
 import { esAdminGuard } from 'src/app/Guards/es-admin.guard';
+import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno.component';
 
 const routes: Routes = [{ path: '', component: HomeComponent,
 children: [
   { path: 'usuarios', loadChildren: () => import('../usuarios/usuarios.module').then(m => m.UsuariosModule), canActivate:[esAdminGuard] },
-  { path: 'perfil', component: MiPerfilComponent}
+  { path: 'perfil', component: MiPerfilComponent},
+  { path: 'solicitarTurno', component:SolicitarTurnoComponent}
 ] },
 ];
 

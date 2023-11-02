@@ -8,6 +8,8 @@ import { MiPerfilComponent } from './Pages/mi-perfil/mi-perfil.component';
 import { DisponibilidadComponent } from './Componentes/disponibilidad/disponibilidad.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetallePerfilComponent } from './Componentes/detalle-perfil/detalle-perfil.component';
+import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno.component';
+import { FiltroPipe } from 'src/app/Pipes/filtro.pipe';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { DetallePerfilComponent } from './Componentes/detalle-perfil/detalle-per
     SidebarComponent,
     MiPerfilComponent,
     DisponibilidadComponent,
-    DetallePerfilComponent
+    DetallePerfilComponent,
+    SolicitarTurnoComponent,
+    FiltroPipe
   ],
   imports: [
     CommonModule,

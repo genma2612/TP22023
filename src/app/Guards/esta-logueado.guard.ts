@@ -3,5 +3,6 @@ import { inject } from '@angular/core';
 
 
 export const estaLogueadoGuard: CanActivateFn = (route, state) => {
-  return localStorage.getItem('usuarioActual') != null
+  return localStorage.getItem('usuarioActual') != null;
+  //return true;
 };

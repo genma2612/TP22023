@@ -80,11 +80,12 @@ export class Especialista extends Usuario {
 }
 
 
-export interface Turnos {
+export interface Turno {
     paciente:Paciente;
     especialista:Especialista;
     estado:string;
     fecha:Date;
     hora:Date;
     reseña:string;
+    disponible:boolean;
 }

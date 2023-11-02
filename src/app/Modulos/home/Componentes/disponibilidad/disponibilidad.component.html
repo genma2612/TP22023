@@ -1,48 +1,31 @@
-<form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)"
-    novalidate>
+<form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario)" novalidate>
 
-        <div *ngFor="let dia of dias" id="{{dia}}">
+    <div *ngFor="let dia of dias" id="{{dia}}" class="formGroup">
 
-            <div class="form-check form-switch form-check-inline">
-                <input class="form-check-input" formControlName="{{dia}}" form
-                    type="checkbox"
-                    value id>
-                <label class="form-check-label" for>
-                    {{dia}}
-                </label>
-            </div>
-
-            <div id="{{dia}}+check">
-                <div class="form-check form-check-inline">
-                    <input [disabled]="!formulario.controls[dia].value"
-                        class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="{{dia}}Matutino">
-                    <label class="form-check-label" for="{{dia}}Matutino">
-                        8:00hs - 14:00hs
-                    </label>
-                </div>
-
-                <div *ngIf="dia != 'Sábado'" class="form-check form-check-inline">
-                    <input [disabled]="!formulario.controls[dia].value"
-                        class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="{{dia}}Vespertino">
-                    <label class="form-check-label" for="{{dia}}Vespertino">
-                        14:00hs - 19:00hs
-                    </label>
-                </div>
-
-                <div *ngIf="dia != 'Sábado'" class="form-check form-check-inline">
-                    <input [disabled]="!formulario.controls[dia].value"
-                        class="form-check-input" type="radio"
-                        name="flexRadioDefault" id="L{{dia}}Full">
-                    <label class="form-check-label" for="{{dia}}Full">
-                        Full time
-                    </label>
-                </div>
-            </div>
-
+        <div class="form-check form-switch form-check-inline">
+            <input id="{{dia}}switch" class="form-check-input" formControlName="{{dia}}" form type="checkbox" value id (change)="setDay(formulario.controls[dia].value, dia)">
+            <label class="form-check-label" for="{{dia}}">{{dia}}</label>
         </div>
 
-        <button class="btn btn-primary" type="submit">Guardar</button>
+        <div>
+            <div class="form-check form-check-inline">
+                <input formControlName="{{dia}}Horario" value="mañana" class="form-check-input" type="radio" id="{{dia}}checkMañana" selected>
+                <label class="form-check-label" for="{{dia}}Horario">8:00hs - 14:00hs</label>
+            </div>
+
+            <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
+                <input formControlName="{{dia}}Horario" value="tarde" class="form-check-input" type="radio" id="{{dia}}checkTarde">
+                <label class="form-check-label" for="{{dia}}Horario">14:00hs - 19:00hs</label>
+            </div>
+
+            <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
+                <input formControlName="{{dia}}Horario" value="full" class="form-check-input" type="radio"  id="{{dia}}checkFull">
+                <label class="form-check-label" for="{{dia}}Horario">Full time</label>
+            </div>
+        </div>
+
+    </div>
+
+    <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Guardar</button>
 
 </form>
