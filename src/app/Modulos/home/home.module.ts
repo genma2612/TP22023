@@ -12,6 +12,7 @@ import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno
 import { FiltroPipe } from 'src/app/Pipes/filtro.pipe';
 import { TurnosComponent } from './Pages/turnos/turnos.component';
 import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
+import { DataTablesModule } from 'angular-datatables';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
     HomeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    DataTablesModule
   ]
 })
 export class HomeModule { }

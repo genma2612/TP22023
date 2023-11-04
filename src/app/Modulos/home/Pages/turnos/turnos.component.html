@@ -1,4 +1,12 @@
-<table *ngIf="turnos" class="table">
+<div *ngIf="turnos">
+  <button (click)="filterTable('Elon Musk', 2)">Filtrar Elon Muks</button>
+  <button (click)="filterTable('Eddie Van Halen', 2)">Filtrar Van Halen</button>
+  <button (click)="filterTable('Traumatólogo', 3)">Filtrar Traumatólogo</button>
+  <button (click)="filterTable('Cardiólogo', 3)">Filtrar Cardiólogo</button>
+  <button (click)="filterTable('Clínico', 3)">Filtrar Clínico</button>
+  <button (click)="filterTable('', 2)">Borrar Filtro</button>
+  <button (click)="filterTable('', 3)">Borrar Filtro especialidad</button>
+  <table datatable [dtOptions]="dtOptions" class="table table-dark" id="tabla">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -18,6 +26,7 @@
         <td>{{turno.fecha.toDate() | date}}</td>
         <td>{{turno.estado}}</td>
       </tr>
- 
+
     </tbody>
   </table>
+</div>
