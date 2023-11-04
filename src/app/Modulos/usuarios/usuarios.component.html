@@ -66,7 +66,7 @@
                                         <td>{{item.apellido}}</td>
                                         <td>{{item.edad}}</td>
                                         <td>{{item.dni}}</td>
-                                        <td>{{item.especialidad}}</td>
+                                        <td>{{item.especialidades | json}}</td>
                                         <td>{{item.email}}</td>
                                         <td><a name="" id="" class="btn btn-sm" [ngClass]="item.tieneAcceso ? 'btn-danger' : 'btn-success'" (click)="cambiarAcceso(item)" role="button">
                                             <div *ngIf="item.tieneAcceso; else sino">Quitar acceso</div>
@@ -140,10 +140,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-crear-usuario [tipo]="tipoUsuario"></app-crear-usuario>
+                <app-crear-usuario (cerrarModal)="cerrarModal()" [tipo]="tipoUsuario"></app-crear-usuario>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button id="closeModalBtn" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

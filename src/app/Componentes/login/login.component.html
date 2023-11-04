@@ -1,6 +1,7 @@
 <div class="d-flex justify-content-center">
+
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-12">
             <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
                 <h1 class="h3 mb-3 fw-normal">Ya se encuentra registrado?</h1>
                 <div class="form-floating">
@@ -9,17 +10,17 @@
                     <label for="floatingInput">Email</label>
                 </div>
                 <div class="mt-2 form-floating">
-                    <input type="password" class="form-control" formControlName="password"
-                        id="floatingPassword" placeholder="Password">
+                    <input type="password" class="form-control" formControlName="password" id="floatingPassword"
+                        placeholder="Password">
                     <label for="floatingPassword">Contraseña</label>
                 </div>
-                <button class="mt-2 w-100 btn btn-lg btn-primary" type="submit">Ingresar!</button>
+
+                <div class="mt-2" aria-label="Basic example">
+                    <img *ngFor="let user of usuariosDePrueba" class="circular--portrait" title="{{user.tipo}}" style="border: solid; border-color: cornflowerblue; border-radius: 50%;" src="{{user.imgURL}}" role="button" (click)="setearCampos(user.email, user.pass)" alt="">
+                </div>
+                <button [disabled]="formulario.invalid" class="mt-2 btn btn-lg btn-primary"
+                type="submit">Ingresar!</button>
             </form>
-        </div>
-        <div class="col-md-6">
-            <div class="w-25 btn-group-vertical p-5" role="group" aria-label="Basic example">
-                <button *ngFor="let user of usuariosDePrueba" type="button" class="btn btn-info" (click)="setearCampos(user.email, user.pass)">{{user.tipo}}</button>
-            </div>
         </div>
     </div>
 </div>

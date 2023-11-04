@@ -25,4 +25,9 @@ export class UsuariosComponent {
   cambiarAcceso(item:Especialista){
     this.userAuth.updateDocument('usuarios', item.uid, !item.tieneAcceso);
   }
+
+
+  cerrarModal(){
+    document.getElementById('closeModalBtn')?.click();
+  }
 }

@@ -3,13 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { BienvenidaComponent } from './Pages/bienvenida/bienvenida.component';
 import { RegistrarComponent } from './Componentes/registrar/registrar.component';
 import { estaLogueadoGuard } from './Guards/esta-logueado.guard';
+import { LobbyComponent } from './Pages/lobby/lobby.component';
 
 const routes: Routes = [
-  { path:"welcome", component:BienvenidaComponent },
-  { path: '', redirectTo: '/welcome', pathMatch: 'full' },
+  { path:"lobby", component:LobbyComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'welcome', component:BienvenidaComponent},
   { path: 'registro/:tipo', component:RegistrarComponent},
   { path: 'home', loadChildren: () => import('./Modulos/home/home.module').then(m => m.HomeModule), canActivate:[estaLogueadoGuard] },
-  { path: "**", redirectTo: '/welcome' }
+  { path: "**", redirectTo: '/home' }
 
 ];
 

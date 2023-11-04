@@ -3,6 +3,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-registrar',
@@ -16,10 +18,28 @@ export class RegistrarComponent implements OnInit {
   image2!: File; 
   especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
 
+  Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
+  firebaseErrors:any = {
+    'auth/user-not-found': 'El correo ingresado no se encuentra registrado',
+    'auth/wrong-password': 'Contraseña incorrecta'
+  };
+
   constructor(private _Activatedroute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private auth: UserAuthService
+    private auth: UserAuthService,
+    private spinner: NgxSpinnerService
   ) {
     this.tipo = this._Activatedroute.snapshot.paramMap.get("tipo");
   }
@@ -175,7 +195,36 @@ export class RegistrarComponent implements OnInit {
         form.dni,
         '','',
         form.especialidades,
-        false);
+        [
+          {
+            "dia": "Lunes",
+            "horario": "no"
+          },
+          {
+            "dia": "Martes",
+            "horario": "no"
+          },
+          {
+            "dia": "Miercoles",
+            "horario": "no"
+          },
+          {
+            "dia": "Jueves",
+            "horario": "no"
+          },
+          {
+            "dia": "Viernes",
+            "horario": "no"
+          },
+          {
+            "dia": "Sabado",
+            "horario": "no"
+          }
+        ],
+        30,
+        false,
+        []
+        );
     }
     else if (tipo == 'paciente') {
       usuario = new Paciente(
@@ -189,15 +238,13 @@ export class RegistrarComponent implements OnInit {
         '',
         '',
         form.obraSocial,
-        form.numAfiliado);
+        form.numAfiliado,
+        []
+        );
     }
 
     delete form['passConfirm'];
-
-    console.info(usuario!);
-
-    
-
+    this.spinner.show();
     this.auth.registrar({ correo: form.email, password: form.pass })
       .then(
         (userCredential) => {
@@ -226,11 +273,24 @@ export class RegistrarComponent implements OnInit {
                     .then(() => console.log('Registrado y guardado en Firebase'))
                     .catch(error => console.info(error))
                 }
-
+                this.Toast.fire({
+                  icon: 'success',
+                  title:' Usuario creado correctamente'
+                })
+                this.formulario.reset();
+                this.router.navigate(['lobby']);
+                this.spinner.hide();
               }))
         }
       )
-      .catch(error => console.info(error));
+      .catch(error => {
+        this.Toast.fire({
+          icon: 'error',
+          title: this.firebaseErrors[error.code] || error.code
+        });
+        console.info(error);
+        this.spinner.hide();
+      });
   }
 
 }

@@ -1,0 +1,23 @@
+<table *ngIf="turnos" class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Especialista</th>
+        <th scope="col">Paciente</th>
+        <th scope="col">Especialidad</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let turno of turnos; index as i">
+        <th scope="row">{{i + 1}}</th>
+        <td>{{turno.especialista.nombre}} {{turno.especialista.apellido}}</td>
+        <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
+        <td>{{turno.especialidadElegida}}</td>
+        <td>{{turno.fecha.toDate() | date}}</td>
+        <td>{{turno.estado}}</td>
+      </tr>
+ 
+    </tbody>
+  </table>

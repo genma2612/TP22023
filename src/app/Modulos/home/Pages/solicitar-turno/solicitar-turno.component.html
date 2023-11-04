@@ -1,83 +1,63 @@
 <div class="container">
+<button (click)="actualizarTurno()">Test</button>
+<input type="text" name="test" [(ngModel)]="testVariable" id="">
+  <div class="row mt-5">
+    <div class="col-6">
+      <form [formGroup]="formulario">
 
-    <div class="row mt-5">
-      <div class="col-6">
-        <form [formGroup]="formulario">
-  
-          <div class="mb-3" *ngIf="this.esAdmin()">
-            <label class="form-label">Paciente</label>
-            <select class="form-select" aria-label="Default select example" formControlName="paciente">
-              <option selected disabled [ngValue]="null">Elegir paciente</option>
-              <option *ngFor="let paciente of pacientes" [ngValue]="paciente">{{paciente.nombre}} {{paciente.apellido}}
-              </option>
-            </select>
-          </div>
+        <div class="mb-3" *ngIf="this.esAdmin(); else elseBlock">
+          <label class="form-label">Paciente</label>
+          <select class="form-select" aria-label="Default select example" formControlName="paciente">
+            <option selected disabled [ngValue]="null">Elegir paciente</option>
+            <option *ngFor="let paciente of pacientesFire" [ngValue]="paciente">{{paciente.nombre}}
+              {{paciente.apellido}}
+            </option>
+          </select>
+        </div>
 
-          <div class="mb-3" *ngIf="!this.esAdmin()">
-            <label class="form-label">{{this.formulario.controls['paciente'].value['nombre']}} {{this.formulario.controls['paciente'].value['apellido']}}</label>
-          </div>
-  
-          <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
-            <label class="form-label">Especialidades</label>
-            <p></p>
-            <button *ngFor="let especialidad of especialidades" class="btn btn-primary"
-              (click)="seleccionarEspecialidaD(especialidad)">{{especialidad}}</button>
-          </div>
-  
-          <div class="mb-3" *ngIf="especialidadSeleccionada != ''">
-            <label class="form-label">Especialistas</label>
-            <p></p>
-            <button *ngFor="let especialista of especialistas | filtro: especialidadSeleccionada"
+        <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+
+        <div class="mb-3" *ngIf="!this.esAdmin()">
+          <label class="form-label">{{this.formulario.controls['paciente'].value['nombre']}}
+            {{this.formulario.controls['paciente'].value['apellido']}}</label>
+        </div>
+
+        <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
+          <label class="form-label">Especialidades</label>
+          <p></p>
+          <button *ngFor="let especialidad of especialidades" class="btn btn-primary"
+            (click)="seleccionarEspecialidaD(especialidad)">{{especialidad}}</button>
+        </div>
+
+        <div class="mb-3" *ngIf="especialidadSeleccionada != ''">
+          <label class="form-label">Especialistas</label>
+          <p></p>
+          <ng-container *ngFor="let especialista of especialistasFire | filtro: especialidadSeleccionada">
+            <button *ngIf="tieneHorarioHabilitado(especialista)"
               (click)="seleccionarDoctor(especialista)" class="btn btn-warning">{{especialista.nombre}}
               {{especialista.apellido}}
             </button>
-          </div>
-  
-          <div class="mb-3" *ngIf="doctorSeleccionado">
-            <label class="form-label">Fecha y hora</label>
-            <p></p>
-            <button *ngFor="let fecha of horarios" (click)="seleccionarHorario(fecha)" class="btn btn-warning">{{fecha |
-              date:"E dd'/'LL 'a las' HH:mm"}}
-            </button>
-          </div>
-  
-          <div *ngIf="!comprobarFormulario()">
-            <button type="button" [disabled]="comprobarFormulario()"
-              (click)="generarTurno(formulario.controls['paciente'].value, formulario.controls['especialista'].value)"
-              class="btn btn-primary">Pedir turno</button>
-              <button type="button" [disabled]="comprobarFormulario()"
-              (click)="reiniciarForm()"
-              class="btn btn-danger">Cancelar</button>
-          </div>
-  
-        </form>
-      </div>
+          </ng-container>
+
+        </div>
+
+        <div class="mb-3" *ngIf="doctorSeleccionado">
+          <label class="form-label">Fecha y hora</label>
+          <p></p>
+          <button *ngFor="let fecha of horarios" (click)="seleccionarHorario(fecha)" class="btn btn-warning">{{fecha |
+            date:"dd'/'LL HH:mm"}}
+          </button>
+        </div>
+
+        <div *ngIf="!comprobarFormulario()">
+          <button type="button" [disabled]="comprobarFormulario()"
+            (click)="generarTurno(formulario.controls['paciente'].value, formulario.controls['especialista'].value)"
+            class="btn btn-primary">Pedir turno</button>
+          <button type="button" [disabled]="comprobarFormulario()" (click)="reiniciarForm()"
+            class="btn btn-danger">Cancelar</button>
+        </div>
+
+      </form>
     </div>
-  
-    <div class="row mt-5">
-      <table datatable class="table table-dark">
-        <thead>
-          <tr>
-            <th>Paciente</th>
-            <th>Especialista</th>
-            <th>Especialidad</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let turno of turnos">
-            <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
-            <td>{{turno.especialista.nombre}} {{turno.especialista.apellido}}</td>
-            <td>{{turno.especialidad}}</td>
-            <td>{{turno.fecha | date:"E dd'/'LL 'a las' HH:mm"}}</td>
-            <td>{{turno.estado}}</td>
-          </tr>
-        </tbody>
-      </table>
-  
-    </div>
-  
-  
-  
   </div>
+</div>

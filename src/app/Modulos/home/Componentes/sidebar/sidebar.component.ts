@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
 })
 export class SidebarComponent {
 
-
+  usuarioActual:any;
 
   constructor(private userAuth:UserAuthService, private ruteador:Router) {
+    this.usuarioActual = this.userAuth.getUsuarioLocalstorage();
   }
 
 

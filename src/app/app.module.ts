@@ -14,6 +14,7 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { LobbyComponent } from './Pages/lobby/lobby.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     LoginComponent,
     NavbarComponent,
     RegistrarComponent,
+    LobbyComponent,
   ],
   imports: [
     BrowserModule,

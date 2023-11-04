@@ -1,8 +1,11 @@
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
+
 
 @Component({
   selector: 'app-crear-usuario',
@@ -11,17 +14,36 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 })
 export class CrearUsuarioComponent {
   @Input() tipo:string = 'administrador';
+  @Output() cerrarModal = new EventEmitter<boolean>;
 
   formulario!: FormGroup;
   image1!: File;
   image2!: File;
   especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
 
+  firebaseErrors:any = {
+    'auth/user-not-found': 'El correo ingresado no se encuentra registrado',
+    'auth/wrong-password': 'Contraseña incorrecta'
+  };
+
+  Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
 
   constructor(private _Activatedroute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private auth: UserAuthService
+    private auth: UserAuthService,
+    private spinner: NgxSpinnerService
   ) {
   }
 
@@ -37,17 +59,17 @@ export class CrearUsuarioComponent {
 
   setearValidaciones() {
     this.formulario = this.fb.group({
-      'nombre': ['Jose', [Validators.required]],
-      'apellido': ['Garcia', Validators.required],
-      'edad': ['22', [Validators.required, Validators.min(18), Validators.max(99)]],
-      'dni': ['22222222', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
-      'obraSocial': ["222222", Validators.required],
-      'numAfiliado': ["2222", [Validators.required, Validators.min(1000), Validators.max(9999)]],
+      'nombre': ['', [Validators.required]],
+      'apellido': ['', Validators.required],
+      'edad': ['', [Validators.required, Validators.min(18), Validators.max(99)]],
+      'dni': ['', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
+      'obraSocial': ["", Validators.required],
+      'numAfiliado': ["", [Validators.required, Validators.min(1000), Validators.max(9999)]],
       'especialidades': this.fb.array([], [Validators.required]),
       'especialidadPersonalizada': ["", Validators.required],
-      'email': ['asdf@gmail.com', [Validators.required, Validators.email]],
-      'pass': ['111111', Validators.required],
-      'passConfirm': ['111111', Validators.required],
+      'email': ['', [Validators.required, Validators.email]],
+      'pass': ['', Validators.required],
+      'passConfirm': ['', Validators.required],
       'image1': [null, [Validators.required]],
       'image2': [null, [Validators.required]]
     });
@@ -153,9 +175,6 @@ export class CrearUsuarioComponent {
   }
 
 
-
-
-
   onSubmit(f: any) {
     this.crearUsuario(f, this.tipo!);
     //this.router.navigate(['welcome']);
@@ -179,7 +198,35 @@ export class CrearUsuarioComponent {
         form.dni,
         '','',
         form.especialidades,
-        true);
+        [
+          {
+            "dia": "Lunes",
+            "horario": "no"
+          },
+          {
+            "dia": "Martes",
+            "horario": "no"
+          },
+          {
+            "dia": "Miercoles",
+            "horario": "no"
+          },
+          {
+            "dia": "Jueves",
+            "horario": "no"
+          },
+          {
+            "dia": "Viernes",
+            "horario": "no"
+          },
+          {
+            "dia": "Sabado",
+            "horario": "no"
+          }
+        ],
+        30,
+        true,
+        []);
     }
     else if (tipo == 'paciente') {
       usuario = new Paciente(
@@ -193,7 +240,8 @@ export class CrearUsuarioComponent {
         '',
         '',
         form.obraSocial,
-        form.numAfiliado);
+        form.numAfiliado,
+        []);
     }
     else{
       usuario = new Usuario(
@@ -207,14 +255,14 @@ export class CrearUsuarioComponent {
         '','');
     }
 
-    //console.info(usuario);
     delete form['passConfirm'];
-
+    this.spinner.show();
     this.auth.registrar({ correo: form.email, password: form.pass })
       .then(
         (userCredential) => {
           usuario.uid = userCredential.user.uid;
-
+          this.auth.enviarEmailDeVerificacion(userCredential.user).then(()=>
+          console.info('se envió el mail'));
           //
 
 
@@ -237,14 +285,25 @@ export class CrearUsuarioComponent {
                     .then(() => console.log('Registrado y guardado en Firebase'))
                     .catch(error => console.info(error))
                 }
-
+                this.Toast.fire({
+                  icon: 'success',
+                  title:' Usuario creado correctamente'
+                })
+                this.formulario.reset();
+                this.spinner.hide();
+                this.cerrarModal.emit(true);
               }))
-
         }
       )
-      .catch(error => console.info(error));
+      .catch(error => {
+        this.Toast.fire({
+          icon: 'error',
+          title: this.firebaseErrors[error.code] || error.code
+        });
+        console.info(error);
+        this.spinner.hide();
+      });
 
   }
-
 
 }

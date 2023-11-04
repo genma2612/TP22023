@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetallePerfilComponent } from './Componentes/detalle-perfil/detalle-perfil.component';
 import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno.component';
 import { FiltroPipe } from 'src/app/Pipes/filtro.pipe';
+import { TurnosComponent } from './Pages/turnos/turnos.component';
+import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { FiltroPipe } from 'src/app/Pipes/filtro.pipe';
     DisponibilidadComponent,
     DetallePerfilComponent,
     SolicitarTurnoComponent,
-    FiltroPipe
+    FiltroPipe,
+    TurnosComponent,
+    MisturnosComponent
   ],
   imports: [
     CommonModule,

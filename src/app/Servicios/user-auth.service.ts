@@ -1,6 +1,6 @@
-import { Usuario, Especialista, Paciente } from '../Clases/interfaces';
+import { Usuario, Especialista, Paciente, Turno } from '../Clases/interfaces';
 import {
-  DocumentData,
+  arrayUnion,
   Firestore,
   addDoc,
   collection,
@@ -9,9 +9,12 @@ import {
   getDoc,
   getDocs,
   orderBy,
+  where,
   query,
   setDoc,
-  updateDoc
+  updateDoc,
+  or,
+  Timestamp
 } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import {
@@ -23,6 +26,7 @@ import {
 } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
 import { Storage, ref, uploadBytes, getDownloadURL, listAll } from '@angular/fire/storage';
+import * as stringRandom from 'string-random';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +35,7 @@ export class UserAuthService {
 
   private objUsuarioLogueado: any = undefined;
 
-  constructor(private auth: Auth, private firestore: Firestore, private storage:Storage) {
+  constructor(private auth: Auth, private firestore: Firestore, private storage: Storage) {
     /* 
     this.auth.onIdTokenChanged(status => {
       if (status != null) {
@@ -64,7 +68,7 @@ export class UserAuthService {
     return createUserWithEmailAndPassword(this.auth, correo, password);
   }
 
-  enviarEmailDeVerificacion(user:any){
+  enviarEmailDeVerificacion(user: any) {
     return sendEmailVerification(user);
   }
 
@@ -79,9 +83,19 @@ export class UserAuthService {
 
   //Firestore
 
-  updateDocument(collection:string, uid:any, valor:any){
+  updateDocument(collection: string, uid: any, valor: any) {
     const docRef = doc(this.firestore, `${collection}/${uid}`)
     return updateDoc(docRef, { tieneAcceso: valor });
+  }
+
+  updateHorario(collection: string, uid: any, valor: any) {
+    const docRef = doc(this.firestore, `${collection}/${uid}`)
+    return updateDoc(docRef, { horario: valor });
+  }
+
+  updateDuracion(collection: string, uid: any, duracion: number) {
+    const docRef = doc(this.firestore, `${collection}/${uid}`)
+    return updateDoc(docRef, { duracionTurnos: duracion });
   }
 
   guardarUsuarioEnFirestore(user: any) { //Para guardar en colección users un documento con el mismo ID del usuario
@@ -89,6 +103,94 @@ export class UserAuthService {
     return setDoc(docRef, Object.assign({}, user), { merge: true });
     //return setDoc(docRef, user, { merge: true });
     //Object.assign({}, user) para guardar como obj genérico, sino da error
+  }
+
+  guardarTurno(turno: Turno) {
+    let randomstring = stringRandom(20);
+    let turnoParaEspecialistaFiltrado: any = {
+      paciente: {
+        nombre: turno.paciente?.nombre,
+        apellido: turno.paciente?.apellido,
+        edad: turno.paciente?.edad,
+        dni: turno.paciente?.dni,
+        obraSocial: turno.paciente?.obraSocial,
+        numAfiliado: turno.paciente?.numAfiliado,
+        uid: turno.paciente?.uid
+      },
+      id: randomstring,
+      calificacion: turno.calificación,
+      disponible: turno.disponible,
+      duracion: turno.duracion,
+      estado: turno.estado,
+      fecha: turno.fecha,
+      reseña: turno.reseña,
+      especialidadElegida: turno.especialidadElegida
+    }
+
+    let turnoParaPacienteFiltrado: any = {
+      especialista: {
+        nombre: turno.especialista?.nombre,
+        apellido: turno.especialista?.apellido,
+        uid: turno.especialista?.uid
+      },
+      id: randomstring,
+      calificacion: turno.calificación,
+      disponible: turno.disponible,
+      duracion: turno.duracion,
+      estado: turno.estado,
+      fecha: turno.fecha,
+      reseña: turno.reseña,
+      especialidadElegida: turno.especialidadElegida
+    }
+
+    let turnoGenericObject: any = {
+      especialista: {
+        nombre: turno.especialista?.nombre,
+        apellido: turno.especialista?.apellido,
+        uid: turno.especialista?.uid
+      },
+      paciente: {
+        nombre: turno.paciente?.nombre,
+        apellido: turno.paciente?.apellido,
+        edad: turno.paciente?.edad,
+        dni: turno.paciente?.dni,
+        obraSocial: turno.paciente?.obraSocial,
+        numAfiliado: turno.paciente?.numAfiliado,
+        uid: turno.paciente?.uid
+      },
+      id: randomstring,
+      calificacion: turno.calificación,
+      disponible: turno.disponible,
+      duracion: turno.duracion,
+      estado: turno.estado,
+      fecha: turno.fecha,
+      reseña: turno.reseña,
+      especialidadElegida: turno.especialidadElegida
+    };
+    const especialistaRef = doc(this.firestore, `usuarios/${turno.especialista?.uid}/turnos/${randomstring}`);
+    const pacienteRef = doc(this.firestore, `usuarios/${turno.paciente?.uid}/turnos/${randomstring}`);
+    const turnosRef = doc(this.firestore, `turnos/${turnoGenericObject.id}`);
+    return setDoc(turnosRef, turnoGenericObject).then(
+      () => {
+        setDoc(pacienteRef, turnoParaPacienteFiltrado).then(
+          () => setDoc(especialistaRef, turnoParaEspecialistaFiltrado)
+        )
+        console.info('turno guardado');
+      }
+    );
+
+  }
+
+  actualizarEstadoTurno(valor: string, idTurno: string, idPac: string, idEsp: string) {
+    let turnoRef = doc(this.firestore, `turnos/${idTurno}`);
+    let pacRef = doc(this.firestore, `usuarios/${idPac}/turnos/${idTurno}`);
+    let espRef = doc(this.firestore, `usuarios/${idEsp}/turnos/${idTurno}`);
+    return updateDoc(turnoRef, { estado: valor }).then(()=>{
+      updateDoc(pacRef, { estado: valor }).then(()=> {
+      updateDoc(espRef, { estado: valor })
+      console.info('Turno actualizado')}
+      )
+    });
   }
 
   guardarInicioDeSesion(usuario: any) {
@@ -99,7 +201,7 @@ export class UserAuthService {
 
   guardarResultado(resultado: any) {
     let documentoAGuardar = resultado;
-    documentoAGuardar.fecha = new Date().toLocaleString();
+    documentoAGuardar.fecha = Timestamp.fromDate(new Date());
     documentoAGuardar.usuario = this.objUsuarioLogueado?.mail;
     documentoAGuardar.rol = this.objUsuarioLogueado?.rol;
     const userRef = collection(this.firestore, `resultados`); //Esto agrega a colección sin ID específica
@@ -109,6 +211,10 @@ export class UserAuthService {
   traerUsuarioDeFirestore(user: any) {
     let docRef = doc(this.firestore, `usuarios/${user.uid}`);
     return getDoc(docRef);
+  }
+
+  getUserFromAuth() {
+    return this.auth.currentUser;
   }
 
 
@@ -121,6 +227,18 @@ export class UserAuthService {
   traerColeccionOrdenada(coleccion: string, orden: string) {
     const colRef = collection(this.firestore, coleccion);
     const q = query(colRef, orderBy(orden));
+    return collectionData(q);
+  }
+
+  traerColeccionUsuarios() { //Trae pacientes y especialistas con el funcion/operador OR en la query
+    const colRef = collection(this.firestore, 'usuarios');
+    const q = query(colRef, or(where("rol", "==", 'paciente'), where("rol", "==", 'especialista')));
+    return collectionData(q);
+  }
+
+  traerColeccionUsuariosEspecifica(rol: string) { //Trae pacientes y especialistas con el funcion/operador OR en la query
+    const colRef = collection(this.firestore, 'usuarios');
+    const q = query(colRef, where("rol", "==", rol));
     return collectionData(q);
   }
 
@@ -167,13 +285,13 @@ export class UserAuthService {
 
 
   // Storage
-  subirImagenes(file:File, folder:string, nombre:string){
+  subirImagenes(file: File, folder: string, nombre: string) {
     let path = 'images' + '/' + folder + '/' + nombre;
     const imageRef = ref(this.storage, path);
     return uploadBytes(imageRef, file);
   }
 
-  traerImagen(folder:string, nombre:string){
+  traerImagen(folder: string, nombre: string) {
     let path = 'images' + '/' + folder + '/' + nombre;
     const imageRef = ref(this.storage, path);
     return getDownloadURL(imageRef);

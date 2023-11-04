@@ -1,4 +1,5 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center align-items-center">
+
     <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)"
         novalidate>
         <h1 class="h3 mb-3 fw-normal">Ingrese sus datos:</h1>
@@ -162,10 +163,10 @@
         <p></p>
 
         <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-danger" routerLink="/welcome">Cancelar</button>
+            <button type="button" class="btn btn-danger" routerLink="/lobby">Cancelar</button>
             <button [disabled]="formulario.invalid" class="btn btn-primary"
                 type="submit">Registrar {{tipo}}</button>
         </div>
 
     </form>
-</div>
+    </div>

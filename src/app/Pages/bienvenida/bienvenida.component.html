@@ -1,23 +1,29 @@
-<app-navbar></app-navbar>
-<div>
-    <div class="d-flex justify-content-center">
-        <img class="mb-4" src="../../../assets/medical-symbol-icon.png" alt=""
-            width="128" height="128">
-    </div>
-    <div class="row">
-        <div class="col-md-7">
-            <app-login></app-login>
-        </div>
-        <div class="col-md-5">
-            <div class="row">
-                <h1 class="h3 mb-3 fw-normal">Usuario nuevo?</h1>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" routerLink="/registro/paciente">Registrarse como paciente</button>
-                    <button type="button" class="btn btn-warning" routerLink="/registro/especialista">Registrarse como especialista</button>
+<div id="background">
+    <div class="text-center">
+        <div class="col-md-8 mx-auto p-5">
+            <div class="card border-primary bg-transparent">
+                <div class="card-header text-primary bg-white"><h5 class="display-3 fw-bold">Trabajo Practico Final: Clínica OnLine</h5></div>
+                <div class="card-body bg-primary text-white">
+                  <p class="card-text">
+                    La clínica OnLine, especialista en salud, cuenta actualmente con consultorios (6 en la actualidad),
+                    dos laboratorios (físicos en la clínica), y una sala de espera general. Está abierta al público de lunes
+                    a
+                    viernes en el horario de 8:00 a 19:00, y los sábados en el horario de 8:00 a 14:00.
+                    Trabajan en ella profesionales de diversas especialidades, que ocupan los consultorios acorde a su
+                    disponibilidad, y reciben en ellos pacientes con turno para consulta o tratamiento. Dichos turnos son
+                    pedidos por la web seleccionando el profesional o la especialidad. La duración mínima de un turno es
+                    30 minutos.” pero los profesionales pueden cambiar la duración según su especialidad. Estos
+                    profesionales pueden tener más de una especialidad.
+                    También contamos con un sector dentro de la clínica que se encarga de la organización y
+                    administración de la misma.
+                  </p>
                 </div>
+              </div>
+            <div class="d-flex p-2 gap-3 justify-content-center lead fw-normal">
+                <button class="btn btn-primary btn-lg" routerLink="/lobby">Iniciar</button>
             </div>
         </div>
+        <div class="product-device shadow-sm d-none d-md-block"></div>
+        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
     </div>
 </div>
-
-<ngx-spinner type="ball-scale-multiple"></ngx-spinner>

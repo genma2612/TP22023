@@ -1,5 +1,7 @@
-div { 
-    text-align: center;
-    min-width: 360px;
-    max-width: auto;
+#background {
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../../../assets/images/background.jpg');
+    background-size: cover;
 }

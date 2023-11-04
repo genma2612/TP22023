@@ -1,0 +1,15 @@
+div { 
+    text-align: center;
+    min-width: 360px;
+    max-width: auto;
+}
+
+.btn-circle {
+    width: 70px;
+    height: 70px;
+    padding: 6px 0px;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+}

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
+import { Turno, Paciente, Especialista } from 'src/app/Clases/interfaces';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -9,104 +11,19 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
   styleUrls: ['./solicitar-turno.component.css']
 })
 export class SolicitarTurnoComponent {
-
+  pacientesFire:any[] = [];
+  especialistasFire:any[] = [];
+  testVariable = 'Aceptado';
 
   formulario!: FormGroup;
   especialidades: string[] = [];
   especialidadSeleccionada: string|null = '';
-  doctorSeleccionado!: IEspecialista | null;
+  doctorSeleccionado!: Especialista | null;
   fechaSeleccionada!: Date | null;
-
+  pacienteActual:any;
   horarios: Date[] = [];
   startDate = new Date('2023-11-01');
   endDate = new Date('2023-11-07');
-
-
-  pacientes: IPaciente[] = [
-    { nombre: 'José', apellido: 'Pérez' },
-    { nombre: 'Luis', apellido: 'García' },
-    { nombre: 'Pedro', apellido: 'López' },
-    { nombre: 'Alan', apellido: 'Brado' },
-    { nombre: 'Omar', apellido: 'Báez' }];
-
-  especialistas: IEspecialista[] =
-    [
-      { nombre: 'Sauncho', apellido: 'Dudin', especialidades: ['Cardiología', 'Traumatología'], diasDeAtención: [1, 2, 3, 4, 5, 6] },
-      { nombre: 'Ellsworth', apellido: 'Stather', especialidades: ['Traumatología', 'Pediatría'], diasDeAtención: [2, 4] },
-      { nombre: 'Onofredo', apellido: 'Prestner', especialidades: ['Pediatría', 'Podología'], diasDeAtención: [1, 5] },
-      { nombre: 'Cornelius', apellido: 'Serle', especialidades: ['Podología', 'Dermatología'], diasDeAtención: [4, 5] },
-      { nombre: 'Udale', apellido: 'Sarfass', especialidades: ['Dermatología', 'Traumatología', 'Cardiología'], diasDeAtención: [1, 5, 6] }];
-
-  turnos: ITurno[] = [{
-    especialista: {
-      nombre: "Onofredo",
-      apellido: "Prestner",
-      especialidades: [
-        "Pediatría",
-        "Podología"
-      ],
-      diasDeAtención: [
-        1,
-        5
-      ]
-    },
-    paciente: {
-      nombre: "Luis",
-      apellido: "García"
-    },
-    especialidad: "Pediatría",
-    estado: "Pendiente",
-    reseña: "Ninguna",
-    fecha: moment("2023-11-06T12:00:51.867Z").toDate()
-  },
-  {
-    especialista: {
-      nombre: "Sauncho",
-      apellido: "Dudin",
-      especialidades: [
-        "Cardiología",
-        "Traumatología"
-      ],
-      diasDeAtención: [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ]
-    },
-    paciente: {
-      nombre: "Alan",
-      apellido: "Brado"
-    },
-    especialidad: "Traumatología",
-    estado: "Pendiente",
-    reseña: "Ninguna",
-    fecha: moment("2023-11-09T12:00:58.462Z").toDate()
-  },
-  {
-    especialista: {
-      nombre: "Cornelius",
-      apellido: "Serle",
-      especialidades: [
-        "Podología",
-        "Dermatología"
-      ],
-      diasDeAtención: [
-        4,
-        5
-      ]
-    },
-    paciente: {
-      nombre: "Alan",
-      apellido: "Brado"
-    },
-    especialidad: "Podología",
-    estado: "Pendiente",
-    reseña: "Ninguna",
-    fecha: moment("2023-11-03T12:00:04.259Z").toDate()
-  }];
 
 
   constructor(private fb: FormBuilder, private auth: UserAuthService) {
@@ -114,20 +31,32 @@ export class SolicitarTurnoComponent {
       'paciente': [null, [Validators.required]],
       'especialista': ["Elegir especialista", [Validators.required]]
     });
-    this.especialistas.forEach(especialista => {
-      especialista.especialidades.forEach(element => {
-        this.especialidades.push(element);
-      });
-    })
-    this.especialidades = this.filtrarArray(this.especialidades);
-    if(!this.esAdmin()){
-      this.formulario.controls['paciente'].setValue({nombre:this.auth.getUsuarioLocalstorage().nombre, apellido:this.auth.getUsuarioLocalstorage().apellido});
+    if(this.esAdmin()){
+      this.auth.traerColeccionUsuariosEspecifica('paciente').subscribe(
+        response => this.pacientesFire = response
+      )
     }
+    else{
+      this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage());
+    }
+
+    this.auth.traerColeccionUsuariosEspecifica('especialista').subscribe(
+      response => {
+        this.especialistasFire = response
+        this.especialistasFire.forEach(especialista => {
+          especialista.especialidades.forEach((element:any) =>{
+            this.especialidades.push(element);
+          })
+        })
+        this.especialidades = this.filtrarArray(this.especialidades);
+      }
+    )
   }
 
   esAdmin(){
     return this.auth.getUsuarioLocalstorage().rol == 'administrador';
   }
+
 
 
 
@@ -150,27 +79,42 @@ export class SolicitarTurnoComponent {
     this.especialidadSeleccionada = especialidad;
   }
 
-  seleccionarDoctor(especialistaElegido: IEspecialista) {
+  seleccionarDoctor(especialistaElegido:any) {
+
     this.fechaSeleccionada = null;
     this.doctorSeleccionado = especialistaElegido;
     this.horarios = [];
     this.generarHorario(this.doctorSeleccionado);
   }
 
-  generarHorario(doctorSeleccionado: IEspecialista) {
+  generarHorario(doctorSeleccionado:any) {
     let hora = 9;
     let minutos = 0;
-    let fechaHoy = moment().isoWeekday();
-    doctorSeleccionado.diasDeAtención.forEach(dia => {
-      if (dia <= fechaHoy) {
-        this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
-        this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('2', 'weeks').toDate());
+    let fechaHoy = moment().day();
+    console.info('fecha hoy', fechaHoy);
+    doctorSeleccionado.horario.forEach((dia:any) => {
+      if(this.tieneHorarioHabilitado(doctorSeleccionado)){
+        if (moment(dia.codDia).day() <= fechaHoy) {
+          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
+          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('2', 'weeks').toDate());
+        }
+        else {
+          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).toDate());
+          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
+        }
       }
-      else {
-        this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).toDate());
-        this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
-      }
+
     })
+  }
+
+  tieneHorarioHabilitado(especialista:any){
+    let retorno = false;
+    especialista.horario.forEach((element:any) => {
+      if(element.horario != 'no'){
+        retorno = true;
+      }
+    });
+    return retorno;
   }
 
   estaDisponible() {
@@ -183,12 +127,22 @@ export class SolicitarTurnoComponent {
   }
 
 
-  generarTurno(paciente: IPaciente, especialista: IEspecialista) {
+  generarTurno(paciente: Paciente, especialista: Especialista) {
     //console.info(paciente.nombre, especialista.nombre);
     if (this.doctorSeleccionado != null) {
-      let turno: ITurno = { especialista: this.doctorSeleccionado, paciente: paciente, especialidad: this.especialidadSeleccionada!, estado: 'Pendiente', reseña: 'Ninguna', fecha: this.fechaSeleccionada };
-      this.turnos.push(turno);
+      //let turno: ITurno = { especialista: this.doctorSeleccionado, paciente: paciente, especialidad: this.especialidadSeleccionada!, estado: 'Pendiente', reseña: 'Ninguna', fecha: this.fechaSeleccionada };
+      //this.turnos.push(turno);
+      let turno:Turno;
+      turno = new Turno(paciente, this.doctorSeleccionado, 'Pendiente', this.fechaSeleccionada!,'','', '', false,'', this.doctorSeleccionado.duracionTurnos!, this.especialidadSeleccionada!);
+      this.auth.guardarTurno(turno)//.then(
+      //  response => console.info(response)
+      //)
     }
+
+  }
+
+  actualizarTurno(){
+    this.auth.actualizarEstadoTurno(this.testVariable,'WNg9jMM4CHq8F7v61QLt', "13tHHLfn3ghb2C9czhGcfPckdo53", "KutShjvlDAYxUn2u3Gxjk5ywURJ3");
   }
 
   comprobarFormulario() {
@@ -208,28 +162,5 @@ export class SolicitarTurnoComponent {
 
   }
 
-
-
-}
-
-export interface ITurno {
-  paciente:IPaciente;
-  especialidad:string;
-  especialista:IEspecialista;
-  fecha:Date|null;
-  estado:string;
-  reseña:string;
-}
-
-export interface IEspecialista {
-  nombre:string;
-  apellido:string;
-  especialidades:string[];
-  diasDeAtención:number[];
-}
-
-export interface IPaciente {
-  nombre:string;
-  apellido:string;
 }
 

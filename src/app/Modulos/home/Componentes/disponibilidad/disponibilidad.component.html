@@ -1,31 +1,60 @@
 <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario)" novalidate>
 
-    <div *ngFor="let dia of dias" id="{{dia}}" class="formGroup">
-
-        <div class="form-check form-switch form-check-inline">
-            <input id="{{dia}}switch" class="form-check-input" formControlName="{{dia}}" form type="checkbox" value id (change)="setDay(formulario.controls[dia].value, dia)">
-            <label class="form-check-label" for="{{dia}}">{{dia}}</label>
+    <div class="dropdown">
+        <div class="dropdown">
+            <button  name='menuDuracion' class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Duracion de turnos: {{duracionHorario}} minutos
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" role="button" (click)="cambiarDuracion(valoresDuracion[0])">20 Minutos</a>
+                </li>
+                <li><a class="dropdown-item" role="button" (click)="cambiarDuracion(valoresDuracion[1])">30 Minutos</a>
+                </li>
+                <li><a class="dropdown-item" role="button" (click)="cambiarDuracion(valoresDuracion[2])">60 Minutos</a>
+                </li>
+            </ul>
         </div>
+    </div>
 
-        <div>
+    <div *ngFor="let dia of dias; index as i" id="{{dia}}" class="formGroup">
+        <div formArrayName="dias">
+            <label class="form-check-label" for="{{dia}}">{{dia}}</label>
+            <p></p>
             <div class="form-check form-check-inline">
-                <input formControlName="{{dia}}Horario" value="mañana" class="form-check-input" type="radio" id="{{dia}}checkMañana" selected>
+                <input name="{{dia}}Horario" [value]="valoresHorario[1]" class="form-check-input" type="radio"
+                    id="{{dia}}checkMañana" (change)="ModificarHorarioAlDia(dia, 'mañana', i, valoresHorario[1])"
+                    [checked]="this.horarioSeleccionado[i].horario == 'mañana'" [disabled]="opcionesInhabilitadas">
                 <label class="form-check-label" for="{{dia}}Horario">8:00hs - 14:00hs</label>
             </div>
 
             <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
-                <input formControlName="{{dia}}Horario" value="tarde" class="form-check-input" type="radio" id="{{dia}}checkTarde">
+                <input name="{{dia}}Horario" [value]="valoresHorario[2]" class="form-check-input" type="radio"
+                    id="{{dia}}checkTarde" (change)="ModificarHorarioAlDia(dia, 'tarde', i, valoresHorario[2])"
+                    [checked]="this.horarioSeleccionado[i].horario == 'tarde'" [disabled]="opcionesInhabilitadas">
                 <label class="form-check-label" for="{{dia}}Horario">14:00hs - 19:00hs</label>
             </div>
 
             <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
-                <input formControlName="{{dia}}Horario" value="full" class="form-check-input" type="radio"  id="{{dia}}checkFull">
+                <input name="{{dia}}Horario" [value]="valoresHorario[3]" class="form-check-input" type="radio"
+                    id="{{dia}}checkFull" (change)="ModificarHorarioAlDia(dia, 'full', i, valoresHorario[3])"
+                    [checked]="this.horarioSeleccionado[i].horario == 'full'" [disabled]="opcionesInhabilitadas">
                 <label class="form-check-label" for="{{dia}}Horario">Full time</label>
             </div>
-        </div>
 
+            <div class="form-check form-check-inline">
+                <input name="{{dia}}Horario" [value]="valoresHorario[0]" class="form-check-input" type="radio"
+                    id="{{dia}}checkNo" (change)="ModificarHorarioAlDia(dia, 'no', i, valoresHorario[0])"
+                    [checked]="this.horarioSeleccionado[i].horario == 'no'" [disabled]="opcionesInhabilitadas">
+                <label class="form-check-label" for="{{dia}}Horario">No brindar atención</label>
+            </div>
+            <p></p>
+        </div>
     </div>
 
-    <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Guardar</button>
+    <button *ngIf="opcionesInhabilitadas" [disabled]="formulario.invalid" class="btn btn-danger"
+        (click)="modificar()">Modificar</button>
+    <button *ngIf="!opcionesInhabilitadas" [disabled]="formulario.invalid" class="btn btn-primary"
+        type="submit">Guardar</button>
 
 </form>
