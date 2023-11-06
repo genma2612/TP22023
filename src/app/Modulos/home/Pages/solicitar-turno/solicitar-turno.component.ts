@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 import { Turno, Paciente, Especialista } from 'src/app/Clases/interfaces';
-import { Timestamp } from '@angular/fire/firestore';
+import { DocumentData, Timestamp } from '@angular/fire/firestore';
+import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
+import { Observable, first } from 'rxjs';
 
 @Component({
   selector: 'app-solicitar-turno',
   templateUrl: './solicitar-turno.component.html',
   styleUrls: ['./solicitar-turno.component.css']
 })
-export class SolicitarTurnoComponent {
+export class SolicitarTurnoComponent implements OnInit {
   pacientesFire: any[] = [];
   especialistasFire: any[] = [];
   testVariable = 'Aceptado';
@@ -22,29 +25,33 @@ export class SolicitarTurnoComponent {
   turnosDelDoctorSeleccionado: any[] = [];
   fechaSeleccionada!: Date | null;
   pacienteActual: any;
-  horarios: Date[] = [];
+  horarios: any[] = [[], [], [],[]];
 
-
-  constructor(private fb: FormBuilder, private auth: UserAuthService) {
+  constructor(private fb: FormBuilder, private auth: UserAuthService, private spinner: NgxSpinnerService) {
     this.formulario = this.fb.group({
       'paciente': [null, [Validators.required]],
       'especialista': ["Elegir especialista", [Validators.required]]
     });
+
+  }
+
+  ngOnInit(): void {
     if (this.esAdmin()) {
-      this.auth.traerColeccionUsuariosEspecifica('paciente').subscribe(
+      this.auth.traerColeccionUsuariosEspecifica('paciente').pipe(first()).subscribe(
         response => this.pacientesFire = response
       )
     }
     else {
-      this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage());
+        this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage())
     }
 
-    this.auth.traerColeccionUsuariosEspecifica('especialista').subscribe(
+    this.auth.traerColeccionUsuariosEspecifica('especialista').pipe(first()).subscribe(
       response => {
         this.especialistasFire = response
         this.especialistasFire.forEach(especialista => {
           especialista.especialidades.forEach((element: any) => {
-            this.especialidades.push(element);
+            if(this.tieneHorarioHabilitado(especialista, element))
+              this.especialidades.push(element);
           })
         })
         this.especialidades = this.filtrarArray(this.especialidades);
@@ -78,9 +85,8 @@ export class SolicitarTurnoComponent {
   seleccionarDoctor(especialistaElegido: any) {
     this.fechaSeleccionada = null;
     this.doctorSeleccionado = especialistaElegido;
-    this.horarios = [];
+    this.horarios = [[], [], [],[]];
     this.traerTurnosDelEspecialistaElegido();
-    //this.generarHorario(this.doctorSeleccionado);
   }
 
   generarHorario(doctorSeleccionado: any) {
@@ -93,38 +99,41 @@ export class SolicitarTurnoComponent {
       if (dia.rango.horaInicio != 0 && dia.especialidadDelDia == this.especialidadSeleccionada) {
         horaInicio = dia.rango.horaInicio;
         horaFin = dia.rango.horaFin;
-        if (moment(dia.codDia).day() <= fechaHoy) {
-          for (let i = horaInicio; i < horaFin; i += 1) {
-            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
-              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('1', 'weeks').toDate();
-              if (this.estaDisponible(fechaArmada))
-                this.horarios.push(fechaArmada);
-            }
-          }
-          for (let i = horaInicio; i < horaFin; i += 1) {
-            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
-              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('2', 'weeks').toDate();
-              if (this.estaDisponible(fechaArmada))
-                this.horarios.push(fechaArmada);
-            }
-          }
-        }
-        else {
+        if (dia.codDia > fechaHoy) {
           for (let i = horaInicio; i < horaFin; i += 1) {
             for (let j = minutos; j < 60; j += dia.duracionDelDia) {
               fechaArmada = moment().hours(i).minutes(j).second(0).day(dia.codDia).toDate();
               if (this.estaDisponible(fechaArmada))
-                this.horarios.push(fechaArmada);
-            }
-          }
-          for (let i = horaInicio; i < horaFin; i += 1) {
-            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
-              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('1', 'weeks').toDate();
-              if (this.estaDisponible(fechaArmada))
-                this.horarios.push(fechaArmada);
+                this.horarios[0].push(fechaArmada);
             }
           }
         }
+        for (let i = horaInicio; i < horaFin; i += 1) {
+          for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+            fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('1', 'weeks').toDate();
+            if (this.estaDisponible(fechaArmada))
+              this.horarios[1].push(fechaArmada);
+          }
+        }
+        for (let i = horaInicio; i < horaFin; i += 1) {
+          for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+            fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('2', 'weeks').toDate();
+            if (this.estaDisponible(fechaArmada))
+              this.horarios[2].push(fechaArmada);
+          }
+        }
+        for (let i = horaInicio; i < horaFin; i += 1) {
+          for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+            fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('3', 'weeks').toDate();
+            if (this.estaDisponible(fechaArmada))
+              this.horarios[3].push(fechaArmada);
+          }
+        }
+
+        this.horarios[0].sort((a: Date, b: Date) => { return a.getTime() - b.getTime(); });
+        this.horarios[1].sort((a: Date, b: Date) => { return a.getTime() - b.getTime(); });
+        this.horarios[2].sort((a: Date, b: Date) => { return a.getTime() - b.getTime(); });
+
       }
 
     })
@@ -149,7 +158,7 @@ export class SolicitarTurnoComponent {
   }
 
   traerTurnosDelEspecialistaElegido() {
-    this.auth.traerColeccionOrdenada(`usuarios/${this.doctorSeleccionado!.uid}/turnos`, 'fecha').subscribe(
+    return this.auth.traerColeccionOrdenada(`usuarios/${this.doctorSeleccionado!.uid}/turnos`, 'fecha').pipe(first()).subscribe( //.pipe(first()) cierra la suscripción automaticamente
       response => {
         response.map(
           item => this.turnosDelDoctorSeleccionado.push(item['fecha'].toDate())
@@ -165,18 +174,32 @@ export class SolicitarTurnoComponent {
   }
 
 
-  generarTurno(paciente: Paciente, especialista: Especialista) {
+  generarTurno(paciente: Paciente) {
+    let mensaje: string = `Desea solicitar cita para  ${this.especialidadSeleccionada} con ${this.doctorSeleccionado?.nombre} ${this.doctorSeleccionado?.apellido} en el día ${moment(this.fechaSeleccionada).format('DD/MM')} a las ${moment(this.fechaSeleccionada).format('HH:mm')}?`;
     if (this.doctorSeleccionado != null) {
-      let turno: Turno;
-      turno = new Turno(paciente, this.doctorSeleccionado, 'Pendiente', this.fechaSeleccionada!, '', '', '', false, '', 30, this.especialidadSeleccionada!);
-      this.auth.guardarTurno(turno).then(
-        response => {
-          console.info(response);
-          this.reiniciarForm();
+      Swal.fire({
+        title: "Confirmación de turno",
+        text: mensaje,
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          this.spinner.show();
+          let turno: Turno;
+          turno = new Turno(paciente, this.doctorSeleccionado!, 'Pendiente', this.fechaSeleccionada!, '', '', '', false, '', 30, this.especialidadSeleccionada!);
+          this.auth.guardarTurno(turno).then(
+            response => {
+              this.reiniciarForm();
+              this.spinner.hide();
+              Swal.fire("Turno guardado!", "", "success");
+            }
+          )
+        } else if (result.isDismissed) {
+          Swal.fire("Se cancelo la solicitud del turno", "", "info");
         }
-      )
+      });
     }
-
   }
 
   actualizarTurno() {
@@ -192,6 +215,7 @@ export class SolicitarTurnoComponent {
   }
 
   reiniciarForm() {
+    this.traerTurnosDelEspecialistaElegido().unsubscribe();
     this.especialidadSeleccionada = '';
     this.doctorSeleccionado = null;
     this.fechaSeleccionada = null;

@@ -15,12 +15,20 @@
         <p></p>
 
         <div class="row">
-            <div class="col">
+            <div class="col-4">
+                <select class="form-select"formControlName="sexo">
+                <option value="" class="dropdown-item">Sexo</option>
+                <option [ngValue]="'masculino'" class="dropdown-item">Masculino</option>
+                <option [ngValue]="'femenino'" class="dropdown-item">Femenino</option>
+              </select>
+              <small class="invalid" *ngIf="formulario.controls['sexo'].value == '' && formulario.controls['sexo'].touched">Seleccione su sexo, por favor.</small>
+            </div>
+            <div class="col-4">
                 <input type="number" formControlName="edad" class="form-control" placeholder="Edad">
                 <small class="invalid" *ngIf="formulario.controls['edad'].errors?.['required'] && formulario.controls['edad'].touched">Ingrese su edad (Mayores de edad)</small>
                 <small class="invalid" *ngIf="formulario.controls['edad'].errors?.['min'] || formulario.controls['edad'].errors?.['max'] && formulario.controls['edad'].touched">La edad debe ser de 18 a 99 años</small>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <input type="number" formControlName="dni" class="form-control" placeholder="DNI sin puntos ni coma">
                 <small class="invalid" *ngIf="formulario.controls['dni'].errors?.['required'] && formulario.controls['dni'].touched">Ingrese un DNI correcto sin puntos ni comas</small>
                 <small class="invalid" *ngIf="formulario.controls['dni'].errors?.['min'] || formulario.controls['dni'].errors?.['max'] && formulario.controls['dni'].touched">El DNI debe ser > 1000000 y < 99999999</small>
@@ -88,6 +96,7 @@
             <div class="col">
                 <input type="email" formControlName="email" class="form-control" placeholder="nombre@ejemplo.com">
                 <small class="invalid" *ngIf="formulario.controls['email'].errors?.['required'] && formulario.controls['email'].touched">Ingrese su correo electrónico</small>
+                <small class="invalid" *ngIf="formulario.controls['email'].errors?.['email'] && formulario.controls['email'].dirty">No tiene el formato correcto</small>
             </div>
         </div>
 

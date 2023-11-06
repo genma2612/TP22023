@@ -7,6 +7,7 @@ export class Usuario { //Administrador tiene estos atributos solos
     email?:string|null;
     nombre?:string;
     apellido?:string;
+    sexo?:string;
     edad?:number;
     dni?:number;
     imagenUno?:string;
@@ -18,6 +19,7 @@ export class Usuario { //Administrador tiene estos atributos solos
         email:string,
         nombre:string,
         apellido:string,
+        sexo:string,
         edad:number,
         dni:number,
         imagenUno:string,
@@ -28,6 +30,7 @@ export class Usuario { //Administrador tiene estos atributos solos
             this.email = email;
             this.nombre = nombre;
             this.apellido = apellido;
+            this.sexo = sexo;
             this.edad = edad;
             this.dni = dni;
             this.imagenUno = imagenUno;
@@ -45,6 +48,7 @@ export class Paciente extends Usuario {
         email:string,
         nombre:string,
         apellido:string,
+        sexo:string,
         edad:number,
         dni:number,
         imagenUno:string,
@@ -52,9 +56,10 @@ export class Paciente extends Usuario {
         obraSocial:string,
         numAfiliado:number,
     ){
-        super(uid,rol,email,nombre,apellido,edad,dni,imagenUno, imagenDos);
+        super(uid,rol,email,nombre,apellido,sexo,edad,dni,imagenUno, imagenDos);
         this.obraSocial = obraSocial;
         this.numAfiliado = numAfiliado;
+        
     }
 }
 
@@ -68,6 +73,7 @@ export class Especialista extends Usuario {
         email:string,
         nombre:string,
         apellido:string,
+        sexo:string,
         edad:number,
         dni:number,
         imagenUno:string,
@@ -76,7 +82,7 @@ export class Especialista extends Usuario {
         horario:object,
         tieneAcceso:boolean,
     ){
-        super(uid,rol,email,nombre,apellido,edad,dni,imagenUno,imagenDos);
+        super(uid,rol,email,nombre,apellido,sexo,edad,dni,imagenUno,imagenDos);
         this.especialidades = especialidades;
         this.tieneAcceso = tieneAcceso;
         this.horario = horario;

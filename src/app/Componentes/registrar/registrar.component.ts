@@ -53,17 +53,18 @@ export class RegistrarComponent implements OnInit {
 
   setearValidaciones() {
     this.formulario = this.fb.group({
-      'nombre': ['Jose', [Validators.required]],
-      'apellido': ['Garcia', Validators.required],
-      'edad': ['22', [Validators.required, Validators.min(18), Validators.max(99)]],
-      'dni': ['22222222', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
-      'obraSocial': ["222222", Validators.required],
-      'numAfiliado': ["2222", [Validators.required, Validators.min(1000), Validators.max(9999)]],
+      'nombre': ['', [Validators.required]],
+      'apellido': ['', Validators.required],
+      'edad': ['', [Validators.required, Validators.min(18), Validators.max(99)]],
+      'sexo': ['', [Validators.required]],
+      'dni': ['', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
+      'obraSocial': ["", Validators.required],
+      'numAfiliado': ["", [Validators.required, Validators.min(1000), Validators.max(9999)]],
       'especialidades': this.fb.array([], [Validators.required]),
       'especialidadPersonalizada': ["", Validators.required],
-      'email': ['asdf@gmail.com', [Validators.required, Validators.email]],
-      'pass': ['111111', Validators.required],
-      'passConfirm': ['111111', Validators.required],
+      'email': ['', [Validators.required, Validators.email]],
+      'pass': ['', Validators.required],
+      'passConfirm': ['', Validators.required],
       'image1': [null, [Validators.required]],
       'image2': [null, [Validators.required]]
     });
@@ -174,8 +175,8 @@ export class RegistrarComponent implements OnInit {
 
 
   onSubmit(f: any) {
+    //console.info(f);
     this.crearUsuario(f, this.tipo!);
-    //this.router.navigate(['welcome']);
   }
 
   crearUsuario(form: any, tipo: string) {
@@ -192,6 +193,7 @@ export class RegistrarComponent implements OnInit {
         form.email,
         form.nombre,
         form.apellido,
+        form.sexo,
         form.edad,
         form.dni,
         '','',
@@ -273,6 +275,7 @@ export class RegistrarComponent implements OnInit {
         form.email,
         form.nombre,
         form.apellido,
+        form.sexo,
         form.edad,
         form.dni,
         '',

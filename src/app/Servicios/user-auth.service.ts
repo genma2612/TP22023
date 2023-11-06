@@ -76,9 +76,9 @@ export class UserAuthService {
     return signInWithEmailAndPassword(this.auth, correo, password);
   }
 
-  async salir() {
+  salir() {
     localStorage.removeItem('usuarioActual');
-    return await signOut(this.auth);
+    return signOut(this.auth);
   }
 
   //Firestore
@@ -111,6 +111,7 @@ export class UserAuthService {
       paciente: {
         nombre: turno.paciente?.nombre,
         apellido: turno.paciente?.apellido,
+        sexo: turno.paciente?.sexo,
         edad: turno.paciente?.edad,
         dni: turno.paciente?.dni,
         obraSocial: turno.paciente?.obraSocial,
@@ -131,6 +132,7 @@ export class UserAuthService {
       especialista: {
         nombre: turno.especialista?.nombre,
         apellido: turno.especialista?.apellido,
+        sexo: turno.paciente?.sexo,
         uid: turno.especialista?.uid
       },
       id: randomstring,
@@ -147,11 +149,13 @@ export class UserAuthService {
       especialista: {
         nombre: turno.especialista?.nombre,
         apellido: turno.especialista?.apellido,
+        sexo: turno.paciente?.sexo,
         uid: turno.especialista?.uid
       },
       paciente: {
         nombre: turno.paciente?.nombre,
         apellido: turno.paciente?.apellido,
+        sexo: turno.paciente?.sexo,
         edad: turno.paciente?.edad,
         dni: turno.paciente?.dni,
         obraSocial: turno.paciente?.obraSocial,
@@ -176,6 +180,17 @@ export class UserAuthService {
           () => setDoc(especialistaRef, turnoParaEspecialistaFiltrado)
         )
         console.info('turno guardado');
+      }
+    );
+  }
+
+  guardarEspecialidad(especialidad:any){
+    let randomstring = stringRandom(20);
+    especialidad.uid = randomstring;
+    const especialidadRef = doc(this.firestore, `especialidades/${randomstring}`);
+    return setDoc(especialidadRef, especialidad).then(
+      () => {
+        console.info('especialidad guardada');
       }
     );
 
@@ -220,8 +235,8 @@ export class UserAuthService {
 
   traerColeccion(coleccion: string) { //No sirve como observable, la ordenada utiliza collectionData que se actualiza
     const colRef = collection(this.firestore, coleccion);
-    return from(getDocs(colRef));
-    //return getDocs(colRef); //como promesa
+    //return from(getDocs(colRef)); //como observable
+    return getDocs(colRef); //como promesa
   }
 
   traerColeccionOrdenada(coleccion: string, orden: string) {
@@ -243,7 +258,10 @@ export class UserAuthService {
   }
 
   getUsuarioLocalstorage() {
-    return JSON.parse(localStorage.getItem('usuarioActual')!);
+    if(localStorage.getItem('usuarioActual') != null)
+      return JSON.parse(localStorage.getItem('usuarioActual')!);
+    else
+      return '';
   }
 
   saveToLocalstorage(user: any) {
@@ -291,8 +309,20 @@ export class UserAuthService {
     return uploadBytes(imageRef, file);
   }
 
+  subirImagenEspecialidad(file: File, folder: string, nombre: string) {
+    let path = 'especialidades' + '/' + folder + '/' + nombre;
+    const imageRef = ref(this.storage, path);
+    return uploadBytes(imageRef, file);
+  }
+
   traerImagen(folder: string, nombre: string) {
     let path = 'images' + '/' + folder + '/' + nombre;
+    const imageRef = ref(this.storage, path);
+    return getDownloadURL(imageRef);
+  }
+
+  traerImagenEspecialidad(folder: string, nombre: string) {
+    let path = 'especialidades' + '/' + folder + '/' + nombre;
     const imageRef = ref(this.storage, path);
     return getDownloadURL(imageRef);
   }

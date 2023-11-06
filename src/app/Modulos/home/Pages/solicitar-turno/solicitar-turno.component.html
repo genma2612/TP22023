@@ -1,12 +1,9 @@
-<button (click)="traerTurnosDelEspecialistaElegido()">test</button>
 <div class="container">
-<button (click)="actualizarTurno()">Test</button>
-<input type="text" name="test" [(ngModel)]="testVariable" id="">
-  <div class="row mt-5">
+  <div class="row mt-3">
     <div class="col-12">
       <form [formGroup]="formulario">
 
-        <div class="mb-3" *ngIf="this.esAdmin(); else elseBlock">
+        <div class="mb-3" *ngIf="this.esAdmin()">
           <label class="form-label">Paciente</label>
           <select class="form-select" aria-label="Default select example" formControlName="paciente">
             <option selected disabled [ngValue]="null">Elegir paciente</option>
@@ -16,12 +13,19 @@
           </select>
         </div>
 
-        <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+          <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item active">{{this.formulario.controls['paciente'].value['nombre']}}
+                {{this.formulario.controls['paciente'].value['apellido']}}</li>
+              <li *ngIf="especialidadSeleccionada" class="list-group-item list-group-item-primary active">
+                {{especialidadSeleccionada}}</li>
+              <li *ngIf="doctorSeleccionado" class="list-group-item list-group-item-warning active">
+                {{doctorSeleccionado.nombre}} {{doctorSeleccionado.apellido}}</li>
+              <li *ngIf="fechaSeleccionada" class="list-group-item list-group-item-info active">{{fechaSeleccionada |
+                date:"dd/MM HH:mm\'hs\'"}}</li>
+            </ul>
+          </div>
 
-        <div class="mb-3" *ngIf="!this.esAdmin()">
-          <label class="form-label">{{this.formulario.controls['paciente'].value['nombre']}}
-            {{this.formulario.controls['paciente'].value['apellido']}}</label>
-        </div>
 
         <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
           <label class="form-label">Especialidades</label>
@@ -34,8 +38,9 @@
           <label class="form-label">Especialistas</label>
           <p></p>
           <ng-container *ngFor="let especialista of especialistasFire | filtro: especialidadSeleccionada">
-            <button *ngIf="tieneHorarioHabilitado(especialista, especialidadSeleccionada!)"
-              (click)="seleccionarDoctor(especialista)" class="btn btn-warning">{{especialista.nombre}}
+            <button 
+              *ngIf="tieneHorarioHabilitado(especialista, especialidadSeleccionada!)"
+              (click)="seleccionarDoctor(especialista)" class="btn btn-warning text-white">{{especialista.nombre}}
               {{especialista.apellido}}
             </button>
           </ng-container>
@@ -43,17 +48,34 @@
         </div>
 
         <div class="mb-3" *ngIf="doctorSeleccionado">
-          <label class="form-label">Fecha y hora</label>
-          <p></p>
-          <button *ngFor="let fecha of horarios" (click)="seleccionarHorario(fecha)" class="btn btn-warning">{{fecha |
-            date:"dd'/'LL HH:mm"}}
-          </button>
+          <div class="row">
+            <div class="col" *ngIf="horarios[0].length > 0">
+              <label>Esta Semana:</label>
+              <div class="scrolleable">
+                <button *ngFor="let fecha of horarios[0];index as i" (click)="seleccionarHorario(fecha)"
+                  class="btn btn-info text-white mt-1 me-1">{{fecha | date:"dd'/'LL HH:mm"}}</button>
+              </div>
+            </div>
+            <div class="col">
+              <label>La semana que viene:</label>
+              <div class="scrolleable">
+                <button *ngFor="let fecha of horarios[1];index as i" (click)="seleccionarHorario(fecha)"
+                  class="btn btn-info text-white mt-1 me-1">{{fecha | date:"dd'/'LL HH:mm"}}</button>
+              </div>
+            </div>
+            <div class="col">
+              <label>En dos semanas:</label>
+              <div class="scrolleable">
+                <button *ngFor="let fecha of horarios[2];index as i" (click)="seleccionarHorario(fecha)"
+                  class="btn btn-info text-white mt-1 me-1">{{fecha | date:"dd'/'LL HH:mm"}}</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div *ngIf="!comprobarFormulario()">
           <button type="button" [disabled]="comprobarFormulario()"
-            (click)="generarTurno(formulario.controls['paciente'].value, formulario.controls['especialista'].value)"
-            class="btn btn-primary">Pedir turno</button>
+            (click)="generarTurno(formulario.controls['paciente'].value)" class="btn btn-primary">Pedir turno</button>
           <button type="button" [disabled]="comprobarFormulario()" (click)="reiniciarForm()"
             class="btn btn-danger">Cancelar</button>
         </div>
