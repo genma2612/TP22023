@@ -1,8 +1,9 @@
+<button (click)="traerTurnosDelEspecialistaElegido()">test</button>
 <div class="container">
 <button (click)="actualizarTurno()">Test</button>
 <input type="text" name="test" [(ngModel)]="testVariable" id="">
   <div class="row mt-5">
-    <div class="col-6">
+    <div class="col-12">
       <form [formGroup]="formulario">
 
         <div class="mb-3" *ngIf="this.esAdmin(); else elseBlock">
@@ -33,7 +34,7 @@
           <label class="form-label">Especialistas</label>
           <p></p>
           <ng-container *ngFor="let especialista of especialistasFire | filtro: especialidadSeleccionada">
-            <button *ngIf="tieneHorarioHabilitado(especialista)"
+            <button *ngIf="tieneHorarioHabilitado(especialista, especialidadSeleccionada!)"
               (click)="seleccionarDoctor(especialista)" class="btn btn-warning">{{especialista.nombre}}
               {{especialista.apellido}}
             </button>

@@ -1,12 +1,9 @@
 <div *ngIf="turnos">
-  <button (click)="filterTable('Elon Musk', 2)">Filtrar Elon Muks</button>
-  <button (click)="filterTable('Eddie Van Halen', 2)">Filtrar Van Halen</button>
-  <button (click)="filterTable('Traumatólogo', 3)">Filtrar Traumatólogo</button>
-  <button (click)="filterTable('Cardiólogo', 3)">Filtrar Cardiólogo</button>
-  <button (click)="filterTable('Clínico', 3)">Filtrar Clínico</button>
-  <button (click)="filterTable('', 2)">Borrar Filtro</button>
-  <button (click)="filterTable('', 3)">Borrar Filtro especialidad</button>
-  <table datatable [dtOptions]="dtOptions" class="table table-dark" id="tabla">
+  <button class="btn btn-sm btn btn-outline-primary" *ngFor="let especialista of arrayEspecialistas; index as i" (click)="filterTable(especialista, 1)">Filtrar {{especialista}}</button>
+  <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 1)">Borrar Filtro especialista</button>
+  <button class="btn btn-sm btn btn-outline-success" *ngFor="let especialidad of arrayEspecialidades" (click)="filterTable(especialidad, 3)">Filtrar {{especialidad}}</button>
+  <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 3)">Borrar Filtro especialidad</button>
+  <table datatable [dtOptions]="dtOptions" class="table" id="tabla">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -15,6 +12,7 @@
         <th scope="col">Especialidad</th>
         <th scope="col">Fecha</th>
         <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -23,8 +21,11 @@
         <td>{{turno.especialista.nombre}} {{turno.especialista.apellido}}</td>
         <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
         <td>{{turno.especialidadElegida}}</td>
-        <td>{{turno.fecha.toDate() | date}}</td>
+        <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
         <td>{{turno.estado}}</td>
+        <td>
+          <button (click)="cancelarTurno(turno)" *ngIf="turno.estado == 'Pendiente'" class="btn btn-sm btn-danger">Cancelar</button>
+        </td>
       </tr>
 
     </tbody>

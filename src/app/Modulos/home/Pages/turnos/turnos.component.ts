@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild  } from '@angular/core';
+import { Component, OnInit, ViewChild, Renderer2, ElementRef } from '@angular/core';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 import { DataTableDirective } from 'angular-datatables';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-turnos',
@@ -8,18 +9,42 @@ import { DataTableDirective } from 'angular-datatables';
   styleUrls: ['./turnos.component.css']
 })
 export class TurnosComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
+
+  @ViewChild(DataTableDirective, { static: false })
   datatableElement?: DataTableDirective;
+
+  arrayEspecialistas:string[] = [];
+  arrayEspecialidades:string[] = [];
 
   turnos: any;
   dtOptions: DataTables.Settings = {};
 
 
-  constructor(private auth: UserAuthService) {
+  constructor(private auth: UserAuthService, private renderer: Renderer2) {
     this.auth.traerColeccionOrdenada('turnos', 'fecha').subscribe(
-      response => this.turnos = response
-    )
+      response => {
+        this.turnos = response;
+        this.turnos.forEach((element:any) => {
+          this.arrayEspecialistas.push(element.especialista.nombre + ' ' + element.especialista.apellido);
+          this.arrayEspecialidades.push(element.especialidadElegida);
+        });
+        this.arrayEspecialistas = this.filtrarArray(this.arrayEspecialistas);
+        this.arrayEspecialidades = this.filtrarArray(this.arrayEspecialidades);
+      })
 
+  }
+
+  filtrarArray(arr: any[]) {
+    let m: any = {}
+    let newarr = []
+    for (let i = 0; i < arr.length; i++) {
+      let v = arr[i];
+      if (!m[v]) {
+        newarr.push(v);
+        m[v] = true;
+      }
+    }
+    return newarr;
   }
 
   ngOnInit(): void {
@@ -49,10 +74,25 @@ export class TurnosComponent implements OnInit {
     };
   }
 
-  filterTable(valor:string,columna:number): void {
+  filterTable(valor: string, columna: number): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.column(columna).search(valor).draw();
     });
+  }
+
+  async cancelarTurno(turno:any){
+    const { value: text } = await Swal.fire({
+      input: 'textarea',
+      inputLabel: 'Por qué quiere cancelar el turno?',
+      inputPlaceholder: 'Escriba el comentario aquí...',
+      inputAttributes: {
+        'aria-label': 'Escriba el comentario aquí'
+      },
+      showCancelButton: true
+    })
+    if (text) {
+      Swal.fire(text)
+    }
   }
 
 }

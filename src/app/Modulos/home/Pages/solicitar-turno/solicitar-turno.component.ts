@@ -11,19 +11,18 @@ import { Timestamp } from '@angular/fire/firestore';
   styleUrls: ['./solicitar-turno.component.css']
 })
 export class SolicitarTurnoComponent {
-  pacientesFire:any[] = [];
-  especialistasFire:any[] = [];
+  pacientesFire: any[] = [];
+  especialistasFire: any[] = [];
   testVariable = 'Aceptado';
 
   formulario!: FormGroup;
   especialidades: string[] = [];
-  especialidadSeleccionada: string|null = '';
+  especialidadSeleccionada: string | null = '';
   doctorSeleccionado!: Especialista | null;
+  turnosDelDoctorSeleccionado: any[] = [];
   fechaSeleccionada!: Date | null;
-  pacienteActual:any;
+  pacienteActual: any;
   horarios: Date[] = [];
-  startDate = new Date('2023-11-01');
-  endDate = new Date('2023-11-07');
 
 
   constructor(private fb: FormBuilder, private auth: UserAuthService) {
@@ -31,12 +30,12 @@ export class SolicitarTurnoComponent {
       'paciente': [null, [Validators.required]],
       'especialista': ["Elegir especialista", [Validators.required]]
     });
-    if(this.esAdmin()){
+    if (this.esAdmin()) {
       this.auth.traerColeccionUsuariosEspecifica('paciente').subscribe(
         response => this.pacientesFire = response
       )
     }
-    else{
+    else {
       this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage());
     }
 
@@ -44,7 +43,7 @@ export class SolicitarTurnoComponent {
       response => {
         this.especialistasFire = response
         this.especialistasFire.forEach(especialista => {
-          especialista.especialidades.forEach((element:any) =>{
+          especialista.especialidades.forEach((element: any) => {
             this.especialidades.push(element);
           })
         })
@@ -53,12 +52,9 @@ export class SolicitarTurnoComponent {
     )
   }
 
-  esAdmin(){
+  esAdmin() {
     return this.auth.getUsuarioLocalstorage().rol == 'administrador';
   }
-
-
-
 
   filtrarArray(arr: any[]) {
     let m: any = {}
@@ -79,47 +75,89 @@ export class SolicitarTurnoComponent {
     this.especialidadSeleccionada = especialidad;
   }
 
-  seleccionarDoctor(especialistaElegido:any) {
-
+  seleccionarDoctor(especialistaElegido: any) {
     this.fechaSeleccionada = null;
     this.doctorSeleccionado = especialistaElegido;
     this.horarios = [];
-    this.generarHorario(this.doctorSeleccionado);
+    this.traerTurnosDelEspecialistaElegido();
+    //this.generarHorario(this.doctorSeleccionado);
   }
 
-  generarHorario(doctorSeleccionado:any) {
-    let hora = 9;
+  generarHorario(doctorSeleccionado: any) {
+    let fechaArmada: Date;
+    let horaInicio = 0;
     let minutos = 0;
+    let horaFin = 0;
     let fechaHoy = moment().day();
-    console.info('fecha hoy', fechaHoy);
-    doctorSeleccionado.horario.forEach((dia:any) => {
-      if(this.tieneHorarioHabilitado(doctorSeleccionado)){
+    Object.values(doctorSeleccionado.horario).forEach((dia: any) => {
+      if (dia.rango.horaInicio != 0 && dia.especialidadDelDia == this.especialidadSeleccionada) {
+        horaInicio = dia.rango.horaInicio;
+        horaFin = dia.rango.horaFin;
         if (moment(dia.codDia).day() <= fechaHoy) {
-          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
-          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('2', 'weeks').toDate());
+          for (let i = horaInicio; i < horaFin; i += 1) {
+            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('1', 'weeks').toDate();
+              if (this.estaDisponible(fechaArmada))
+                this.horarios.push(fechaArmada);
+            }
+          }
+          for (let i = horaInicio; i < horaFin; i += 1) {
+            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('2', 'weeks').toDate();
+              if (this.estaDisponible(fechaArmada))
+                this.horarios.push(fechaArmada);
+            }
+          }
         }
         else {
-          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).toDate());
-          this.horarios.push(moment().hours(hora).minutes(minutos).day(dia).add('1', 'weeks').toDate());
+          for (let i = horaInicio; i < horaFin; i += 1) {
+            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+              fechaArmada = moment().hours(i).minutes(j).second(0).day(dia.codDia).toDate();
+              if (this.estaDisponible(fechaArmada))
+                this.horarios.push(fechaArmada);
+            }
+          }
+          for (let i = horaInicio; i < horaFin; i += 1) {
+            for (let j = minutos; j < 60; j += dia.duracionDelDia) {
+              fechaArmada = moment().hours((i)).minutes(j).second(0).day(dia.codDia).add('1', 'weeks').toDate();
+              if (this.estaDisponible(fechaArmada))
+                this.horarios.push(fechaArmada);
+            }
+          }
         }
       }
 
     })
   }
 
-  tieneHorarioHabilitado(especialista:any){
+  tieneHorarioHabilitado(especialista: any, especialidadSeleccionada: string) {
+    let arrayHorarios = Object.values(especialista.horario); //convierte el obj de Firebase a Array
     let retorno = false;
-    especialista.horario.forEach((element:any) => {
-      if(element.horario != 'no'){
+    arrayHorarios.forEach((element: any) => {
+      if (element.rango.horaInicio != 0 && element.especialidadDelDia == especialidadSeleccionada) {
         retorno = true;
       }
     });
     return retorno;
   }
 
-  estaDisponible() {
-    let retorno = false;
-    return retorno;
+  estaDisponible(fecha: Date) {
+    return !this.turnosDelDoctorSeleccionado.find(item => {
+      return item.toString() == fecha.toString()
+    }
+    );
+  }
+
+  traerTurnosDelEspecialistaElegido() {
+    this.auth.traerColeccionOrdenada(`usuarios/${this.doctorSeleccionado!.uid}/turnos`, 'fecha').subscribe(
+      response => {
+        response.map(
+          item => this.turnosDelDoctorSeleccionado.push(item['fecha'].toDate())
+        )
+        //console.info(this.turnosDelDoctorSeleccionado);
+        this.generarHorario(this.doctorSeleccionado);
+      }
+    )
   }
 
   seleccionarHorario(fecha: Date) {
@@ -128,21 +166,21 @@ export class SolicitarTurnoComponent {
 
 
   generarTurno(paciente: Paciente, especialista: Especialista) {
-    //console.info(paciente.nombre, especialista.nombre);
     if (this.doctorSeleccionado != null) {
-      //let turno: ITurno = { especialista: this.doctorSeleccionado, paciente: paciente, especialidad: this.especialidadSeleccionada!, estado: 'Pendiente', reseña: 'Ninguna', fecha: this.fechaSeleccionada };
-      //this.turnos.push(turno);
-      let turno:Turno;
-      turno = new Turno(paciente, this.doctorSeleccionado, 'Pendiente', this.fechaSeleccionada!,'','', '', false,'', this.doctorSeleccionado.duracionTurnos!, this.especialidadSeleccionada!);
-      this.auth.guardarTurno(turno)//.then(
-      //  response => console.info(response)
-      //)
+      let turno: Turno;
+      turno = new Turno(paciente, this.doctorSeleccionado, 'Pendiente', this.fechaSeleccionada!, '', '', '', false, '', 30, this.especialidadSeleccionada!);
+      this.auth.guardarTurno(turno).then(
+        response => {
+          console.info(response);
+          this.reiniciarForm();
+        }
+      )
     }
 
   }
 
-  actualizarTurno(){
-    this.auth.actualizarEstadoTurno(this.testVariable,'WNg9jMM4CHq8F7v61QLt', "13tHHLfn3ghb2C9czhGcfPckdo53", "KutShjvlDAYxUn2u3Gxjk5ywURJ3");
+  actualizarTurno() {
+    this.auth.actualizarEstadoTurno(this.testVariable, 'WNg9jMM4CHq8F7v61QLt', "13tHHLfn3ghb2C9czhGcfPckdo53", "KutShjvlDAYxUn2u3Gxjk5ywURJ3");
   }
 
   comprobarFormulario() {
@@ -153,13 +191,13 @@ export class SolicitarTurnoComponent {
     return retorno;
   }
 
-  reiniciarForm(){
+  reiniciarForm() {
     this.especialidadSeleccionada = '';
     this.doctorSeleccionado = null;
     this.fechaSeleccionada = null;
     this.formulario.reset();
-    this.formulario.controls['paciente'].setValue({nombre:this.auth.getUsuarioLocalstorage().nombre, apellido:this.auth.getUsuarioLocalstorage().apellido});
-
+    if (!this.esAdmin())
+      this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage());
   }
 
 }

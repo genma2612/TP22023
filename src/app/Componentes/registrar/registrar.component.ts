@@ -16,7 +16,8 @@ export class RegistrarComponent implements OnInit {
   formulario!: FormGroup;
   image1!: File;
   image2!: File; 
-  especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
+  especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología',
+  'Dermatología'];
 
   Toast = Swal.mixin({
     toast: true,
@@ -195,35 +196,74 @@ export class RegistrarComponent implements OnInit {
         form.dni,
         '','',
         form.especialidades,
-        [
+        { Lunes:
           {
-            "dia": "Lunes",
-            "horario": "no"
+            nombreDia: "Lunes",
+            duracionDelDia: 30,
+            codDia: 1,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Martes :
           {
-            "dia": "Martes",
-            "horario": "no"
+            nombreDia: "Martes",
+            duracionDelDia: 30,
+            codDia: 2,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Miercoles :
           {
-            "dia": "Miercoles",
-            "horario": "no"
+            nombreDia: "Miercoles",
+            duracionDelDia: 30,
+            codDia: 3,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Jueves :
           {
-            "dia": "Jueves",
-            "horario": "no"
+            nombreDia: "Jueves",
+            duracionDelDia: 30,
+            codDia: 4,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Viernes : 
           {
-            "dia": "Viernes",
-            "horario": "no"
+            nombreDia: "Viernes",
+            duracionDelDia: 30,
+            codDia: 5,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Sabado : 
           {
-            "dia": "Sabado",
-            "horario": "no"
+            nombreDia: "Sabado",
+            duracionDelDia: 30,
+            codDia: 6,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           }
-        ],
-        30,
-        false,
-        []
+        },
+        false
         );
     }
     else if (tipo == 'paciente') {
@@ -238,8 +278,7 @@ export class RegistrarComponent implements OnInit {
         '',
         '',
         form.obraSocial,
-        form.numAfiliado,
-        []
+        form.numAfiliado
         );
     }
 

@@ -38,7 +38,6 @@ export class Usuario { //Administrador tiene estos atributos solos
 export class Paciente extends Usuario {
     obraSocial?:string;
     numAfiliado?:number;
-    turnos?:Turno[];
 
     constructor(
         uid:string,
@@ -52,21 +51,17 @@ export class Paciente extends Usuario {
         imagenDos:string,
         obraSocial:string,
         numAfiliado:number,
-        turnos:Turno[]
     ){
         super(uid,rol,email,nombre,apellido,edad,dni,imagenUno, imagenDos);
         this.obraSocial = obraSocial;
         this.numAfiliado = numAfiliado;
-        this.turnos = turnos;
     }
 }
 
 export class Especialista extends Usuario {
     especialidades?:string[];
     tieneAcceso?:boolean;
-    horario?:object[];
-    turnos?:Turno[];
-    duracionTurnos?:number;
+    horario?:object;
     constructor(
         uid:string,
         rol:string,
@@ -78,17 +73,13 @@ export class Especialista extends Usuario {
         imagenUno:string,
         imagenDos:string,
         especialidades:string[],
-        horario:object[],
-        duracionTurnos:number,
+        horario:object,
         tieneAcceso:boolean,
-        turnos:Turno[],
     ){
         super(uid,rol,email,nombre,apellido,edad,dni,imagenUno,imagenDos);
         this.especialidades = especialidades;
         this.tieneAcceso = tieneAcceso;
         this.horario = horario;
-        this.turnos = turnos;
-        this.duracionTurnos = duracionTurnos;
     }
 }
 

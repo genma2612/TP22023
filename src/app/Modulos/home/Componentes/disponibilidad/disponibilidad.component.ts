@@ -1,18 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Moment } from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
-
-enum Dias {
-  Domingo = 0,
-  Lunes = 1,
-  Martes = 2,
-  Miercoles = 3,
-  Jueves = 4,
-  Viernes = 5,
-  Sabado = 6
-};
 
 @Component({
   selector: 'app-disponibilidad',
@@ -23,44 +13,25 @@ export class DisponibilidadComponent implements OnInit {
 
   formulario!: FormGroup;
   dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-  diasEnum = Dias;
+  especialidadesDelEspecialista = []
   horarioSeleccionado:any;
-  duracionHorario:number = 0;
-  opcionesInhabilitadas = true;
   valoresHorario = [
-    { horaInicio:0, horaFin:0 },
-    { horaInicio:9, horaFin:14},
-    { horaInicio:14, horaFin:19 },
-    { horaInicio:9, horaFin:19 },
+    { horaInicio: 8, horaFin: 14 },
+    { horaInicio: 14, horaFin: 19 },
+    { horaInicio: 8, horaFin: 19 },
+    { horaInicio: 0, horaFin: 0 }
   ];
   valoresDuracion = [20,30,60];
 
   constructor(private fb: FormBuilder, private auth: UserAuthService, private spinner:NgxSpinnerService){
-    this.formulario = this.fb.group({
-      dias: new FormArray([])
-    });
+    this.especialidadesDelEspecialista = this.auth.getUsuarioLocalstorage().especialidades;
   }
 
-  ModificarHorarioAlDia(dia:string, horario:string, index:number, rango:any) {
-    const arreglo = this.formulario.get('dias') as FormArray;
-    arreglo.removeAt(index);
-    const grupo = this.fb.group({
-      nombreDia: [dia],
-      codDia: [index+1],
-      horario: [horario],
-      horaInicio: [rango.horaInicio],
-      horaFin: [rango.horaFin]
-    })
-    arreglo.insert(index,grupo);
-    console.info(arreglo.value);
-  }
-
-
-  onSubmit(f: any) {
+  onSubmit(formulario:any) {
+    console.info(formulario.value)
     this.spinner.show();
-    this.opcionesInhabilitadas = true;
     let usuario = JSON.parse(localStorage.getItem('usuarioActual')!);
-    this.auth.updateHorario('usuarios', usuario.uid, this.formulario.get('dias')!.value).then(
+    this.auth.updateHorario('usuarios', usuario.uid, formulario.value).then(
       () => this.auth.traerUsuarioDeFirestore(this.auth.getUserFromAuth()).then(response => 
         {
           localStorage.setItem('usuarioActual', JSON.stringify(response.data()));
@@ -68,41 +39,65 @@ export class DisponibilidadComponent implements OnInit {
       }
         ) //Actualiza en localstorage el horario
     );
+    
   }
 
   cargarHorarioDeEspecialista(){ //Acá levanto el horario que tenía cargado anteriormente y lo asigno a los controles para chequear el que corresponda en el selector.
+    this.definirEstructuraDelFormulario();
     this.horarioSeleccionado = JSON.parse(localStorage.getItem('usuarioActual')!).horario;
-    this.duracionHorario = JSON.parse(localStorage.getItem('usuarioActual')!).duracionTurnos;
-    const arreglo = this.formulario.get('dias') as FormArray;
-    for (let index = 0; index < this.horarioSeleccionado.length; index++) {
-      const element = this.horarioSeleccionado[index];
-      let grupo = this.fb.group({
-        nombreDia: [element.nombreDia],
-        codDia: [element.codDia],
-        horario: [element.horario],
-        horaInicio: [element.horaInicio],
-        horaFin: [element.horaFin]
-      })
-      arreglo.push(grupo);
-    }
+    this.formulario.setValue(this.horarioSeleccionado);
   }
 
-  cambiarDuracion(duracion:number){
-    this.spinner.show();
-    let usuario = JSON.parse(localStorage.getItem('usuarioActual')!);
-    this.duracionHorario = duracion;
-    this.auth.updateDuracion('usuarios', usuario.uid, duracion).then(
-      () => this.auth.traerUsuarioDeFirestore(this.auth.getUserFromAuth()).then(
-        response => 
-        {
-          localStorage.setItem('usuarioActual', JSON.stringify(response.data()));
-          this.spinner.hide();
-      }) //Actualiza en localstorage el horario
-    );
+  compare(val1:any, val2:any) { //funcion que hace que [compareWith] seleccione la opción correcta
+    return val1.horaInicio === val2.horaInicio && val1.horaFin === val2.horaFin;
   }
 
-  modificar(){
-    this.opcionesInhabilitadas = false;
+
+  definirEstructuraDelFormulario(){
+    this.formulario = this.fb.group({
+      Lunes: this.fb.group({
+        'nombreDia': 'Lunes',
+        'codDia': 1,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A'
+      }),
+      Martes: this.fb.group({
+        'nombreDia': 'Martes',
+        'codDia': 2,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A',
+      }),
+      Miercoles: this.fb.group({
+        'nombreDia': 'Miercoles', 
+        'codDia': 3,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A',
+      }),
+      Jueves: this.fb.group({
+        'nombreDia': 'Jueves',
+        'codDia': 4,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A',
+      }),
+      Viernes: this.fb.group({
+        'nombreDia': 'Viernes',
+        'codDia': 5,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A',
+      }),
+      Sabado: this.fb.group({
+        'nombreDia': 'Sabado',
+        'codDia': 6,
+        'rango': {horaInicio:0, horaFin:0},
+        'duracionDelDia': 30,
+        'especialidadDelDia': 'A'
+      }),
+    });
   }
 
 

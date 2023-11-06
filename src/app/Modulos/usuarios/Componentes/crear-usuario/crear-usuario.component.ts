@@ -19,7 +19,8 @@ export class CrearUsuarioComponent {
   formulario!: FormGroup;
   image1!: File;
   image2!: File;
-  especialidades = ['Cardiólogo', 'Traumatólogo', 'Pediatra', 'Odontólogo'];
+  especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología',
+  'Dermatología'];
 
   firebaseErrors:any = {
     'auth/user-not-found': 'El correo ingresado no se encuentra registrado',
@@ -198,35 +199,74 @@ export class CrearUsuarioComponent {
         form.dni,
         '','',
         form.especialidades,
-        [
+        { Lunes:
           {
-            "dia": "Lunes",
-            "horario": "no"
+            nombreDia: "Lunes",
+            duracionDelDia: 30,
+            codDia: 1,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Martes :
           {
-            "dia": "Martes",
-            "horario": "no"
+            nombreDia: "Martes",
+            duracionDelDia: 30,
+            codDia: 2,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Miercoles :
           {
-            "dia": "Miercoles",
-            "horario": "no"
+            nombreDia: "Miercoles",
+            duracionDelDia: 30,
+            codDia: 3,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Jueves :
           {
-            "dia": "Jueves",
-            "horario": "no"
+            nombreDia: "Jueves",
+            duracionDelDia: 30,
+            codDia: 4,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Viernes : 
           {
-            "dia": "Viernes",
-            "horario": "no"
+            nombreDia: "Viernes",
+            duracionDelDia: 30,
+            codDia: 5,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           },
+          Sabado : 
           {
-            "dia": "Sabado",
-            "horario": "no"
+            nombreDia: "Sabado",
+            duracionDelDia: 30,
+            codDia: 6,
+            especialidadDelDia: form.especialidades[0],
+            rango: {
+              horaInicio : 0,
+              horaFin : 0,
+            }
           }
-        ],
-        30,
-        true,
-        []);
+        },
+        true);
     }
     else if (tipo == 'paciente') {
       usuario = new Paciente(
@@ -240,8 +280,8 @@ export class CrearUsuarioComponent {
         '',
         '',
         form.obraSocial,
-        form.numAfiliado,
-        []);
+        form.numAfiliado
+      );
     }
     else{
       usuario = new Usuario(

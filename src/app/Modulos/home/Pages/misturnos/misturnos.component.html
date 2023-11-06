@@ -1,48 +1,71 @@
 <div *ngIf="usuarioActual.rol == 'paciente'">
-    <table *ngIf="turnos" class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Especialista</th>
-            <th scope="col">Especialidad</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let turno of turnos; index as i">
-            <th scope="row">{{i + 1}}</th>
-            <td>{{turno.especialista.nombre}} {{turno.especialista.apellido}}</td>
-            <td>{{turno.especialidadElegida}}</td>
-            <td>{{turno.fecha.toDate() | date}}</td>
-            <td>{{turno.estado}}</td>
-          </tr>
-     
-        </tbody>
-      </table>
+  <div *ngIf="turnos">
+    <button class="btn btn-sm btn btn-outline-primary"
+      *ngFor="let especialista of arrayEspecialistas; index as i"
+      (click)="filterTable(especialista, 1)">Filtrar {{especialista}}</button>
+    <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 1)">Borrar
+      Filtro especialista</button>
+    <button class="btn btn-sm btn btn-outline-success"
+      *ngFor="let especialidad of arrayEspecialidades"
+      (click)="filterTable(especialidad, 2)">Filtrar {{especialidad}}</button>
+    <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 2)">Borrar
+      Filtro especialidad</button>
+    <table datatable [dtOptions]="dtOptions" class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Especialista</th>
+          <th scope="col">Especialidad</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of turnos; index as i">
+          <th scope="row">{{i + 1}}</th>
+          <td>{{turno.especialista.nombre}} {{turno.especialista.apellido}}</td>
+          <td>{{turno.especialidadElegida}}</td>
+          <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
+          <td>{{turno.estado}}</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
 </div>
 
-
 <div *ngIf="usuarioActual.rol == 'especialista'">
-    <table *ngIf="turnos" class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Paciente</th>
-            <th scope="col">Especialidad</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let turno of turnos; index as i">
-            <th scope="row">{{i + 1}}</th>
-            <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
-            <td>{{turno.especialidadElegida}}</td>
-            <td>{{turno.fecha.toDate() | date}}</td>
-            <td>{{turno.estado}}</td>
-          </tr>
-     
-        </tbody>
-      </table>
+  <div *ngIf="turnos">
+    <button class="btn btn-sm btn btn-outline-primary"
+      *ngFor="let paciente of arrayPacientes; index as i"
+      (click)="filterTable(paciente, 1)">Filtrar {{paciente}}</button>
+    <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 1)">Borrar
+      Filtro paciente</button>
+    <button class="btn btn-sm btn btn-outline-success"
+      *ngFor="let especialidad of arrayEspecialidades"
+      (click)="filterTable(especialidad, 2)">Filtrar {{especialidad}}</button>
+    <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 2)">Borrar
+      Filtro especialidad</button>
+    <table datatable [dtOptions]="dtOptions" class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Paciente</th>
+          <th scope="col">Especialidad</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of turnos; index as i">
+          <th scope="row">{{i + 1}}</th>
+          <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
+          <td>{{turno.especialidadElegida}}</td>
+          <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
+          <td>{{turno.estado}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>
