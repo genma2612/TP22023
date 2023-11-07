@@ -61,14 +61,14 @@
                     <ul class="dropdown-menu">
                         <li class="dropdown-item text-start"
                             *ngFor="let especialidad of especialidades">
-                            <div class="form-check">
+                            <div class="form-check" *ngIf="especialidad.estaHabilitada">
                                 <input class="form-check-input" 
                                     (change)="onCheckboxChange($event)"
-                                    type="checkbox" value="{{especialidad}}"
-                                    id="flexCheck{{especialidad}}" formArrayName="especialidades">
+                                    type="checkbox" value="{{especialidad.nombre}}"
+                                    id="flexCheck{{especialidad.nombre}}" formArrayName="especialidades">
                                 <label class="form-check-label"
-                                    for="flexCheck{{especialidad}}">
-                                    {{especialidad}}
+                                    for="flexCheck{{especialidad.nombre}}">
+                                    {{especialidad.nombre}}
                                 </label>
                             </div>
                         </li>

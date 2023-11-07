@@ -1,23 +1,28 @@
 import { UserAuthService } from './../../Servicios/user-auth.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
+import * as stringRandom from 'string-random';
 
 @Component({
   selector: 'app-registrar',
   templateUrl: './registrar.component.html',
   styleUrls: ['./registrar.component.css']
 })
-export class RegistrarComponent implements OnInit {
+export class RegistrarComponent implements OnInit, OnDestroy {
   tipo: string | null;
   formulario!: FormGroup;
   image1!: File;
   image2!: File; 
-  especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología',
-  'Dermatología'];
+  //especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología', 'Dermatología'];
+  especialidades:any;
+
+  $observableEspecialidades:Subscription = new Subscription();
+
 
   Toast = Swal.mixin({
     toast: true,
@@ -45,10 +50,17 @@ export class RegistrarComponent implements OnInit {
     this.tipo = this._Activatedroute.snapshot.paramMap.get("tipo");
   }
 
+  ngOnDestroy(): void {
+    this.$observableEspecialidades.unsubscribe();
+  }
+
 
   ngOnInit(): void {
     this.setearValidaciones();
     this.setUserCategoryValidators();
+    this.$observableEspecialidades = this.auth.traerColeccionOrdenada('especialidades', 'nombre').subscribe(
+      response => this.especialidades = response
+    )
   }
 
   setearValidaciones() {
@@ -181,9 +193,13 @@ export class RegistrarComponent implements OnInit {
 
   crearUsuario(form: any, tipo: string) {
     let usuario: Paciente | Especialista;
+    let obj = {}
+    let guardaEspecialidad = false;
     if (tipo == 'especialista') {
       const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
       if (especialidadPersonalizadaControl?.enabled) {
+        guardaEspecialidad = true;
+        obj = { nombre:especialidadPersonalizadaControl.value , imagen:'https://firebasestorage.googleapis.com/v0/b/tp2-2023.appspot.com/o/especialidades%2Fdefault%2Fdefault.png?alt=media&token=b3be2418-0efc-4849-acef-6a0654c95870', estaHabilitada:true,uid:stringRandom(20)};
         form.especialidades.push(especialidadPersonalizadaControl.value);
         delete form['especialidadPersonalizada']
       }
@@ -312,14 +328,23 @@ export class RegistrarComponent implements OnInit {
                 }
                 else {
                   this.auth.guardarUsuarioEnFirestore(usuario)
-                    .then(() => console.log('Registrado y guardado en Firebase'))
+                    .then(() => {
+                      if(guardaEspecialidad){
+                        this.auth.guardarEspecialidad(obj).then(
+                          () => console.log('Registrado y guardado en Firebase con su especialidad')
+                        )
+                      }
+                      else{
+                        console.log('Especialista registrado y guardado en Firebase');
+                      }
+                    } 
+                    )
                     .catch(error => console.info(error))
                 }
                 this.Toast.fire({
                   icon: 'success',
                   title:' Usuario creado correctamente'
                 })
-                this.formulario.reset();
                 this.router.navigate(['lobby']);
                 this.spinner.hide();
               }))

@@ -91,15 +91,9 @@
                     <ul class="dropdown-menu">
                         <li class="dropdown-item text-start"
                             *ngFor="let especialidad of especialidades">
-                            <div class="form-check">
-                                <input class="form-check-input" 
-                                    (change)="onCheckboxChange($event)"
-                                    type="checkbox" value="{{especialidad}}"
-                                    id="flexCheck{{especialidad}}" formArrayName="especialidades">
-                                <label class="form-check-label"
-                                    for="flexCheck{{especialidad}}">
-                                    {{especialidad}}
-                                </label>
+                            <div class="form-check" *ngIf="especialidad.estaHabilitada">
+                                <input class="form-check-input" (change)="onCheckboxChange($event)" type="checkbox" value="{{especialidad.nombre}}" id="flexCheck{{especialidad.nombre}}" formArrayName="especialidades">
+                            <label class="form-check-label" for="flexCheck{{especialidad.nombre}}">{{especialidad.nombre}}</label>
                             </div>
                         </li>
                     </ul>

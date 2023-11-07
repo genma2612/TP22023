@@ -185,15 +185,35 @@ export class UserAuthService {
   }
 
   guardarEspecialidad(especialidad:any){
-    let randomstring = stringRandom(20);
-    especialidad.uid = randomstring;
-    const especialidadRef = doc(this.firestore, `especialidades/${randomstring}`);
+    const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
     return setDoc(especialidadRef, especialidad).then(
       () => {
         console.info('especialidad guardada');
       }
     );
+  }
 
+  actualizarEspecialidad(especialidad:any, f:any){
+    const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
+    return updateDoc(especialidadRef, {nombre: f.nombreEspecialidad}).then(
+      () => {
+        console.info('especialidad modificada');
+      }
+    );
+  }
+
+  actualizarImagenEspecialidad(especialidad:any, f:any){
+    const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
+    return updateDoc(especialidadRef, {imagen: f}).then(
+      () => {
+        console.info('especialidad modificada');
+      }
+    );
+  }
+
+  cambiarHAbilitacionEspecialidad(uid: any, valor: any) {
+    const docRef = doc(this.firestore, `especialidades/${uid}`)
+    return updateDoc(docRef, { estaHabilitada: valor });
   }
 
   actualizarEstadoTurno(valor: string, idTurno: string, idPac: string, idEsp: string) {

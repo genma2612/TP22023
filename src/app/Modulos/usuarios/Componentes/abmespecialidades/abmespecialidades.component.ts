@@ -5,6 +5,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable, Subscription } from 'rxjs';
+import * as stringRandom from 'string-random';
 
 @Component({
   selector: 'app-abmespecialidades',
@@ -13,11 +14,15 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class ABMespecialidadesComponent implements OnInit, OnDestroy {
 
-  $observableEspecialidades:Subscription = new Subscription();
+  $observableEspecialidades: Subscription = new Subscription();
 
   formulario!: FormGroup;
   image1!: File;
-  especialidades:any;
+  especialidades: any;
+  especialidadSeleccionada: any;
+  accion: string = 'Crear';
+  activarForm: boolean = false;
+  editar = false;
 
   Toast = Swal.mixin({
     toast: true,
@@ -87,14 +92,19 @@ export class ABMespecialidadesComponent implements OnInit, OnDestroy {
 
 
   onSubmit(f: any) {
-    this.crearEspecialidad(f);
+    if (this.accion == 'Crear')
+      this.crearEspecialidad(f);
+    else {
+      this.modificarEspecialidadElegida(f);
+    }
   }
 
   crearEspecialidad(form: any) {
-    let obj = { nombre:form.nombreEspecialidad, imagen:'', estaHabilidata:true,uid:''}
+    let randomstring = stringRandom(20);
+    let obj = { nombre: form.nombreEspecialidad, imagen: '', estaHabilitada: true, uid: randomstring };
     this.spinner.show();
-    this.auth.subirImagenEspecialidad(this.image1, form.nombreEspecialidad, "imageUrl").then(
-      () => this.auth.traerImagenEspecialidad(form.nombreEspecialidad, "imageUrl").then(
+    this.auth.subirImagenEspecialidad(this.image1, obj.uid, "imageUrl").then(
+      () => this.auth.traerImagenEspecialidad(obj.uid, "imageUrl").then(
         response => {
           obj.imagen = response;
           this.auth.guardarEspecialidad(obj).then(
@@ -110,7 +120,77 @@ export class ABMespecialidadesComponent implements OnInit, OnDestroy {
           console.info(error);
           this.spinner.hide();
         }));
-
   }
+
+  modificarEspecialidadElegida(f:any){
+    if (this.image1 == undefined) {
+      this.auth.actualizarEspecialidad(this.especialidadSeleccionada, f).then(
+        () => console.info('se actualizó')
+      )
+    }
+    else {
+      let imagen = '';
+      if (f.nombreEspecialidad == this.especialidadSeleccionada.nombre) { //solo subo la imagen
+        this.auth.subirImagenEspecialidad(this.image1, this.especialidadSeleccionada.uid, "imageUrl").then(
+          () => this.auth.traerImagenEspecialidad(this.especialidadSeleccionada.uid, "imageUrl").then(
+            response => {
+              imagen = response;
+              this.auth.actualizarImagenEspecialidad(this.especialidadSeleccionada, imagen).then(
+                () => this.formulario.controls['image1'].setValue(null)
+              )
+            }
+          )
+        );
+      }
+      else {
+        this.auth.actualizarEspecialidad(this.especialidadSeleccionada, f).then(
+          () => {
+            this.auth.subirImagenEspecialidad(this.image1, this.especialidadSeleccionada.uid, "imageUrl").then(
+              () => this.auth.traerImagenEspecialidad(this.especialidadSeleccionada.uid, "imageUrl").then(
+                response => {
+                  imagen = response;
+                  this.auth.actualizarImagenEspecialidad(this.especialidadSeleccionada, imagen).then(
+                    () => this.formulario.controls['image1'].setValue(null)
+                  )
+                }
+              )
+            );
+          }
+        )
+      }
+      this.cancelarCreacion();
+    }
+  }
+
+  modificarHabilitacion(item:any){
+    this.auth.cambiarHAbilitacionEspecialidad(item.uid, !item.estaHabilitada).then(
+      () => console.info('se actualizó')
+    )
+  }
+
+  activarCreacion() {
+    this.activarForm = true;
+    this.accion = 'Crear';
+    this.formulario.controls['nombreEspecialidad'].setValidators(Validators.required);
+    this.formulario.controls['nombreEspecialidad'].updateValueAndValidity();
+    this.formulario.controls['image1'].setValidators(Validators.required);
+    this.formulario.controls['image1'].updateValueAndValidity();
+  }
+
+  cancelarCreacion() {
+    this.activarForm = false;
+    this.formulario.reset();
+  }
+
+  modificarEspecialidad(item: any) {
+    this.activarForm = true;
+    this.accion = 'Modificar';
+    this.especialidadSeleccionada = item;
+    this.formulario.controls['nombreEspecialidad'].setValue(item.nombre);
+    this.formulario.controls['image1'].clearValidators();
+    this.formulario.controls['image1'].updateValueAndValidity();
+  }
+
+
 
 }

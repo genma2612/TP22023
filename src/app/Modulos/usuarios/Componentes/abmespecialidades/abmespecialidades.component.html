@@ -1,34 +1,51 @@
 <div>
     <table *ngIf="especialidades" class="table">
+        <thead>
+            <th>Especialidad</th>
+            <th>Está habilitada</th>
+            <th></th>
+            <th></th>
+        </thead>
         <tbody>
             <tr *ngFor="let item of especialidades; let i = index">
-                    <td>{{item.nombre}}</td>
-                    <td> <img [src]="item.imagen" alt="" style="height: 40px; width: 40px;"></td>
+                <td>{{item.nombre}}</td>
+                <td><a name="" id="" class="btn btn-sm" [ngClass]="item.estaHabilitada ? 'btn-danger' : 'btn-success'" (click)="modificarHabilitacion(item)" role="button">
+                    <div *ngIf="item.estaHabilitada; else sino">Deshabilitar</div><ng-template  #sino>Habilitar</ng-template>
+                </a></td>
+                <td> <img [src]="item.imagen" alt="" style="height: 40px; width: 40px;"></td>
+                <td><button class="btn btn-sm btn-primary" (click)="modificarEspecialidad(item)">Editar</button>
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
 <hr>
-<div class="justify-content-center">
-    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
-        <div class="row">
-            <div class="col">
-                <input type="text" formControlName="nombreEspecialidad" class="form-control" placeholder="Nombre de la especialidad">
-                <small class="invalid" *ngIf="formulario.controls['nombreEspecialidad'].errors?.['required'] && formulario.controls['nombreEspecialidad'].touched">Ingrese el nombre de la especialidad</small>
-            </div>
-            <div class="col">
-                <div class="col">
-                    <input type="file" (change)="actualizarArchivo($event, 'image1')" formControlName="image1" class="form-control" placeholder="Imagen 1">
+<div class="row">
+    <div class="col-5 ms-4">
+        <button *ngIf="!activarForm" (click)="activarCreacion()" class="btn btn-primary" type="submit">Crear especialidad</button>
+        <div *ngIf="activarForm" class="justify-content-center">
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
+                <div class="row">
+                    <input type="text" formControlName="nombreEspecialidad" class="form-control"
+                        placeholder="Nombre de la especialidad">
+                    <small class="invalid"
+                        *ngIf="formulario.controls['nombreEspecialidad'].errors?.['required'] && formulario.controls['nombreEspecialidad'].touched">Ingrese
+                        el nombre de la especialidad</small>
                 </div>
-            </div>
-        </div>
-        <p></p>
+                <div class="row mt-2">
+                    <input id="inputID" type="file" (change)="actualizarArchivo($event, 'image1')"
+                        formControlName="image1" class="form-control" placeholder="Imagen 1">
+                </div>
+                <p></p>
 
-        FORMULARIO VALIDO? - {{formulario.valid}}
-        <p></p>
+                FORMULARIO VALIDO? - {{formulario.valid}}
+                <p></p>
 
-        <div class="btn-group text-end" role="group" aria-label="Basic example">
-            <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Crear especialidad</button>
+                <div class="btn-group text-end" role="group" aria-label="Basic example">
+                    <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">{{accion}}</button>
+                    <button (click)="cancelarCreacion()" class="btn btn-danger">Cancelar</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>

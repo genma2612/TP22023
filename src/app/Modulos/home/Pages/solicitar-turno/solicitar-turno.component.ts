@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
@@ -7,6 +7,7 @@ import { DocumentData, Timestamp } from '@angular/fire/firestore';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { Observable, first } from 'rxjs';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -14,10 +15,10 @@ import { Observable, first } from 'rxjs';
   styleUrls: ['./solicitar-turno.component.css']
 })
 export class SolicitarTurnoComponent implements OnInit {
+  especialidadesFire:any[] = [];
   pacientesFire: any[] = [];
   especialistasFire: any[] = [];
   testVariable = 'Aceptado';
-
   formulario!: FormGroup;
   especialidades: string[] = [];
   especialidadSeleccionada: string | null = '';
@@ -26,16 +27,19 @@ export class SolicitarTurnoComponent implements OnInit {
   fechaSeleccionada!: Date | null;
   pacienteActual: any;
   horarios: any[] = [[], [], [],[]];
-
+  isBtnActive = 0;
+  
   constructor(private fb: FormBuilder, private auth: UserAuthService, private spinner: NgxSpinnerService) {
     this.formulario = this.fb.group({
       'paciente': [null, [Validators.required]],
       'especialista': ["Elegir especialista", [Validators.required]]
     });
 
+
   }
 
   ngOnInit(): void {
+    this.spinner.show();
     if (this.esAdmin()) {
       this.auth.traerColeccionUsuariosEspecifica('paciente').pipe(first()).subscribe(
         response => this.pacientesFire = response
@@ -44,7 +48,6 @@ export class SolicitarTurnoComponent implements OnInit {
     else {
         this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage())
     }
-
     this.auth.traerColeccionUsuariosEspecifica('especialista').pipe(first()).subscribe(
       response => {
         this.especialistasFire = response
@@ -52,11 +55,14 @@ export class SolicitarTurnoComponent implements OnInit {
           especialista.especialidades.forEach((element: any) => {
             if(this.tieneHorarioHabilitado(especialista, element))
               this.especialidades.push(element);
+              this.spinner.hide();
           })
         })
         this.especialidades = this.filtrarArray(this.especialidades);
       }
     )
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   }
 
   esAdmin() {
@@ -76,10 +82,11 @@ export class SolicitarTurnoComponent implements OnInit {
     return newarr;
   }
 
-  seleccionarEspecialidaD(especialidad: string) {
+  seleccionarEspecialidaD(especialidad: string, id:number) {
     this.doctorSeleccionado = null;
     this.fechaSeleccionada = null;
     this.especialidadSeleccionada = especialidad;
+    this.isBtnActive = id;
   }
 
   seleccionarDoctor(especialistaElegido: any) {

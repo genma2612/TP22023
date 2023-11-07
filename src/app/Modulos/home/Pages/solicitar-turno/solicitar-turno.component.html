@@ -13,41 +13,45 @@
           </select>
         </div>
 
-          <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
-            <ul class="list-group list-group-horizontal">
-              <li class="list-group-item active">{{this.formulario.controls['paciente'].value['nombre']}}
-                {{this.formulario.controls['paciente'].value['apellido']}}</li>
-              <li *ngIf="especialidadSeleccionada" class="list-group-item list-group-item-primary active">
-                {{especialidadSeleccionada}}</li>
-              <li *ngIf="doctorSeleccionado" class="list-group-item list-group-item-warning active">
-                {{doctorSeleccionado.nombre}} {{doctorSeleccionado.apellido}}</li>
-              <li *ngIf="fechaSeleccionada" class="list-group-item list-group-item-info active">{{fechaSeleccionada |
-                date:"dd/MM HH:mm\'hs\'"}}</li>
-            </ul>
-          </div>
-
-
         <div class="mb-3" *ngIf="this.formulario.controls['paciente'].value != null">
-          <label class="form-label">Especialidades</label>
-          <p></p>
-          <button *ngFor="let especialidad of especialidades" class="btn btn-primary"
-            (click)="seleccionarEspecialidaD(especialidad)">{{especialidad}}</button>
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item active">{{this.formulario.controls['paciente'].value['nombre']}}
+              {{this.formulario.controls['paciente'].value['apellido']}}</li>
+            <li *ngIf="especialidadSeleccionada" class="list-group-item list-group-item-primary active">
+              {{especialidadSeleccionada}}</li>
+            <li *ngIf="doctorSeleccionado" class="list-group-item list-group-item-warning active">
+              {{doctorSeleccionado.nombre}} {{doctorSeleccionado.apellido}}</li>
+            <li *ngIf="fechaSeleccionada" class="list-group-item list-group-item-info active">{{fechaSeleccionada |
+              date:"dd/MM HH:mm\'hs\'"}}</li>
+          </ul>
         </div>
 
-        <div class="mb-3" *ngIf="especialidadSeleccionada != ''">
+
+        <div class="form-group mb-1" *ngIf="this.formulario.controls['paciente'].value != null && especialidadesFire">
+          <button *ngFor="let especialidad of especialidades; index as i" appDirectivaBotonEspecialidad
+            [especialidadDirect]="especialidadesFire" [especialidadPropia]="especialidad" class="btn btn-info me-1"
+            (click)="seleccionarEspecialidaD(especialidad, i)"></button>
+        </div>
+
+        <p></p>
+
+        <div class="row" *ngIf="especialidadSeleccionada != ''">
           <label class="form-label">Especialistas</label>
-          <p></p>
           <ng-container *ngFor="let especialista of especialistasFire | filtro: especialidadSeleccionada">
-            <button 
-              *ngIf="tieneHorarioHabilitado(especialista, especialidadSeleccionada!)"
-              (click)="seleccionarDoctor(especialista)" class="btn btn-warning text-white">{{especialista.nombre}}
-              {{especialista.apellido}}
-            </button>
+            <div class="col-sm-1 me-5 mb-3 mb-sm-0" role="button" (click)="seleccionarDoctor(especialista)" *ngIf="tieneHorarioHabilitado(especialista, especialidadSeleccionada!)">
+              <div class="card border-primary text-center" style="width: 150px; height: 150px">
+                <div class="card-body">
+                  <h5 class="card-title" style='font-size: 10px;'>{{especialista.nombre}} {{especialista.apellido}}</h5>
+                  <img [src]="especialista.imagenUno" class="card-img-bottom" style="height: 70%;">
+                </div>
+              </div>
+            </div>
           </ng-container>
-
         </div>
 
-        <div class="mb-3" *ngIf="doctorSeleccionado">
+
+
+        <div class="mb-1" *ngIf="doctorSeleccionado">
           <div class="row">
             <div class="col" *ngIf="horarios[0].length > 0">
               <label>Esta Semana:</label>

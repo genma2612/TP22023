@@ -1,10 +1,12 @@
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
-import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Especialista, Paciente, Usuario } from 'src/app/Clases/interfaces';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
+import * as stringRandom from 'string-random';
 
 
 @Component({
@@ -12,15 +14,17 @@ import { NgxSpinnerService } from 'ngx-spinner';
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.css']
 })
-export class CrearUsuarioComponent {
+export class CrearUsuarioComponent implements OnInit, OnDestroy, OnChanges {
   @Input() tipo:string = 'administrador';
   @Output() cerrarModal = new EventEmitter<boolean>;
 
   formulario!: FormGroup;
   image1!: File;
   image2!: File;
-  especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología',
-  'Dermatología'];
+  //especialidades = ['Cardiología', 'Traumatología', 'Pediatra', 'Odontología', 'Dermatología'];
+  especialidades:any;
+
+  $observableEspecialidades:Subscription = new Subscription();
 
   firebaseErrors:any = {
     'auth/user-not-found': 'El correo ingresado no se encuentra registrado',
@@ -48,9 +52,17 @@ export class CrearUsuarioComponent {
   ) {
   }
 
+  ngOnDestroy(): void {
+    this.$observableEspecialidades.unsubscribe();
+  }
+
+
   ngOnInit(): void {
     this.setearValidaciones();
     this.setUserCategoryValidators();
+    this.$observableEspecialidades = this.auth.traerColeccionOrdenada('especialidades', 'nombre').subscribe(
+      response => this.especialidades = response
+    )
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -60,18 +72,18 @@ export class CrearUsuarioComponent {
 
   setearValidaciones() {
     this.formulario = this.fb.group({
-      'nombre': ['', [Validators.required]],
-      'apellido': ['', Validators.required],
-      'edad': ['', [Validators.required, Validators.min(18), Validators.max(99)]],
-      'sexo': ['', [Validators.required]],
-      'dni': ['', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
-      'obraSocial': ["", Validators.required],
-      'numAfiliado': ["", [Validators.required, Validators.min(1000), Validators.max(9999)]],
+      'nombre': ['AAAAAA', [Validators.required]],
+      'apellido': ['BBBBB', Validators.required],
+      'edad': ['22', [Validators.required, Validators.min(18), Validators.max(99)]],
+      'sexo': ['masculino', [Validators.required]],
+      'dni': ['2323232', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
+      'obraSocial': ["aaaa", Validators.required],
+      'numAfiliado': ["232323", [Validators.required, Validators.min(1000), Validators.max(9999)]],
       'especialidades': this.fb.array([], [Validators.required]),
       'especialidadPersonalizada': ["", Validators.required],
-      'email': ['', [Validators.required, Validators.email]],
-      'pass': ['', Validators.required],
-      'passConfirm': ['', Validators.required],
+      'email': ['sdsdkm@gmail.com', [Validators.required, Validators.email]],
+      'pass': ['111111', Validators.required],
+      'passConfirm': ['111111', Validators.required],
       'image1': [null, [Validators.required]],
       'image2': [null, [Validators.required]]
     });
@@ -184,9 +196,13 @@ export class CrearUsuarioComponent {
 
   crearUsuario(form: any, tipo: string) {
     let usuario:Usuario|Paciente|Especialista;
+    let obj = {}
+    let guardaEspecialidad = false;
     if (tipo == 'especialista') {
       const especialidadPersonalizadaControl = this.formulario.get('especialidadPersonalizada');
       if (especialidadPersonalizadaControl?.enabled) {
+        guardaEspecialidad = true;
+        obj = { nombre:especialidadPersonalizadaControl.value , imagen:'https://firebasestorage.googleapis.com/v0/b/tp2-2023.appspot.com/o/especialidades%2Fdefault%2Fdefault.png?alt=media&token=b3be2418-0efc-4849-acef-6a0654c95870', estaHabilitada:true,uid:stringRandom(20)};
         form.especialidades.push(especialidadPersonalizadaControl.value);
         delete form['especialidadPersonalizada']
       }
@@ -300,6 +316,8 @@ export class CrearUsuarioComponent {
     }
 
     delete form['passConfirm'];
+    console.info(form);
+    
     this.spinner.show();
     this.auth.registrar({ correo: form.email, password: form.pass })
       .then(
@@ -326,14 +344,23 @@ export class CrearUsuarioComponent {
                 }
                 else {
                   this.auth.guardarUsuarioEnFirestore(usuario)
-                    .then(() => console.log('Registrado y guardado en Firebase'))
-                    .catch(error => console.info(error))
+                  .then(() => {
+                    if(guardaEspecialidad){
+                      this.auth.guardarEspecialidad(obj).then(
+                        () => console.log('Registrado y guardado en Firebase con su especialidad')
+                      )
+                    }
+                    else{
+                      console.log('Especialista registrado y guardado en Firebase');
+                    }
+                  } 
+                  )
+                  .catch(error => console.info(error))
                 }
                 this.Toast.fire({
                   icon: 'success',
                   title:' Usuario creado correctamente'
                 })
-                this.formulario.reset();
                 this.spinner.hide();
                 this.cerrarModal.emit(true);
               }))
@@ -347,7 +374,7 @@ export class CrearUsuarioComponent {
         console.info(error);
         this.spinner.hide();
       });
-
+      
   }
 
 }
