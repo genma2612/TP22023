@@ -98,9 +98,10 @@ export class Turno {
     //hora:Date;
     resena:string;
     comentario:string;
-    calificacion:Object;
+    calificacion:string;
     diagnostico:Object;
     estaCancelado:boolean;
+    encuestaCargada:boolean;
     uid:string;
     duracion:number;
     especialidadElegida:string
@@ -112,9 +113,10 @@ export class Turno {
         //hora:Date,
         resena:string,
         comentario:string,
-        calificacion:Object,
+        calificacion:string,
         diagnostico:Object,
         estaCancelado:boolean,
+        encuestaCargada:boolean,
         uid:string,
         duracion:number,
         especialidadElegida:string
@@ -129,6 +131,7 @@ export class Turno {
             this.calificacion = calificacion;
             this.diagnostico = diagnostico;
             this.estaCancelado = estaCancelado;
+            this.encuestaCargada = encuestaCargada;
             this.uid = uid;
             this.duracion = duracion;
             this.especialidadElegida = especialidadElegida;

@@ -15,6 +15,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { LobbyComponent } from './Pages/lobby/lobby.component';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,8 @@ import { LobbyComponent } from './Pages/lobby/lobby.component';
     LobbyComponent,
   ],
   imports: [
+    RecaptchaModule,
+    RecaptchaFormsModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

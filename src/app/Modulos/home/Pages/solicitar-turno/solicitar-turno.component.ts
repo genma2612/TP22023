@@ -206,7 +206,7 @@ export class SolicitarTurnoComponent implements OnInit {
         if (result.isConfirmed) {
           this.spinner.show();
           let turno: Turno;
-          turno = new Turno(paciente, this.doctorSeleccionado!, 'Pendiente', this.fechaSeleccionada!, '', '', {}, {}, false, '', 30, this.especialidadSeleccionada!);
+          turno = new Turno(paciente, this.doctorSeleccionado!, 'Pendiente', this.fechaSeleccionada!, '', '', '', {}, false, false, '', 30, this.especialidadSeleccionada!);
           this.auth.guardarTurno(turno).then(
             response => {
               this.reiniciarForm();

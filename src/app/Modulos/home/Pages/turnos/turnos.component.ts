@@ -13,8 +13,8 @@ export class TurnosComponent implements OnInit {
   @ViewChild(DataTableDirective, { static: false })
   datatableElement?: DataTableDirective;
 
-  arrayEspecialistas:string[] = [];
-  arrayEspecialidades:string[] = [];
+  arrayEspecialistas: string[] = [];
+  arrayEspecialidades: string[] = [];
 
   turnos: any;
   dtOptions: DataTables.Settings = {};
@@ -24,7 +24,7 @@ export class TurnosComponent implements OnInit {
     this.auth.traerColeccionOrdenada('turnos', 'fecha').subscribe(
       response => {
         this.turnos = response;
-        this.turnos.forEach((element:any) => {
+        this.turnos.forEach((element: any) => {
           this.arrayEspecialistas.push(element.especialista.nombre + ' ' + element.especialista.apellido);
           this.arrayEspecialidades.push(element.especialidadElegida);
         });
@@ -80,7 +80,7 @@ export class TurnosComponent implements OnInit {
     });
   }
 
-  async cancelarTurno(turno:any){
+  async cancelarTurno(turno: any) {
     const { value: text } = await Swal.fire({
       input: 'textarea',
       inputLabel: 'Por qué quiere cancelar el turno?',
@@ -91,8 +91,18 @@ export class TurnosComponent implements OnInit {
       showCancelButton: true
     })
     if (text) {
-      Swal.fire(text)
+      //Swal.fire(text)
+      let obj = { estado: 'Cancelado', estaCancelado: true, comentario: 'Comentario genérico' };
+      this.auth.actualizarEstadoTurno(obj, turno.uid, turno.paciente.uid, turno.especialista.uid);
     }
+  }
+
+  verComentario(turno:any){
+    Swal.fire({
+      title: 'Reseña:',
+      text: turno.comentario,
+      confirmButtonText: 'Cerrar'
+    });
   }
 
 }

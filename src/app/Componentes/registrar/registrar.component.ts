@@ -22,7 +22,7 @@ export class RegistrarComponent implements OnInit, OnDestroy {
   especialidades:any;
 
   $observableEspecialidades:Subscription = new Subscription();
-
+  llaveDeSitio = '6Lep6wcpAAAAAN_tm_AC_JFqL0Zgrae088nL8k-q';
 
   Toast = Swal.mixin({
     toast: true,
@@ -78,7 +78,8 @@ export class RegistrarComponent implements OnInit, OnDestroy {
       'pass': ['', Validators.required],
       'passConfirm': ['', Validators.required],
       'image1': [null, [Validators.required]],
-      'image2': [null, [Validators.required]]
+      'image2': [null, [Validators.required]],
+      'captcha' : [null, Validators.required]
     });
   }
 
@@ -343,7 +344,7 @@ export class RegistrarComponent implements OnInit, OnDestroy {
                 }
                 this.Toast.fire({
                   icon: 'success',
-                  title:' Usuario creado correctamente'
+                  title:' Usuario creado correctamente. Revise su casilla de mail'
                 })
                 this.router.navigate(['lobby']);
                 this.spinner.hide();
@@ -358,6 +359,11 @@ export class RegistrarComponent implements OnInit, OnDestroy {
         console.info(error);
         this.spinner.hide();
       });
+  }
+
+
+  resolved(captchaResponse: string) {
+    console.log(`Resolved captcha with response: ${captchaResponse}`);
   }
 
 }

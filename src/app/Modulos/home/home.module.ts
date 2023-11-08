@@ -14,6 +14,8 @@ import { TurnosComponent } from './Pages/turnos/turnos.component';
 import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
 import { DataTablesModule } from 'angular-datatables';
 import { DirectivaBotonEspecialidadDirective } from './Directivas/directiva-boton-especialidad.directive';
+import { CargarHistoriaClinicaComponent } from './Componentes/cargar-historia-clinica/cargar-historia-clinica.component';
+import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { DirectivaBotonEspecialidadDirective } from './Directivas/directiva-boto
     FiltroPipe,
     TurnosComponent,
     MisturnosComponent,
-    DirectivaBotonEspecialidadDirective
+    DirectivaBotonEspecialidadDirective,
+    CargarHistoriaClinicaComponent,
+    EncuestaComponent
   ],
   imports: [
     CommonModule,

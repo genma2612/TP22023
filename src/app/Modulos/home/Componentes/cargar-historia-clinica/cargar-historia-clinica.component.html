@@ -1,0 +1,61 @@
+<div class="justify-content-center">
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
+        <h1 class="h3 mb-3 fw-normal">Ingrese sus datos:</h1>
+        <div class="row">
+            <div class="col">
+                <textarea type="text" formControlName="diagnostico" class="form-control" placeholder="Diagnóstico"></textarea>
+                <small class="invalid" *ngIf="formulario.controls['diagnostico'].errors?.['required'] && formulario.controls['diagnostico'].touched">Ingrese el diagnóstico</small>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                <input type="number" formControlName="altura" class="form-control" placeholder="Altura">
+                <small class="invalid" *ngIf="formulario.controls['altura'].errors?.['required'] && formulario.controls['altura'].touched">Ingrese su altura en centímetros</small>
+                <small class="invalid" *ngIf="formulario.controls['altura'].errors?.['min'] || formulario.controls['altura'].errors?.['max'] && formulario.controls['altura'].touched">Entre 20 y 220</small>
+            </div>
+            <div class="col">
+                <input type="number" formControlName="peso" class="form-control" placeholder="Peso">
+                <small class="invalid" *ngIf="formulario.controls['peso'].errors?.['required'] && formulario.controls['peso'].touched">Ingrese su peso en kgs</small>
+                <small class="invalid" *ngIf="formulario.controls['peso'].errors?.['min'] || formulario.controls['peso'].errors?.['max'] && formulario.controls['peso'].touched">Entre 1 y 300</small>
+                
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                <input type="number" formControlName="temperatura" class="form-control" placeholder="Temperatura">
+                <small class="invalid" *ngIf="formulario.controls['temperatura'].errors?.['required'] && formulario.controls['temperatura'].touched">Ingrese su temperatura en C°</small>
+                <small class="invalid" *ngIf="formulario.controls['temperatura'].errors?.['min'] || formulario.controls['temperatura'].errors?.['max'] && formulario.controls['temperatura'].touched">Entre 35 y 40</small>
+            </div>
+            <div class="col">
+                <input type="text" formControlName="presion" class="form-control" placeholder="Presión">
+                <small class="invalid" *ngIf="formulario.controls['presion'].errors?.['required'] && formulario.controls['presion'].touched">Ingrese su presión arterial</small>
+                <small class="invalid" *ngIf="formulario.controls['presion'].errors?.['pattern'] && formulario.controls['presion'].touched">El formato debe ser XXX/XX</small>
+            </div>
+        </div>
+
+        <div class="mt-2" formArrayName="datosDinamicos">
+            <div class="row mt-2" *ngFor="let item of this.arrayDinamico.controls; index as i" [formGroupName]="i">
+              <div class="col">
+                <input type="text" class="form-control" id="{{'clave'+i}}" formControlName='clave' placeholder="Clave">
+              </div>
+              
+              <div class="col">
+                <input type="text" class="form-control" id="{{'valor'+i}}" formControlName='valor' placeholder="Valor">
+              </div>
+        
+              <div class="col">
+                <button class="btn btn-danger" type="button" (click)="borrarDato(i)">Borrar</button>
+              </div>
+            </div>
+            <button *ngIf="this.arrayDinamico.length < 3" class="btn btn-primary mt-3" type="button" (click)="agregarDato()">Agregar campo</button>
+        </div>
+
+        <!--FORMULARIO VALIDO? - {{formulario.valid}} -->
+
+        <div class="btn-group text-end mt-2" role="group" aria-label="Basic example">
+            <button [disabled]="formulario.invalid || false" class="btn btn-primary" type="submit">Cargar</button>
+        </div>
+    </form>
+</div>

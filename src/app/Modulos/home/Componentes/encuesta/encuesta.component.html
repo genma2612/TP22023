@@ -1,0 +1,50 @@
+<form [formGroup]="formulario" class="needs-validation" novalidate>
+        <div class="row">
+            <div class="col-sm-6">
+                <select class="form-select" formControlName="primeraVez" aria-label="Default select example">
+                    <option value="" selected>Es la primera vez que se atiende?</option>
+                    <option value="No">Si</option>
+                    <option value="Si">No</option>
+                </select>
+                <small class="invalid" *ngIf="formulario.controls['primeraVez'].errors?.['required'] && formulario.controls['primeraVez'].touched"> Este campo es necesario</small>
+            </div>
+            <div class="col-sm-6 mt-2">
+                <div class="form-check align-middle">
+                    <input type="checkbox" id="recomendar" formControlName="recomienda" class="form-check-input">
+                    <label class="form-check-label" for="recomendar">Recomendarías la clínica?</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-5">
+                <label for="customRange3" class="form-label">Volverías?: {{codigosRango[formulario.controls['volveria'].value]}} </label>
+                <input type="range" class="form-range" min="0" max="4" step="1" id="customRange3" formControlName="volveria">
+            </div>
+            <div class="col-sm-7">
+                <label class="form-check-label" for="recomendar">Calificación:</label>
+                <div id="puntaje">
+                    <input type="radio" class="btn-check" value="★" formControlName="puntaje" name="puntaje" id="btnradio1">
+                    <label class="btn btn-outline-warning" for="btnradio1">★</label>
+                    <input type="radio" class="btn-check" value="★★" formControlName="puntaje" name="puntaje" id="btnradio2">
+                    <label class="btn btn-outline-warning" for="btnradio2">★★</label>
+                    <input type="radio" class="btn-check" value="★★★" formControlName="puntaje" name="puntaje" id="btnradio3">
+                    <label class="btn btn-outline-warning" for="btnradio3">★★★</label>
+                    <input type="radio" class="btn-check" value="★★★★" formControlName="puntaje" name="puntaje" id="btnradio4">
+                    <label class="btn btn-outline-warning" for="btnradio4">★★★★</label>
+                    <input type="radio" class="btn-check" value="★★★★★" formControlName="puntaje" name="puntaje" id="btnradio5">
+                    <label class="btn btn-outline-warning" for="btnradio5">★★★★★</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12 ">
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" formControlName="comentario"></textarea>
+                <small class="invalid" *ngIf="formulario.controls['comentario'].errors?.['required'] && formulario.controls['comentario'].touched"> Ingrese su opinión</small>
+            </div>
+        </div>
+    <hr class="my-4">
+    <button class="w-100 btn btn-primary btn-lg" (click)="guardar(formulario.value)" [disabled]="formulario.invalid"
+        type="submit">Enviar</button>
+</form>

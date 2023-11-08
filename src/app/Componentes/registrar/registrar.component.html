@@ -1,19 +1,15 @@
 <div class="d-flex justify-content-center align-items-center">
-
-    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)"
-        novalidate>
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario.value)" novalidate>
         <h1 class="h3 mb-3 fw-normal">Ingrese sus datos:</h1>
         <div class="row">
             <div class="col">
-                <input type="text" formControlName="nombre" class="form-control"
-                    placeholder="Nombre">
+                <input type="text" formControlName="nombre" class="form-control" placeholder="Nombre">
                 <small class="invalid"
                     *ngIf="formulario.controls['nombre'].errors?.['required'] && formulario.controls['nombre'].touched">Ingrese
                     su nombre</small>
             </div>
             <div class="col">
-                <input type="text" formControlName="apellido"
-                    class="form-control" placeholder="Apellido">
+                <input type="text" formControlName="apellido" class="form-control" placeholder="Apellido">
                 <small class="invalid"
                     *ngIf="formulario.controls['apellido'].errors?.['required'] && formulario.controls['apellido'].touched">Ingrese
                     su apellido</small>
@@ -24,20 +20,18 @@
 
         <div class="row">
             <div class="col-4">
-                <select class="form-select"
-                formControlName="sexo">
-                <option value="" class="dropdown-item">Sexo</option>
-                <option [ngValue]="'masculino'" class="dropdown-item">Masculino</option>
-                <option [ngValue]="'femenino'" class="dropdown-item">Femenino</option>
-              </select>
-              <small class="invalid"
-              *ngIf="formulario.controls['sexo'].value == '' && formulario.controls['sexo'].touched">
-              Seleccione su sexo, por favor.
-            </small>
+                <select class="form-select" formControlName="sexo">
+                    <option value="" class="dropdown-item">Sexo</option>
+                    <option [ngValue]="'masculino'" class="dropdown-item">Masculino</option>
+                    <option [ngValue]="'femenino'" class="dropdown-item">Femenino</option>
+                </select>
+                <small class="invalid"
+                    *ngIf="formulario.controls['sexo'].value == '' && formulario.controls['sexo'].touched">
+                    Seleccione su sexo, por favor.
+                </small>
             </div>
             <div class="col-4">
-                <input type="number" formControlName="edad" class="form-control"
-                    placeholder="Edad">
+                <input type="number" formControlName="edad" class="form-control" placeholder="Edad">
                 <small class="invalid"
                     *ngIf="formulario.controls['edad'].errors?.['required'] && formulario.controls['edad'].touched">Ingrese
                     su edad (Mayores de edad)</small>
@@ -46,8 +40,7 @@
                     edad debe ser de 18 a 99 años</small>
             </div>
             <div class="col-4">
-                <input type="number" formControlName="dni" class="form-control"
-                    placeholder="DNI sin puntos ni coma">
+                <input type="number" formControlName="dni" class="form-control" placeholder="DNI sin puntos ni coma">
                 <small class="invalid"
                     *ngIf="formulario.controls['dni'].errors?.['required'] && formulario.controls['dni'].touched">Ingrese
                     un DNI correcto sin puntos ni comas</small>
@@ -61,15 +54,14 @@
 
         <div *ngIf="tipo == 'paciente'" class="row">
             <div class="col">
-                <input type="text" formControlName="obraSocial"
-                    class="form-control" placeholder="Obra Social">
+                <input type="text" formControlName="obraSocial" class="form-control" placeholder="Obra Social">
                 <small class="invalid"
                     *ngIf="formulario.controls['obraSocial'].errors?.['required'] && formulario.controls['obraSocial'].touched">Ingrese
                     su obra social</small>
             </div>
             <div class="col">
-                <input type="number" formControlName="numAfiliado"
-                    class="form-control" placeholder="Número de afiliado">
+                <input type="number" formControlName="numAfiliado" class="form-control"
+                    placeholder="Número de afiliado">
                 <small class="invalid"
                     *ngIf="formulario.controls['numAfiliado'].errors?.['required'] && formulario.controls['numAfiliado'].touched">Ingrese
                     su numero de afiliado</small>
@@ -83,31 +75,31 @@
         <div *ngIf="tipo == 'especialista'" class="row">
             <div class="col">
                 <div class="dropdown text-start">
-                    <button class="btn btn-primary dropdown-toggle"
-                        type="button" data-bs-toggle="dropdown" 
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         Especialidades
                     </button>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item text-start"
-                            *ngFor="let especialidad of especialidades">
+                        <li class="dropdown-item text-start" *ngFor="let especialidad of especialidades">
                             <div class="form-check" *ngIf="especialidad.estaHabilitada">
-                                <input class="form-check-input" (change)="onCheckboxChange($event)" type="checkbox" value="{{especialidad.nombre}}" id="flexCheck{{especialidad.nombre}}" formArrayName="especialidades">
-                            <label class="form-check-label" for="flexCheck{{especialidad.nombre}}">{{especialidad.nombre}}</label>
+                                <input class="form-check-input" (change)="onCheckboxChange($event)" type="checkbox"
+                                    value="{{especialidad.nombre}}" id="flexCheck{{especialidad.nombre}}"
+                                    formArrayName="especialidades">
+                                <label class="form-check-label"
+                                    for="flexCheck{{especialidad.nombre}}">{{especialidad.nombre}}</label>
                             </div>
                         </li>
                     </ul>
                 </div>
                 <small class="invalid"
-                    *ngIf="formulario.controls['especialidades'].errors?.['required'] && formulario.controls['especialidades'].touched">Seleccione al menos una especialidad</small>
+                    *ngIf="formulario.controls['especialidades'].errors?.['required'] && formulario.controls['especialidades'].touched">Seleccione
+                    al menos una especialidad</small>
             </div>
             <div class="col">
                 <div class="form-check">
-                    <input class="form-check-input"
-                        (change)="agregarOpcionPersonal()" type="checkbox">
-                    <input type="text"
-                        formControlName="especialidadPersonalizada"
-                        class="form-control" placeholder="Otra opción">
+                    <input class="form-check-input" (change)="agregarOpcionPersonal()" type="checkbox">
+                    <input type="text" formControlName="especialidadPersonalizada" class="form-control"
+                        placeholder="Otra opción">
                     <small class="invalid"
                         *ngIf="formulario.controls['especialidadPersonalizada'].errors?.['required'] && formulario.controls['especialidadPersonalizada'].touched">Ingrese
                         su especialidad</small>
@@ -119,8 +111,12 @@
         <div class="row">
             <div class="col">
                 <input type="email" formControlName="email" class="form-control" placeholder="nombre@ejemplo.com">
-                    <small class="invalid" *ngIf="formulario.controls['email'].errors?.['required'] && formulario.controls['email'].touched">Ingrese su correo electrónico</small>
-                    <small class="invalid" *ngIf="formulario.controls['email'].errors?.['email'] && formulario.controls['email'].dirty">No tiene el formato correcto</small>
+                <small class="invalid"
+                    *ngIf="formulario.controls['email'].errors?.['required'] && formulario.controls['email'].touched">Ingrese
+                    su correo electrónico</small>
+                <small class="invalid"
+                    *ngIf="formulario.controls['email'].errors?.['email'] && formulario.controls['email'].dirty">No
+                    tiene el formato correcto</small>
             </div>
         </div>
 
@@ -128,20 +124,20 @@
 
         <div class="row">
             <div class="col">
-                <input type="password" formControlName="pass"
-                    class="form-control" placeholder="Contraseña"
+                <input type="password" formControlName="pass" class="form-control" placeholder="Contraseña"
                     (change)="onPasswordChange()">
                 <small class="invalid"
                     *ngIf="formulario.controls['pass'].errors?.['required'] && formulario.controls['pass'].touched">Ingrese
                     su contraseña</small>
                 <small class="invalid"
-                    *ngIf="confirm_password.hasError('mismatch') && formulario.controls['pass'].touched"><p></p>
-                    Las contraseñas no coinciden.</small>
+                    *ngIf="confirm_password.hasError('mismatch') && formulario.controls['pass'].touched">
+                    <p></p>
+                    Las contraseñas no coinciden.
+                </small>
             </div>
             <div class="col">
-                <input type="password" formControlName="passConfirm"
-                    class="form-control" placeholder="Repita su contraseña"
-                    (change)="onPasswordChange()">
+                <input type="password" formControlName="passConfirm" class="form-control"
+                    placeholder="Repita su contraseña" (change)="onPasswordChange()">
                 <small class="invalid"
                     *ngIf="formulario.controls['passConfirm'].errors?.['required'] && formulario.controls['passConfirm'].touched">Repita
                     su contraseña</small>
@@ -150,27 +146,36 @@
         <p></p>
         <div class="row">
             <div class="col">
-                <input type="file"
-                    (change)="actualizarArchivo($event, 'image1')"
-                    formControlName="image1" class="form-control"
-                    placeholder="Imagen 1">
+                <input type="file" (change)="actualizarArchivo($event, 'image1')" formControlName="image1"
+                    class="form-control" placeholder="Imagen 1">
             </div>
             <div *ngIf="tipo =='paciente'" class="col">
-                <input type="file"
-                    (change)="actualizarArchivo($event, 'image2')"
-                    formControlName="image2" class="form-control"
-                    placeholder="Imagen 2">
+                <input type="file" (change)="actualizarArchivo($event, 'image2')" formControlName="image2"
+                    class="form-control" placeholder="Imagen 2">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mt-5">
+                <re-captcha formControlName="captcha" (resolved)="resolved($event)" siteKey="{{llaveDeSitio}}"></re-captcha>
             </div>
         </div>
         <p></p>
-        FORMULARIO VALIDO? - {{formulario.valid}}
         <p></p>
-
+        
         <div class="btn-group" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-danger" routerLink="/lobby">Cancelar</button>
-            <button [disabled]="formulario.invalid" class="btn btn-primary"
-                type="submit">Registrar {{tipo}}</button>
+            <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Registrar {{tipo}}</button>
         </div>
-
+        
     </form>
-    </div>
+</div>
+
+<!--
+FORMULARIO VALIDO? - {{formulario.valid}}
+{{formulario.value | json}} 
+
+
+
+
+-->

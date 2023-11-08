@@ -282,7 +282,7 @@ export class UserAuthService {
   guardarEncuesta(elemento: any) {
     const elementoAGuardar = elemento;
     elementoAGuardar.usuario = this.usuarioLogueado;
-    elementoAGuardar.fecha = new Date().toString();
+    elementoAGuardar.fecha = new Date();
     const userRef = collection(this.firestore, `encuestas`); //Esto agrega a colección sin ID específica
     return addDoc(userRef, elementoAGuardar);
   }
