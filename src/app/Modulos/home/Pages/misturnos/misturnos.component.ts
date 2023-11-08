@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 import { DataTableDirective } from 'angular-datatables';
+import { Turno } from 'src/app/Clases/interfaces';
 
 
 
@@ -59,6 +60,9 @@ export class MisturnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.dtOptions = {
+      order: [[3, 'asc']],
+      //scrollX : true,
+      columnDefs: [{ orderable: false, "targets": 5 }],
       pagingType: 'full_numbers',
       lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "Todas"]],
       language: {
@@ -88,6 +92,23 @@ export class MisturnosComponent implements OnInit {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.column(columna).search(valor).draw();
     });
+  }
+
+  realizarAccion(turno:Turno, accion:string){
+    if(accion == 'Cancelado' || accion == 'Rechazado'){
+      this.cancelarTurno(turno, accion);
+    }
+  }
+
+  cancelarTurno(turno:Turno, accion:string){
+    let obj = { estado : accion, estaCancelado : true, comentario:'Comentario genérico' };
+    //console.info(obj);
+    if(this.usuarioActual.rol == 'paciente'){
+      this.auth.actualizarEstadoTurno(obj, turno.uid, this.usuarioActual.uid, turno.especialista.uid!);
+    }
+    if(this.usuarioActual.rol == 'especialista'){
+      this.auth.actualizarEstadoTurno(obj, turno.uid, turno.paciente.uid!, this.usuarioActual.uid);
+    }
   }
 
 }

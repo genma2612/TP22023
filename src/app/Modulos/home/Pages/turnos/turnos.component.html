@@ -25,6 +25,7 @@
         <td>{{turno.estado}}</td>
         <td>
           <button (click)="cancelarTurno(turno)" *ngIf="turno.estado == 'Pendiente'" class="btn btn-sm btn-danger">Cancelar</button>
+          <button (click)="cancelarTurno(turno)" *ngIf="turno.comentario != ''" class="btn btn-sm btn-danger">Reseña</button>
         </td>
       </tr>
 

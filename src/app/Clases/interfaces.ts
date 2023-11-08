@@ -2,7 +2,7 @@ import { Timestamp } from "@angular/fire/firestore";
 
 export class Usuario { //Administrador tiene estos atributos solos
 
-    uid?:string|null;
+    uid:string|null;
     rol?:string|null;
     email?:string|null;
     nombre?:string;
@@ -91,29 +91,31 @@ export class Especialista extends Usuario {
 
 
 export class Turno {
-    paciente?:Paciente;
-    especialista?:Especialista;
-    estado?:string;
-    fecha?:Date;
+    paciente:Paciente;
+    especialista:Especialista;
+    estado:string;
+    fecha:Date;
     //hora:Date;
-    reseña?:string;
-    comentario?:string;
-    calificación?:string;
-    disponible?:boolean;
-    id?:string;
-    duracion?:number;
-    especialidadElegida?:string
+    resena:string;
+    comentario:string;
+    calificacion:Object;
+    diagnostico:Object;
+    estaCancelado:boolean;
+    uid:string;
+    duracion:number;
+    especialidadElegida:string
     constructor(
         paciente:Paciente, 
         especialista:Especialista,
         estado:string,
         fecha:Date,
         //hora:Date,
-        reseña:string,
+        resena:string,
         comentario:string,
-        calificación:string,
-        disponible:boolean,
-        id:string,
+        calificacion:Object,
+        diagnostico:Object,
+        estaCancelado:boolean,
+        uid:string,
         duracion:number,
         especialidadElegida:string
         ){
@@ -122,11 +124,12 @@ export class Turno {
             this.estado = estado;
             this.fecha = fecha;
             //this.hora = hora;
-            this.reseña = reseña;
+            this.resena = resena;
             this.comentario = comentario;
-            this.calificación = calificación;
-            this.disponible = disponible;
-            this.id = id;
+            this.calificacion = calificacion;
+            this.diagnostico = diagnostico;
+            this.estaCancelado = estaCancelado;
+            this.uid = uid;
             this.duracion = duracion;
             this.especialidadElegida = especialidadElegida;
         }

@@ -107,73 +107,45 @@ export class UserAuthService {
 
   guardarTurno(turno: Turno) {
     let randomstring = stringRandom(20);
-    let turnoParaEspecialistaFiltrado: any = {
-      paciente: {
-        nombre: turno.paciente?.nombre,
-        apellido: turno.paciente?.apellido,
-        sexo: turno.paciente?.sexo,
-        edad: turno.paciente?.edad,
-        dni: turno.paciente?.dni,
-        obraSocial: turno.paciente?.obraSocial,
-        numAfiliado: turno.paciente?.numAfiliado,
-        uid: turno.paciente?.uid
-      },
-      id: randomstring,
-      calificacion: turno.calificación,
-      disponible: turno.disponible,
-      duracion: turno.duracion,
-      estado: turno.estado,
-      fecha: turno.fecha,
-      reseña: turno.reseña,
-      especialidadElegida: turno.especialidadElegida
-    }
+    let turnoParaPacienteFiltrado = JSON.parse(JSON.stringify(turno));      //Hard clone para estructurar cada turno según colección;
+    let turnoParaEspecialistaFiltrado = JSON.parse(JSON.stringify(turno));  //Hard clone para estructurar cada turno según colección;
+    let turnoGenericObject = JSON.parse(JSON.stringify(turno));             //Hard clone para estructurar cada turno según colección;
+    turnoParaPacienteFiltrado.uid = randomstring;
+    turnoParaEspecialistaFiltrado.uid = randomstring;
+    turnoGenericObject.uid = randomstring;
+    turnoParaPacienteFiltrado.fecha = Timestamp.fromDate(new Date(turnoGenericObject.fecha));
+    turnoParaEspecialistaFiltrado.fecha = Timestamp.fromDate(new Date(turnoGenericObject.fecha));
+    turnoGenericObject.fecha = Timestamp.fromDate(new Date(turnoGenericObject.fecha));
 
-    let turnoParaPacienteFiltrado: any = {
-      especialista: {
-        nombre: turno.especialista?.nombre,
-        apellido: turno.especialista?.apellido,
-        sexo: turno.paciente?.sexo,
-        uid: turno.especialista?.uid
-      },
-      id: randomstring,
-      calificacion: turno.calificación,
-      disponible: turno.disponible,
-      duracion: turno.duracion,
-      estado: turno.estado,
-      fecha: turno.fecha,
-      reseña: turno.reseña,
-      especialidadElegida: turno.especialidadElegida
-    }
+    //Borro campos innecesarios para las colecciones
+      //Paciente
+    delete turnoParaPacienteFiltrado.paciente;
+    delete turnoParaPacienteFiltrado.especialista.dni;
+    delete turnoParaPacienteFiltrado.especialista.edad;
+    delete turnoParaPacienteFiltrado.especialista.email;
+    delete turnoParaPacienteFiltrado.especialista.especialidades;
+    delete turnoParaPacienteFiltrado.especialista.horario;
+    delete turnoParaPacienteFiltrado.especialista.imagenDos;
+    delete turnoParaPacienteFiltrado.especialista.imagenUno;
+    delete turnoParaPacienteFiltrado.especialista.rol;
+    delete turnoParaPacienteFiltrado.especialista.tieneAcceso;
 
-    let turnoGenericObject: any = {
-      especialista: {
-        nombre: turno.especialista?.nombre,
-        apellido: turno.especialista?.apellido,
-        sexo: turno.paciente?.sexo,
-        uid: turno.especialista?.uid
-      },
-      paciente: {
-        nombre: turno.paciente?.nombre,
-        apellido: turno.paciente?.apellido,
-        sexo: turno.paciente?.sexo,
-        edad: turno.paciente?.edad,
-        dni: turno.paciente?.dni,
-        obraSocial: turno.paciente?.obraSocial,
-        numAfiliado: turno.paciente?.numAfiliado,
-        uid: turno.paciente?.uid
-      },
-      id: randomstring,
-      calificacion: turno.calificación,
-      disponible: turno.disponible,
-      duracion: turno.duracion,
-      estado: turno.estado,
-      fecha: turno.fecha,
-      reseña: turno.reseña,
-      especialidadElegida: turno.especialidadElegida
-    };
-    const especialistaRef = doc(this.firestore, `usuarios/${turno.especialista?.uid}/turnos/${randomstring}`);
-    const pacienteRef = doc(this.firestore, `usuarios/${turno.paciente?.uid}/turnos/${randomstring}`);
-    const turnosRef = doc(this.firestore, `turnos/${turnoGenericObject.id}`);
+      //Especialista
+    delete turnoParaEspecialistaFiltrado.especialista;
+    delete turnoParaEspecialistaFiltrado.paciente.email;
+    delete turnoParaEspecialistaFiltrado.paciente.imagenUno;
+    delete turnoParaEspecialistaFiltrado.paciente.imagenDos;
+    delete turnoParaEspecialistaFiltrado.paciente.rol;
+
+      //Turno
+    delete turnoGenericObject.paciente;
+    delete turnoGenericObject.especialista;
+    turnoGenericObject.paciente = turnoParaEspecialistaFiltrado.paciente;
+    turnoGenericObject.especialista = turnoParaPacienteFiltrado.especialista;
+    
+    const especialistaRef = doc(this.firestore, `usuarios/${turno.especialista?.uid}/turnos/${turnoGenericObject.uid}`);
+    const pacienteRef = doc(this.firestore, `usuarios/${turno.paciente?.uid}/turnos/${turnoGenericObject.uid}`);
+    const turnosRef = doc(this.firestore, `turnos/${turnoGenericObject.uid}`);
     return setDoc(turnosRef, turnoGenericObject).then(
       () => {
         setDoc(pacienteRef, turnoParaPacienteFiltrado).then(
@@ -184,7 +156,7 @@ export class UserAuthService {
     );
   }
 
-  guardarEspecialidad(especialidad:any){
+  guardarEspecialidad(especialidad: any) {
     const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
     return setDoc(especialidadRef, especialidad).then(
       () => {
@@ -193,18 +165,18 @@ export class UserAuthService {
     );
   }
 
-  actualizarEspecialidad(especialidad:any, f:any){
+  actualizarEspecialidad(especialidad: any, f: any) {
     const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
-    return updateDoc(especialidadRef, {nombre: f.nombreEspecialidad}).then(
+    return updateDoc(especialidadRef, { nombre: f.nombreEspecialidad }).then(
       () => {
         console.info('especialidad modificada');
       }
     );
   }
 
-  actualizarImagenEspecialidad(especialidad:any, f:any){
+  actualizarImagenEspecialidad(especialidad: any, f: any) {
     const especialidadRef = doc(this.firestore, `especialidades/${especialidad.uid}`);
-    return updateDoc(especialidadRef, {imagen: f}).then(
+    return updateDoc(especialidadRef, { imagen: f }).then(
       () => {
         console.info('especialidad modificada');
       }
@@ -216,15 +188,15 @@ export class UserAuthService {
     return updateDoc(docRef, { estaHabilitada: valor });
   }
 
-  actualizarEstadoTurno(valor: string, idTurno: string, idPac: string, idEsp: string) {
+  actualizarEstadoTurno(objeto:any, idTurno: string, idPac: string, idEsp: string) {
     let turnoRef = doc(this.firestore, `turnos/${idTurno}`);
     let pacRef = doc(this.firestore, `usuarios/${idPac}/turnos/${idTurno}`);
     let espRef = doc(this.firestore, `usuarios/${idEsp}/turnos/${idTurno}`);
-    return updateDoc(turnoRef, { estado: valor }).then(()=>{
-      updateDoc(pacRef, { estado: valor }).then(()=> {
-      updateDoc(espRef, { estado: valor })
-      console.info('Turno actualizado')}
-      )
+    return updateDoc(turnoRef, objeto).then(() => {
+      updateDoc(pacRef, objeto).then(() => {
+        updateDoc(espRef, objeto)
+        console.info('Se actualizó el turno en los 3 documentos');
+      })
     });
   }
 
@@ -278,7 +250,7 @@ export class UserAuthService {
   }
 
   getUsuarioLocalstorage() {
-    if(localStorage.getItem('usuarioActual') != null)
+    if (localStorage.getItem('usuarioActual') != null)
       return JSON.parse(localStorage.getItem('usuarioActual')!);
     else
       return '';

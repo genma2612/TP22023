@@ -15,7 +15,7 @@ declare var bootstrap: any;
   styleUrls: ['./solicitar-turno.component.css']
 })
 export class SolicitarTurnoComponent implements OnInit {
-  especialidadesFire:any[] = [];
+  especialidadesFire: any[] = [];
   pacientesFire: any[] = [];
   especialistasFire: any[] = [];
   testVariable = 'Aceptado';
@@ -26,9 +26,9 @@ export class SolicitarTurnoComponent implements OnInit {
   turnosDelDoctorSeleccionado: any[] = [];
   fechaSeleccionada!: Date | null;
   pacienteActual: any;
-  horarios: any[] = [[], [], [],[]];
+  horarios: any[] = [[], [], [], []];
   isBtnActive = 0;
-  
+
   constructor(private fb: FormBuilder, private auth: UserAuthService, private spinner: NgxSpinnerService) {
     this.formulario = this.fb.group({
       'paciente': [null, [Validators.required]],
@@ -46,16 +46,16 @@ export class SolicitarTurnoComponent implements OnInit {
       )
     }
     else {
-        this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage())
+      this.formulario.controls['paciente'].setValue(this.auth.getUsuarioLocalstorage())
     }
     this.auth.traerColeccionUsuariosEspecifica('especialista').pipe(first()).subscribe(
       response => {
         this.especialistasFire = response
         this.especialistasFire.forEach(especialista => {
           especialista.especialidades.forEach((element: any) => {
-            if(this.tieneHorarioHabilitado(especialista, element))
+            if (this.tieneHorarioHabilitado(especialista, element))
               this.especialidades.push(element);
-              this.spinner.hide();
+            this.spinner.hide();
           })
         })
         this.especialidades = this.filtrarArray(this.especialidades);
@@ -82,7 +82,7 @@ export class SolicitarTurnoComponent implements OnInit {
     return newarr;
   }
 
-  seleccionarEspecialidaD(especialidad: string, id:number) {
+  seleccionarEspecialidaD(especialidad: string, id: number) {
     this.doctorSeleccionado = null;
     this.fechaSeleccionada = null;
     this.especialidadSeleccionada = especialidad;
@@ -92,7 +92,7 @@ export class SolicitarTurnoComponent implements OnInit {
   seleccionarDoctor(especialistaElegido: any) {
     this.fechaSeleccionada = null;
     this.doctorSeleccionado = especialistaElegido;
-    this.horarios = [[], [], [],[]];
+    this.horarios = [[], [], [], []];
     this.traerTurnosDelEspecialistaElegido();
   }
 
@@ -156,21 +156,33 @@ export class SolicitarTurnoComponent implements OnInit {
     });
     return retorno;
   }
-
-  estaDisponible(fecha: Date) {
-    return !this.turnosDelDoctorSeleccionado.find(item => {
-      return item.toString() == fecha.toString()
+  
+    estaDisponible(fecha: Date):boolean {
+      if(this.turnosDelDoctorSeleccionado.length > 0){ 
+        //console.info('Tiene horarios');
+        return !this.turnosDelDoctorSeleccionado.find(item => {
+          return item.toString() == fecha.toString() //Consulto si estaDisponible porque, en caso de cancelar, puedo usar la misma fecha y horario
+        }
+        );
+      }
+      else{
+        //console.info('No tiene horarios');
+        return true;
+      }
     }
-    );
-  }
+  
 
   traerTurnosDelEspecialistaElegido() {
     return this.auth.traerColeccionOrdenada(`usuarios/${this.doctorSeleccionado!.uid}/turnos`, 'fecha').pipe(first()).subscribe( //.pipe(first()) cierra la suscripción automaticamente
       response => {
         response.map(
-          item => this.turnosDelDoctorSeleccionado.push(item['fecha'].toDate())
+          item => {
+            if(item['estaCancelado'] == false){
+              console.info(item);
+              this.turnosDelDoctorSeleccionado.push(item['fecha'].toDate())
+            }
+          } 
         )
-        //console.info(this.turnosDelDoctorSeleccionado);
         this.generarHorario(this.doctorSeleccionado);
       }
     )
@@ -194,7 +206,7 @@ export class SolicitarTurnoComponent implements OnInit {
         if (result.isConfirmed) {
           this.spinner.show();
           let turno: Turno;
-          turno = new Turno(paciente, this.doctorSeleccionado!, 'Pendiente', this.fechaSeleccionada!, '', '', '', false, '', 30, this.especialidadSeleccionada!);
+          turno = new Turno(paciente, this.doctorSeleccionado!, 'Pendiente', this.fechaSeleccionada!, '', '', {}, {}, false, '', 30, this.especialidadSeleccionada!);
           this.auth.guardarTurno(turno).then(
             response => {
               this.reiniciarForm();
@@ -207,10 +219,6 @@ export class SolicitarTurnoComponent implements OnInit {
         }
       });
     }
-  }
-
-  actualizarTurno() {
-    this.auth.actualizarEstadoTurno(this.testVariable, 'WNg9jMM4CHq8F7v61QLt', "13tHHLfn3ghb2C9czhGcfPckdo53", "KutShjvlDAYxUn2u3Gxjk5ywURJ3");
   }
 
   comprobarFormulario() {

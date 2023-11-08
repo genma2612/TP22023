@@ -18,6 +18,7 @@
           <th scope="col">Especialidad</th>
           <th scope="col">Fecha</th>
           <th scope="col">Estado</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -27,6 +28,18 @@
           <td>{{turno.especialidadElegida}}</td>
           <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
           <td>{{turno.estado}}</td>
+          <td>
+            <div class="dropdown-center">
+              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Opciones
+              </button>
+              <ul class="dropdown-menu">
+                <li *ngIf="turno.estado == 'Pendiente'"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'Cancelado')">Cancelar</a></li>
+                <li *ngIf="turno.comentario != ''"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'verComentario')">Reseña</a></li>
+                <li *ngIf="turno.comentario != '' && this.turno.estado == 'Realizado'" ><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'responderEncuesta')">Encuesta</a></li>
+              </ul>
+            </div>
+          </td>
         </tr>
 
       </tbody>
@@ -54,6 +67,7 @@
           <th scope="col">Especialidad</th>
           <th scope="col">Fecha</th>
           <th scope="col">Estado</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -63,6 +77,20 @@
           <td>{{turno.especialidadElegida}}</td>
           <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
           <td>{{turno.estado}}</td>
+          <td>
+            <div class="dropdown-center">
+              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Opciones
+              </button>
+              <ul class="dropdown-menu">
+                <li *ngIf="turno.estado == 'Pendiente'" ><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'Cancelado')">Cancelar</a></li>
+                <li *ngIf="turno.estado == 'Pendiente'"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'Rechazado')">Rechazar</a></li>
+                <li *ngIf="turno.estado == 'Pendiente'"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'Atendiendo')">Aceptar</a></li>
+                <li *ngIf="turno.estado == 'Aceptado'"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'Realizado')">Finalizar</a></li>
+                <li *ngIf="turno.comentario != ''"><a role="button" class="dropdown-item" (click)="realizarAccion(turno, 'verComentario')">Reseña</a></li>
+              </ul>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
