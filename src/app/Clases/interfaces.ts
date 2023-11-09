@@ -41,7 +41,7 @@ export class Usuario { //Administrador tiene estos atributos solos
 export class Paciente extends Usuario {
     obraSocial?:string;
     numAfiliado?:number;
-
+    tieneHC?:boolean;
     constructor(
         uid:string,
         rol:string,
@@ -55,10 +55,12 @@ export class Paciente extends Usuario {
         imagenDos:string,
         obraSocial:string,
         numAfiliado:number,
+        tieneHC:boolean,
     ){
         super(uid,rol,email,nombre,apellido,sexo,edad,dni,imagenUno, imagenDos);
         this.obraSocial = obraSocial;
         this.numAfiliado = numAfiliado;
+        this.tieneHC = tieneHC;
         
     }
 }

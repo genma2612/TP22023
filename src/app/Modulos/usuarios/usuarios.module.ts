@@ -6,7 +6,6 @@ import { CrearUsuarioComponent } from './Componentes/crear-usuario/crear-usuario
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ABMespecialidadesComponent } from './Componentes/abmespecialidades/abmespecialidades.component';
 
-
 @NgModule({
   declarations: [
     UsuariosComponent,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Moment } from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -10,11 +10,12 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
   styleUrls: ['./disponibilidad.component.css']
 })
 export class DisponibilidadComponent implements OnInit {
+  @Input() usuario:any;
 
+  modificacionHabilitada = false;
   formulario!: FormGroup;
   dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
   especialidadesDelEspecialista = []
-  horarioSeleccionado:any;
   valoresHorario = [
     { horaInicio: 8, horaFin: 14 },
     { horaInicio: 14, horaFin: 19 },
@@ -28,24 +29,39 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   onSubmit(formulario:any) {
+    this.actualizarHorarios(formulario);
+  }
+
+  actualizarHorarios(formulario:any){
     console.info(formulario.value)
     this.spinner.show();
-    let usuario = JSON.parse(localStorage.getItem('usuarioActual')!);
-    this.auth.updateHorario('usuarios', usuario.uid, formulario.value).then(
+    this.auth.updateHorario('usuarios', this.usuario.uid, formulario.value).then(
       () => this.auth.traerUsuarioDeFirestore(this.auth.getUserFromAuth()).then(response => 
         {
-          localStorage.setItem('usuarioActual', JSON.stringify(response.data()));
+          localStorage.setItem('usuarioActual', JSON.stringify(response.data())); //Actualiza los nuevos horarios en localstorage
           this.spinner.hide();
+          this.formulario.disable();
+          this.modificacionHabilitada = false;
       }
-        ) //Actualiza en localstorage el horario
+        ) 
     );
-    
+  }
+
+  habilitarModificacion(){
+    this.formulario.enable();
+    this.modificacionHabilitada = true;
+  }
+
+  cancelarModificacion(){
+    this.formulario.disable();
+    this.modificacionHabilitada = false;
+    this.formulario.setValue(JSON.parse(localStorage.getItem('usuarioActual')!).horario);
   }
 
   cargarHorarioDeEspecialista(){ //Acá levanto el horario que tenía cargado anteriormente y lo asigno a los controles para chequear el que corresponda en el selector.
     this.definirEstructuraDelFormulario();
-    this.horarioSeleccionado = JSON.parse(localStorage.getItem('usuarioActual')!).horario;
-    this.formulario.setValue(this.horarioSeleccionado);
+    this.formulario.setValue(JSON.parse(localStorage.getItem('usuarioActual')!).horario);
+
   }
 
   compare(val1:any, val2:any) { //funcion que hace que [compareWith] seleccione la opción correcta
@@ -98,8 +114,8 @@ export class DisponibilidadComponent implements OnInit {
         'especialidadDelDia': 'A'
       }),
     });
+    this.formulario.disable();
   }
-
 
   ngOnInit(): void {
     this.cargarHorarioDeEspecialista();

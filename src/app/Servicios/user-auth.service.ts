@@ -93,6 +93,12 @@ export class UserAuthService {
     return updateDoc(docRef, { horario: valor });
   }
 
+  updateTieneHC(uid: any) {
+    console.info('Se cambio a que tiene HC');
+    const docRef = doc(this.firestore, `usuarios/${uid}`)
+    return updateDoc(docRef, { tieneHC: true });
+  }
+
   updateDuracion(collection: string, uid: any, duracion: number) {
     const docRef = doc(this.firestore, `${collection}/${uid}`)
     return updateDoc(docRef, { duracionTurnos: duracion });
@@ -125,7 +131,6 @@ export class UserAuthService {
     delete turnoParaPacienteFiltrado.especialista.email;
     delete turnoParaPacienteFiltrado.especialista.especialidades;
     delete turnoParaPacienteFiltrado.especialista.horario;
-    delete turnoParaPacienteFiltrado.especialista.imagenDos;
     delete turnoParaPacienteFiltrado.especialista.imagenUno;
     delete turnoParaPacienteFiltrado.especialista.rol;
     delete turnoParaPacienteFiltrado.especialista.tieneAcceso;
@@ -134,7 +139,6 @@ export class UserAuthService {
     delete turnoParaEspecialistaFiltrado.especialista;
     delete turnoParaEspecialistaFiltrado.paciente.email;
     delete turnoParaEspecialistaFiltrado.paciente.imagenUno;
-    delete turnoParaEspecialistaFiltrado.paciente.imagenDos;
     delete turnoParaEspecialistaFiltrado.paciente.rol;
 
       //Turno
@@ -234,6 +238,12 @@ export class UserAuthService {
   traerColeccionOrdenada(coleccion: string, orden: string) {
     const colRef = collection(this.firestore, coleccion);
     const q = query(colRef, orderBy(orden));
+    return collectionData(q);
+  }
+
+  traerColeccionTurnosConDiagnostico(uid:string) {
+    const colRef = collection(this.firestore, `usuarios/${uid}/turnos` );
+    const q = query(colRef,where("estado", "==", 'Realizado'), orderBy('fecha', 'desc'));
     return collectionData(q);
   }
 

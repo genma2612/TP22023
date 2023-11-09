@@ -1,9 +1,11 @@
 <div *ngIf="turnos">
-  <button class="btn btn-sm btn btn-outline-primary" *ngFor="let especialista of arrayEspecialistas; index as i" (click)="filterTable(especialista, 1)">Filtrar {{especialista}}</button>
-  <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 1)">Borrar Filtro especialista</button>
-  <button class="btn btn-sm btn btn-outline-success" *ngFor="let especialidad of arrayEspecialidades" (click)="filterTable(especialidad, 3)">Filtrar {{especialidad}}</button>
-  <button class="btn btn-sm btn-outline-danger" (click)="filterTable('', 3)">Borrar Filtro especialidad</button>
-  <table datatable [dtOptions]="dtOptions" class="table" id="tabla">
+  <!--
+  <button class="btn btn-sm btn btn-primary me-1" *ngFor="let especialista of arrayEspecialistas; index as i" (click)="filterTable(especialista, 1)">Filtrar {{especialista}}</button>
+  <button class="btn btn-sm btn-danger me-1" (click)="filterTable('', 1)">Borrar Filtro especialista</button>
+  <button class="btn btn-sm btn btn-success me-1" *ngFor="let especialidad of arrayEspecialidades" (click)="filterTable(especialidad, 3)">Filtrar {{especialidad}}</button>
+  <button class="btn btn-sm btn-danger me-1" (click)="filterTable('', 3)">Borrar Filtro especialidad</button>
+  -->
+  <table datatable [dtOptions]="dtOptions" class="table table-light table-striped table-bordered border-primary" id="tabla">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -24,11 +26,17 @@
         <td>{{turno.fecha.toDate() | date: 'dd/MM HH:mm'}}</td>
         <td>{{turno.estado}}</td>
         <td>
-          <button (click)="cancelarTurno(turno)" *ngIf="turno.estado == 'Pendiente'" class="btn btn-sm btn-danger">Cancelar</button>
-          <button (click)="verComentario(turno)" *ngIf="turno.comentario != ''" class="btn btn-sm btn-primary">Ver reseña</button>
+          <div class="dropdown-center">
+            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Opciones
+            </button>
+            <ul class="dropdown-menu">
+              <li *ngIf="turno.estado == 'Pendiente'"><a role="button" class="dropdown-item" (click)="cancelarTurno(turno)">Cancelar</a></li>
+              <li *ngIf="turno.comentario != ''"><a role="button" class="dropdown-item" (click)="verComentario(turno)">Ver reseña</a></li>
+            </ul>
+          </div>
         </td>
       </tr>
-
     </tbody>
   </table>
 </div>

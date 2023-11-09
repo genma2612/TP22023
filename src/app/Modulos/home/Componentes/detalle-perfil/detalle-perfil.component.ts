@@ -7,11 +7,11 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
   styleUrls: ['./detalle-perfil.component.css']
 })
 export class DetallePerfilComponent {
-  //@Input() perfil:any;
-  perfil:any;
+  @Input() perfil:any;
+  //perfil:any;
 
   constructor(private userAuth: UserAuthService){
-    this.perfil = JSON.parse(localStorage.getItem('usuarioActual')!);
+    //this.perfil = JSON.parse(localStorage.getItem('usuarioActual')!);
   }
 
 }

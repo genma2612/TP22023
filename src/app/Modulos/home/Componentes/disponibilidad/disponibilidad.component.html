@@ -1,14 +1,63 @@
-<div class="container">
+<div class="card">
+  <div class="card-body">
     <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario)" novalidate>
-  
-      <div *ngFor="let dia of dias; index as i" id="{{dia}}" [formGroupName]="dia"
-        class="formGroup">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Día</th>
+            <th scope="col">Horario</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Duración</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let dia of dias; index as i" id="{{dia}}" [formGroupName]="dia" class="formGroup">
+              <th scope="row"><label class="form-check-label me-3" for="{{dia}}">{{dia}}</label></th>
+              <td>
+                <select class="form-select form-select-sm" formControlName="rango" [compareWith]='compare'>
+                  <option [ngValue]="valoresHorario[0]" class="dropdown-item">De {{valoresHorario[0].horaInicio}} a {{valoresHorario[0].horaFin}}</option>
+                  <ng-container *ngIf="dia != 'Sabado'">
+                    <option [ngValue]="valoresHorario[1]" class="dropdown-item">De {{valoresHorario[1].horaInicio}} a {{valoresHorario[1].horaFin}}</option>
+                    <option [ngValue]="valoresHorario[2]" class="dropdown-item">De {{valoresHorario[2].horaInicio}} a {{valoresHorario[2].horaFin}}</option>
+                  </ng-container>
+                  <option [ngValue]="valoresHorario[3]" class="dropdown-item">No brindar atención</option>
+                  </select>
+              </td>
+              <ng-container *ngIf="formulario.controls[dia].value.rango.horaInicio != 0">
+                <td>
+                  <select class="form-select form-select-sm" formControlName="especialidadDelDia">
+                    <option [ngValue]="esp" class="dropdown-item" *ngFor="let esp of especialidadesDelEspecialista">{{esp}}</option>
+                  </select>
+                </td>
+                <td>
+                  <select class="form-select form-select-sm" formControlName="duracionDelDia">
+                    <option [ngValue]="dur" class="dropdown-item" *ngFor="let dur of valoresDuracion">{{dur}} minutos</option>
+                  </select>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+        <button *ngIf="!modificacionHabilitada" (click)="habilitarModificacion()" class="btn btn-primary me-1">Modificar</button>
+        <button *ngIf="modificacionHabilitada" [disabled]="formulario.invalid" class="btn btn-success me-1" type="submit">Guardar</button>
+        <button *ngIf="modificacionHabilitada" (click)="cancelarModificacion()" class="btn btn-danger me-1">Cancelar</button>
+      </form>
+  </div>
+</div>
+
+<!-- Así se accede a campos anidados en un formgroup
+  {{formulario.controls['Lunes'].value.rango.horaInicio | json}}
+
+
+
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario)" novalidate>
+      <div *ngFor="let dia of dias; index as i" id="{{dia}}" [formGroupName]="dia" class="formGroup">
         <div class="input-group mt-3">
           <label class="form-check-label me-3" for="{{dia}}">{{dia}}</label>
           <div>
-            <select class="form-select form-select-sm"
-              formControlName="rango"
-              [compareWith]='compare'>
+            <select class="form-select form-select-sm" formControlName="rango" [compareWith]='compare'>
               <option [ngValue]="valoresHorario[0]" class="dropdown-item">De
                 {{valoresHorario[0].horaInicio}} a {{valoresHorario[0].horaFin}}</option>
               <option [ngValue]="valoresHorario[1]" class="dropdown-item">De
@@ -19,129 +68,27 @@
                 brindar atención</option>
             </select>
           </div>
-  
           <ng-container *ngIf="formulario.controls[dia].value.rango.horaInicio != 0">
             <div class="ms-2">
-              <select class="form-select form-select-sm"
-                formControlName="especialidadDelDia">
-                <option [ngValue]="esp" class="dropdown-item"
-                  *ngFor="let esp of especialidadesDelEspecialista">{{esp}}</option>
+              <select class="form-select form-select-sm" formControlName="especialidadDelDia">
+                <option [ngValue]="esp" class="dropdown-item" *ngFor="let esp of especialidadesDelEspecialista">{{esp}}
+                </option>
               </select>
             </div>
             <div class="ms-2">
-              <select class="form-select form-select-sm"
-                formControlName="duracionDelDia">
-                <option [ngValue]="dur" class="dropdown-item"
-                  *ngFor="let dur of valoresDuracion">{{dur}} minutos</option>
+              <select class="form-select form-select-sm" formControlName="duracionDelDia">
+                <option [ngValue]="dur" class="dropdown-item" *ngFor="let dur of valoresDuracion">{{dur}} minutos
+                </option>
               </select>
             </div>
           </ng-container>
         </div>
         <p></p>
       </div>
-  
-      <button [disabled]="formulario.invalid"
-        class="btn btn-primary"
-        type="submit">Guardar</button>
-  
+      <button [disabled]="formulario.invalid" class="btn btn-primary" type="submit">Guardar</button>
     </form>
-<!-- Así se accede a campos anidados en un formgroup
-{{formulario.controls['Lunes'].value.rango.horaInicio | json}}
--->
   </div>
+</div>
 
 
-
-
-
-
-
-
-
-
-
-
-<!--
-<form [formGroup]="formulario" (ngSubmit)="onSubmit(formulario)" novalidate>
-
-    <div class="dropdown">
-        <div class="dropdown">
-            <button name='menuDuracion'
-                class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Duracion de turnos: {{duracionHorario}} minutos
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" role="button"
-                        (click)="cambiarDuracion(valoresDuracion[0])">20 Minutos</a>
-                </li>
-                <li><a class="dropdown-item" role="button"
-                        (click)="cambiarDuracion(valoresDuracion[1])">30 Minutos</a>
-                </li>
-                <li><a class="dropdown-item" role="button"
-                        (click)="cambiarDuracion(valoresDuracion[2])">60 Minutos</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div *ngFor="let dia of dias; index as i" id="{{dia}}" class="formGroup">
-        <div formArrayName="dias">
-            <label class="form-check-label" for="{{dia}}">{{dia}}</label>
-            <p></p>
-            <div class="form-check form-check-inline">
-                <input name="{{dia}}Horario" [value]="valoresHorario[1]"
-                    class="form-check-input" type="radio"
-                    id="{{dia}}checkMañana"
-                    (change)="ModificarHorarioAlDia(dia, 'mañana', i, valoresHorario[1])"
-                    [checked]="this.horarioSeleccionado[i].horario == 'mañana'"
-                    [disabled]="opcionesInhabilitadas">
-                <label class="form-check-label" for="{{dia}}Horario">8:00hs -
-                    14:00hs</label>
-            </div>
-
-            <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
-                <input name="{{dia}}Horario" [value]="valoresHorario[2]"
-                    class="form-check-input" type="radio"
-                    id="{{dia}}checkTarde"
-                    (change)="ModificarHorarioAlDia(dia, 'tarde', i, valoresHorario[2])"
-                    [checked]="this.horarioSeleccionado[i].horario == 'tarde'"
-                    [disabled]="opcionesInhabilitadas">
-                <label class="form-check-label" for="{{dia}}Horario">14:00hs -
-                    19:00hs</label>
-            </div>
-
-            <div *ngIf="dia != 'Sabado'" class="form-check form-check-inline">
-                <input name="{{dia}}Horario" [value]="valoresHorario[3]"
-                    class="form-check-input" type="radio"
-                    id="{{dia}}checkFull"
-                    (change)="ModificarHorarioAlDia(dia, 'full', i, valoresHorario[3])"
-                    [checked]="this.horarioSeleccionado[i].horario == 'full'"
-                    [disabled]="opcionesInhabilitadas">
-                <label class="form-check-label" for="{{dia}}Horario">Full time</label>
-            </div>
-
-            <div class="form-check form-check-inline">
-                <input name="{{dia}}Horario" [value]="valoresHorario[0]"
-                    class="form-check-input" type="radio"
-                    id="{{dia}}checkNo"
-                    (change)="ModificarHorarioAlDia(dia, 'no', i, valoresHorario[0])"
-                    [checked]="this.horarioSeleccionado[i].horario == 'no'"
-                    [disabled]="opcionesInhabilitadas">
-                <label class="form-check-label" for="{{dia}}Horario">No brindar
-                    atención</label>
-            </div>
-            <p></p>
-        </div>
-    </div>
-
-    <button *ngIf="opcionesInhabilitadas" [disabled]="formulario.invalid"
-        class="btn btn-danger"
-        (click)="modificar()">Modificar</button>
-    <button *ngIf="!opcionesInhabilitadas" [disabled]="formulario.invalid"
-        class="btn btn-primary"
-        type="submit">Guardar</button>
-
-</form>
 -->

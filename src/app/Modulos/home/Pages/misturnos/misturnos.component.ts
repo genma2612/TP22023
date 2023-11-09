@@ -71,8 +71,9 @@ export class MisturnosComponent implements OnInit {
   ngOnInit(): void {
     this.dtOptions = {
       order: [[3, 'asc']],
+      scrollY:700,
       //scrollX : true,
-      columnDefs: [{ orderable: false, "targets": 5 }],
+      columnDefs: [{ orderable: false, "width": "5%", "targets": 5 }],
       pagingType: 'full_numbers',
       lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "Todas"]],
       language: {
@@ -195,6 +196,18 @@ export class MisturnosComponent implements OnInit {
     this.spinner.show();
     this.auth.actualizarEstadoTurno(obj, this.turnoSeleccionado.uid, this.turnoSeleccionado.paciente.uid!, this.usuarioActual.uid).then(
       () => {
+        if(!this.turnoSeleccionado.paciente.tieneHC){
+          this.auth.updateTieneHC(this.turnoSeleccionado.paciente.uid).then(
+            () =>{
+              this.spinner.hide();
+              Swal.fire({
+                title: 'Turno finalizado.',
+                text: 'La historia clínica se cargó correctamente',
+                confirmButtonText: 'Cerrar'
+              });
+            }
+          )
+        }
         this.spinner.hide();
         Swal.fire({
           title: 'Turno finalizado.',

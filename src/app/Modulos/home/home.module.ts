@@ -16,6 +16,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { DirectivaBotonEspecialidadDirective } from './Directivas/directiva-boton-especialidad.directive';
 import { CargarHistoriaClinicaComponent } from './Componentes/cargar-historia-clinica/cargar-historia-clinica.component';
 import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
+import { HistoriaClinicaComponent } from './Componentes/historia-clinica/historia-clinica.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
     MisturnosComponent,
     DirectivaBotonEspecialidadDirective,
     CargarHistoriaClinicaComponent,
-    EncuestaComponent
+    EncuestaComponent,
+    HistoriaClinicaComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +41,9 @@ import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
     FormsModule,
     ReactiveFormsModule,
     DataTablesModule
+  ],
+  exports: [
+    
   ]
 })
 export class HomeModule { }

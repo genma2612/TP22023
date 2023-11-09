@@ -8,9 +8,9 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent {
-
   tipoUsuario = 'administrador';
   coleccionUsuarios:any;
+
 
   constructor(private userAuth: UserAuthService){
     this.userAuth.traerColeccionOrdenada("usuarios", 'rol').subscribe(
@@ -24,6 +24,10 @@ export class UsuariosComponent {
 
   cambiarAcceso(item:Especialista){
     this.userAuth.updateDocument('usuarios', item.uid, !item.tieneAcceso);
+  }
+
+  verHC(paciente:any){
+
   }
 
 

@@ -19,6 +19,8 @@ export class TurnosComponent implements OnInit {
   turnos: any;
   dtOptions: DataTables.Settings = {};
 
+  queryS = document.querySelector('div.toolbar') as HTMLDivElement;
+
 
   constructor(private auth: UserAuthService, private renderer: Renderer2) {
     this.auth.traerColeccionOrdenada('turnos', 'fecha').subscribe(
@@ -49,6 +51,8 @@ export class TurnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.dtOptions = {
+      scrollY:700,
+      columnDefs: [{ orderable: false, "width": "5%", "targets": 6 }],
       pagingType: 'full_numbers',
       lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "Todas"]],
       language: {
@@ -71,6 +75,7 @@ export class TurnosComponent implements OnInit {
           "sortDescending": ": activate to sort column descending"
         }
       }
+      
     };
   }
 
@@ -97,7 +102,7 @@ export class TurnosComponent implements OnInit {
     }
   }
 
-  verComentario(turno:any){
+  verComentario(turno: any) {
     Swal.fire({
       title: 'Reseña:',
       text: turno.comentario,

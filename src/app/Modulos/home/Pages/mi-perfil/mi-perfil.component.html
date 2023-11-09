@@ -2,8 +2,12 @@
 
     <div class="row mt-2">
         <!--app-detalle-perfil [perfil]="perfilActual" ></app-detalle-perfil-->
-        <app-detalle-perfil></app-detalle-perfil>
-
+        <app-detalle-perfil [perfil]="perfilActual"></app-detalle-perfil>
+    </div>
+    <hr>
+    <div class="row mt-2">
+        <app-historia-clinica *ngIf="perfilActual.rol == 'paciente'" [usuario]="perfilActual"></app-historia-clinica>
+        <app-disponibilidad *ngIf="perfilActual.rol == 'especialista'" [usuario]="perfilActual"></app-disponibilidad>
     </div>
 
 </div>

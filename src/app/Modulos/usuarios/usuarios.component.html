@@ -102,6 +102,8 @@
                                     <th scope="col">Obra Social</th>
                                     <th scope="col">N° Afiliado</th>
                                     <th scope="col">Mail</th>
+                                    <th scope="col">Historial clínico</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,6 +117,7 @@
                                         <td>{{item.obraSocial}}</td>
                                         <td>{{item.numAfiliado}}</td>
                                         <td>{{item.email}}</td>
+                                        <td><a *ngIf="item.tieneHC" class="btn btn-sm btn-primary" (click)="verHC(item)" role="button">Ver</a></td>
                                     </ng-container>
                                 </tr>
                             </tbody>
