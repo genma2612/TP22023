@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import * as stringRandom from 'string-random';
+import { RecaptchaComponent } from 'ng-recaptcha'; //Internal issue with ng-recaptcha package workaround
 
 @Component({
   selector: 'app-registrar',
@@ -61,6 +62,7 @@ export class RegistrarComponent implements OnInit, OnDestroy {
     this.$observableEspecialidades = this.auth.traerColeccionOrdenada('especialidades', 'nombre').subscribe(
       response => this.especialidades = response
     )
+    RecaptchaComponent.prototype.ngOnDestroy = function() {}; //Internal issue with ng-recaptcha package workaround
   }
 
   setearValidaciones() {
@@ -364,7 +366,11 @@ export class RegistrarComponent implements OnInit, OnDestroy {
 
 
   resolved(captchaResponse: string) {
-    console.log(`Resolved captcha with response: ${captchaResponse}`);
+    try {
+      console.log(`Resolved captcha with response: ${captchaResponse}`);
+    } catch (error) {
+      console.log('reCaptcha ', error)
+    }
   }
 
 }

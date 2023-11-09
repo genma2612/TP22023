@@ -32,6 +32,14 @@ export class PacientesComponent {
 
   }
 
+  filtrarArrayPacientes(arr: any[]){
+
+    return [...new Map(arr.map(v => [v.uid, v])).values()]; //Elimina duplicados
+
+  }
+
+
+/*
   filtrarArrayPacientes(arr: any[]) {
     let m: any = {}
     let newarr = []
@@ -44,6 +52,7 @@ export class PacientesComponent {
     }
     return newarr;
   }
+  */
 
   verHC(paciente:any){
     this.spinner.show();
