@@ -1,0 +1,76 @@
+<table *ngIf="pacientes" class="table table-light table-striped table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Edad</th>
+            <th scope="col">Sexo</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Obra Social</th>
+            <th scope="col">N° Afiliado</th>
+            <th scope="col">Historial clínico</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of pacientes; let i = index">
+                <td>{{item.nombre}}</td>
+                <td>{{item.apellido}}</td>
+                <td>{{item.edad}}</td>
+                <td>{{item.sexo}}</td>
+                <td>{{item.dni}}</td>
+                <td>{{item.obraSocial}}</td>
+                <td>{{item.numAfiliado}}</td>
+                <td><a class="btn btn-sm btn-primary" (click)="verHC(item)" role="button">Ver</a></td>
+        </tr>
+    </tbody>
+</table>
+<hr>
+
+
+<!-- Button trigger modal -->
+<button hidden id="btnModalHC" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalHC"></button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modalHC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+            <!--Armar componente--> 
+            <div *ngIf="hc" class="my-3 p-3 bg-body rounded shadow-sm">
+                <h6 class="border-bottom pb-2 mb-0">Historia clínica de {{pacienteSeleccionado.nombre}} {{pacienteSeleccionado.apellido}}</h6>
+                <div *ngFor="let turno of hc" class="d-flex text-body-secondary pt-3">
+                    <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="80" height="80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="#007bff" /><text x="50%" y="50%" fill="#007bff" dy=".3em"></text>
+                    </svg>
+                    <br>
+                    <p class="pb-3 mb-0 small lh-sm border-bottom">
+                        <strong class="d-block text-gray-dark">Especialista: {{turno.especialista.nombre}} {{turno.especialista.apellido}} | Fecha {{turno.fecha.toDate() | date: "dd/MM HH:mm\'hs\'"}} | Especialidad: {{turno.especialidadElegida}} | Duración: {{turno.duracion}} minutos.</strong>
+                        <span>{{turno.diagnostico.diagnostico}}</span>
+                        <br>
+                        <span>Altura: {{turno.diagnostico.altura}} | Peso: {{turno.diagnostico.peso}} | Presión: {{turno.diagnostico.presion}} | Temperatura: {{turno.diagnostico.temperatura}}</span>
+                        <br>
+                        | <span *ngFor="let dato of turno.diagnostico.datosDinamicos">{{dato.clave}}: {{dato.valor}} | </span>
+                    </p>
+                    <!--div *ngif="turno.diagnostico.datosDinamicos.length > 0" class="pb-3 mb-0 small lh-sm border-bottom"-->
+                    <div class="pb-3 mb-0 small lh-sm border-bottom">
+            
+                    </div>
+                </div>
+                <small class="d-block text-end mt-3">
+                    <a href="#">Descargar</a>
+                </small>
+            </div>
+<!---->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+

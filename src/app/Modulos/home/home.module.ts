@@ -17,6 +17,7 @@ import { DirectivaBotonEspecialidadDirective } from './Directivas/directiva-boto
 import { CargarHistoriaClinicaComponent } from './Componentes/cargar-historia-clinica/cargar-historia-clinica.component';
 import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
 import { HistoriaClinicaComponent } from './Componentes/historia-clinica/historia-clinica.component';
+import { PacientesComponent } from './Componentes/Pages/pacientes/pacientes.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { HistoriaClinicaComponent } from './Componentes/historia-clinica/histori
     DirectivaBotonEspecialidadDirective,
     CargarHistoriaClinicaComponent,
     EncuestaComponent,
-    HistoriaClinicaComponent
+    HistoriaClinicaComponent,
+    PacientesComponent
   ],
   imports: [
     CommonModule,

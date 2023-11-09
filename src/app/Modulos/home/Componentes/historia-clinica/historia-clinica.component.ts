@@ -26,7 +26,7 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
     }
     
     ngOnDestroy(): void {
-      //this.$obsTurnos.unsubscribe();
+      this.$obsTurnos.unsubscribe();
     }
 
 }

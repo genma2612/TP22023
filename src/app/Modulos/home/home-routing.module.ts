@@ -7,6 +7,8 @@ import { esAdminGuard } from 'src/app/Guards/es-admin.guard';
 import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno.component';
 import { TurnosComponent } from './Pages/turnos/turnos.component';
 import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
+import { PacientesComponent } from './Componentes/Pages/pacientes/pacientes.component';
+import { EncuestasComponent } from '../usuarios/Componentes/encuestas/encuestas.component';
 
 const routes: Routes = [{ path: '', component: HomeComponent,
 children: [
@@ -14,7 +16,9 @@ children: [
   { path: 'turnos', component:TurnosComponent, canActivate:[esAdminGuard]},
   { path: 'perfil', component: MiPerfilComponent},
   { path: 'misturnos', component: MisturnosComponent},
-  { path: 'solicitarTurno', component:SolicitarTurnoComponent}
+  { path: 'solicitarTurno', component:SolicitarTurnoComponent},
+  { path: 'pacientes', component:PacientesComponent},
+  { path: 'encuestas', component:EncuestasComponent},
 ] },
 ];
 

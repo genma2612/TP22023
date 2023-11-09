@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Especialista } from 'src/app/Clases/interfaces';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 
@@ -10,10 +11,14 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 export class UsuariosComponent {
   tipoUsuario = 'administrador';
   coleccionUsuarios:any;
+  hc:any;
+  pacienteSeleccionado:any;
 
 
-  constructor(private userAuth: UserAuthService){
-    this.userAuth.traerColeccionOrdenada("usuarios", 'rol').subscribe(
+
+
+  constructor(private auth: UserAuthService, private spinner:NgxSpinnerService){
+    this.auth.traerColeccionOrdenada("usuarios", 'rol').subscribe(
       response => this.coleccionUsuarios = response
     )
   }
@@ -23,11 +28,19 @@ export class UsuariosComponent {
   }
 
   cambiarAcceso(item:Especialista){
-    this.userAuth.updateDocument('usuarios', item.uid, !item.tieneAcceso);
+    this.auth.updateDocument('usuarios', item.uid, !item.tieneAcceso);
   }
 
   verHC(paciente:any){
-
+      this.spinner.show();
+      this.pacienteSeleccionado = paciente;
+      this.auth.traerColeccionTurnosConDiagnostico(paciente.uid).subscribe(
+        response => {
+          this.hc = response;
+          document.getElementById('btnModalHC')?.click();
+          this.spinner.hide();
+        } 
+      )
   }
 
 

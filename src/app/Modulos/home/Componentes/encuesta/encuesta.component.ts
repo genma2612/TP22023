@@ -20,7 +20,7 @@ export class EncuestaComponent {
     this.formulario = this.fb.group({
       'primeraVez': ['Si', [Validators.required]],
       'recomienda': [true],
-      'volveria': [5, [Validators.required]],
+      'volveria': [4, [Validators.required]],
       'puntaje': ['★★★★★', Validators.required],
       'comentario': ['Esta es una reseña...', Validators.required]
     });
