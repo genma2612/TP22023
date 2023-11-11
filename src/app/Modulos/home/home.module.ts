@@ -12,7 +12,6 @@ import { SolicitarTurnoComponent } from './Pages/solicitar-turno/solicitar-turno
 import { FiltroPipe } from 'src/app/Pipes/filtro.pipe';
 import { TurnosComponent } from './Pages/turnos/turnos.component';
 import { MisturnosComponent } from './Pages/misturnos/misturnos.component';
-import { DataTablesModule } from 'angular-datatables';
 import { DirectivaBotonEspecialidadDirective } from './Directivas/directiva-boton-especialidad.directive';
 import { CargarHistoriaClinicaComponent } from './Componentes/cargar-historia-clinica/cargar-historia-clinica.component';
 import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
@@ -46,7 +45,6 @@ import { TableModule } from 'ngx-easy-table';
     HomeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    DataTablesModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,

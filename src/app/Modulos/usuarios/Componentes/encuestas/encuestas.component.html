@@ -1,32 +1,30 @@
-<div *ngIf="encuestas">
-    <div class="table-responsive-md">
-        <table class="table table-light table-striped table-bordered border-primary">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Puntaje</th>
-                    <th scope="col">Recomienda</th>
-                    <th scope="col">Volveria</th>
-                    <th scope="col">Comentario</th>
-                    <th scope="col">Fecha</th>
-                </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let encuesta of encuestas; let i = index" class="">
-                <td scope="row">{{i+1}}</td>
-                <td scope="row">{{encuesta.usuario.nombre}} {{encuesta.usuario.apellido}}</td>
-                <td style="color: yellow;">{{encuesta.puntaje}}</td>
-                <td *ngIf="encuesta.recomienda; else elseBlock">Si</td>
-                <ng-template #elseBlock><td>No</td></ng-template>
-                <td>{{codigosRango[encuesta.volveria]}}</td>
-                <td>{{encuesta.comentario}}</td>
-                <td>{{encuesta.fecha.toDate() | date:'dd/MM/yyyy h:mm:ss a'}}</td>
-                <!--td>{{encuesta.fecha | date:'short'}}</td-->
-            </tr>
-        </tbody>
-    </table>
-</div>
-</div>
-
-
+<div *ngIf="data$ | async as user" class="columns">
+    <div class="columns">
+        <div class="column col-12 mb-2">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-3 col-sm-12 col-ml-auto">
+                        <input class="form-input" type="text" id="globalSearch"
+                            (input)="onChange($event)" placeholder="Buscar" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="column col-12">
+            <ngx-table [data]="data$ | async" [configuration]="configuration"
+                [columns]="columns" #table
+                class="table table-light table-striped">
+                <ng-template let-encuesta let-index="index">
+                    <td scope="row">{{index+1}}</td>
+                    <td scope="row">{{encuesta.usuario.nombre}}
+                        {{encuesta.usuario.apellido}}</td>
+                    <td style="color: yellow;">{{encuesta.puntaje}}</td>
+                    <td *ngIf="encuesta.recomienda; else elseBlock">Si</td>
+                    <ng-template #elseBlock><td>No</td></ng-template>
+                    <td>{{codigosRango[encuesta.volveria]}}</td>
+                    <td>{{encuesta.comentario}}</td>
+                    <td>{{encuesta.fecha.toDate() | date:'dd/MM/yyyy h:mm:ss a'}}</td>
+                </ng-template>
+            </ngx-table>
+        </div>
+    </div>

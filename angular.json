@@ -29,14 +29,11 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css",
               "src/styles.css"
             ],
             "scripts": [
               "node_modules/jspdf-html2canvas/dist/jspdf-html2canvas.min.js",
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/datatables.net/js/jquery.dataTables.min.js",
-              "node_modules/datatables.net-bs5/js/dataTables.bootstrap5.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
           },

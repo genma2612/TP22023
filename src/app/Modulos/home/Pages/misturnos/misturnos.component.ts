@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
-import { DataTableDirective } from 'angular-datatables';
 import { Turno } from 'src/app/Clases/interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import * as bootstrap from 'bootstrap';
 import Swal from 'sweetalert2';
 import { Observable, first, last } from 'rxjs';
 import { DocumentData } from '@angular/fire/firestore';
@@ -17,7 +15,6 @@ import { API, APIDefinition, Columns, Config, DefaultConfig } from 'ngx-easy-tab
   styleUrls: ['./misturnos.component.css']
 })
 export class MisturnosComponent implements OnInit {
-  //@ViewChild(DataTableDirective, { static: false })
   @ViewChild('table') table!: APIDefinition;
 
   arrayPacientes: string[] = [];
@@ -31,10 +28,8 @@ export class MisturnosComponent implements OnInit {
   turnoSeleccionado!: Turno;
 
   usuarioActual: any;
-  dtOptions: DataTables.Settings = {};
 
   formulario!: FormGroup;
-  dtOptions2:any;
 
   public configuration!: Config;
   public data$!: Observable<any>;

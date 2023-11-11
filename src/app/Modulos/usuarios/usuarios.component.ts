@@ -55,14 +55,13 @@ export class UsuariosComponent {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaPacientes'));
     const ws2: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaEspecialistas'));
     const ws3: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaAdmin'));
-
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Pacientes');
     XLSX.utils.book_append_sheet(wb, ws2, 'Especialistas');
     XLSX.utils.book_append_sheet(wb, ws3, 'Admins');
-
     /* save to file */
     XLSX.writeFile(wb, this.fileName);
   }
+  
 }
