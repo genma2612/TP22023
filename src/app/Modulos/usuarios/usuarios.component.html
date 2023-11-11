@@ -16,7 +16,7 @@
                   </h2>
                   <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <table *ngIf="coleccionUsuarios" class="table">
+                        <table id="tablaAdmin"  *ngIf="coleccionUsuarios" class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
@@ -49,7 +49,7 @@
                   </h2>
                   <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <table *ngIf="coleccionUsuarios" class="table">
+                        <table id="tablaEspecialistas"  *ngIf="coleccionUsuarios" class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
@@ -91,7 +91,7 @@
                   </h2>
                   <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <table *ngIf="coleccionUsuarios" class="table">
+                        <table id="tablaPacientes" *ngIf="coleccionUsuarios" class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
@@ -129,6 +129,7 @@
 
         </div>
     </div>
+    <button id="excel-table" class="btn btn-primary" (click)="exportexcel()">Export to Excel</button>
 </div>
 
 

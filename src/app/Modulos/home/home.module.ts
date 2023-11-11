@@ -18,7 +18,11 @@ import { CargarHistoriaClinicaComponent } from './Componentes/cargar-historia-cl
 import { EncuestaComponent } from './Componentes/encuesta/encuesta.component';
 import { HistoriaClinicaComponent } from './Componentes/historia-clinica/historia-clinica.component';
 import { PacientesComponent } from './Componentes/Pages/pacientes/pacientes.component';
-
+import {MatButtonModule} from '@angular/material/button'; 
+import {MatIconModule} from '@angular/material/icon'; 
+import {MatInputModule} from '@angular/material/input';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { TableModule } from 'ngx-easy-table';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,12 @@ import { PacientesComponent } from './Componentes/Pages/pacientes/pacientes.comp
     HomeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    DataTablesModule
+    DataTablesModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    TableModule,
+    MatGridListModule
   ],
   exports: [
     

@@ -5,22 +5,25 @@
 
             <div class="row">
                 <div class="col-2 align-self-center">
-                    <img [src]="perfil.imagenUno" class="img-fluid img-thumbnail">
+                    <img [src]="perfil.imagenUno" class="img-fluid">
                 </div>
-                <div class="col-5">
+                <div class="col">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Nombre: {{perfil.nombre}}</li>
-                        <li class="list-group-item">Apellido: {{perfil.apellido}}</li>
+                        <li class="list-group-item">Apellido:
+                            {{perfil.apellido}}</li>
                         <li class="list-group-item">Edad: {{perfil.edad}}</li>
                         <li class="list-group-item">DNI: {{perfil.dni}}</li>
                         <li class="list-group-item">Contacto: {{perfil.email}}</li>
                     </ul>
                 </div>
-                <div class="col-5">
+                <div class="col">
                     <ng-container *ngIf="perfil.rol == 'especialista'">
                         <p>Especialidades:</p>
                         <ul class="list-group list-group-flush">
-                            <li *ngFor="let especialidad of perfil.especialidades" class="list-group-item">{{especialidad}}</li>
+                            <li
+                                *ngFor="let especialidad of perfil.especialidades"
+                                class="list-group-item">{{especialidad}}</li>
                         </ul>
                     </ng-container>
                     <ng-container *ngIf="perfil.rol == 'paciente'">
@@ -32,10 +35,10 @@
                         </ul>
                     </ng-container>
                 </div>
+                <div *ngIf="perfil.rol == 'paciente'" class="col">
+                    <img src="../../../../../assets/medical-symbol-icon.png" alt>
+                </div>
             </div>
-
-
-
         </div>
-      </div>
+    </div>
 </span>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, SimpleChanges } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 
@@ -7,13 +7,13 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css']
 })
-export class PacientesComponent {
+export class PacientesComponent implements OnChanges {
 
   usuarioActual;
   pacientes:any[] = [];
   turnos:any;
   hc:any;
-  pacienteSeleccionado:any;
+  pacienteSeleccionado:any = null;
 
 
   constructor(private auth:UserAuthService, private spinner:NgxSpinnerService){
@@ -30,6 +30,10 @@ export class PacientesComponent {
       }  
     )
 
+  }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    throw new Error('Method not implemented.');
   }
 
   filtrarArrayPacientes(arr: any[]){
@@ -55,15 +59,16 @@ export class PacientesComponent {
   */
 
   verHC(paciente:any){
-    this.spinner.show();
+    //this.spinner.show();
     this.pacienteSeleccionado = paciente;
+    document.getElementById('btnModalHC')?.click();
+    /*
     this.auth.traerColeccionTurnosConDiagnostico(paciente.uid).subscribe(
       response => {
         this.hc = response;
-        document.getElementById('btnModalHC')?.click();
         this.spinner.hide();
       } 
-    )
+    )*/
 
   }
 

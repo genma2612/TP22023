@@ -6,7 +6,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as bootstrap from 'bootstrap';
 import Swal from 'sweetalert2';
-
+import { Observable, first, last } from 'rxjs';
+import { DocumentData } from '@angular/fire/firestore';
+import { API, APIDefinition, Columns, Config, DefaultConfig } from 'ngx-easy-table';
 
 
 @Component({
@@ -15,14 +17,15 @@ import Swal from 'sweetalert2';
   styleUrls: ['./misturnos.component.css']
 })
 export class MisturnosComponent implements OnInit {
-  @ViewChild(DataTableDirective, { static: false })
-  datatableElement?: DataTableDirective;
+  //@ViewChild(DataTableDirective, { static: false })
+  @ViewChild('table') table!: APIDefinition;
 
   arrayPacientes: string[] = [];
   arrayEspecialistas: string[] = [];
   arrayEspecialidades: string[] = [];
 
   turnos: any;
+  turnos$: Observable<DocumentData[]>;
 
   accionActual = '';
   turnoSeleccionado!: Turno;
@@ -31,7 +34,13 @@ export class MisturnosComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
 
   formulario!: FormGroup;
+  dtOptions2:any;
 
+  public configuration!: Config;
+  public data$!: Observable<any>;
+  public columns!: Columns[];
+  public configuration2!: Config;
+  public columns2!: Columns[];
 
 
   constructor(private auth: UserAuthService, private fb: FormBuilder, private spinner: NgxSpinnerService) {
@@ -45,7 +54,9 @@ export class MisturnosComponent implements OnInit {
             this.arrayPacientes.push(element.paciente.nombre + ' ' + element.paciente.apellido);
           if (this.usuarioActual.rol == 'paciente')
             this.arrayEspecialistas.push(element.especialista.nombre + ' ' + element.especialista.apellido);
-        });
+        }
+        
+        );
         this.arrayEspecialidades = this.filtrarArray(this.arrayEspecialidades);
         if (this.usuarioActual.rol == 'paciente')
           this.arrayEspecialistas = this.filtrarArray(this.arrayEspecialistas);
@@ -53,6 +64,15 @@ export class MisturnosComponent implements OnInit {
           this.arrayPacientes = this.filtrarArray(this.arrayPacientes);
       }
     )
+    this.turnos$ = this.auth.traerColeccionOrdenada(`usuarios/${this.usuarioActual.uid}/turnos`, 'fecha');
+  }
+
+
+  onChange(event: Event): void {
+    this.table.apiEvent({
+      type: API.onGlobalSearch,
+      value: (event.target as HTMLInputElement).value,
+    });
   }
 
   filtrarArray(arr: any[]) {
@@ -69,45 +89,33 @@ export class MisturnosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      order: [[3, 'asc']],
-      scrollY:700,
-      //scrollX : true,
-      columnDefs: [{ orderable: false, "width": "5%", "targets": 5 }],
-      pagingType: 'full_numbers',
-      lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "Todas"]],
-      language: {
-        "emptyTable": "No hay información para mostrar",
-        "info": "Mostrando resultados del _START_ al _END_ de un total de _TOTAL_ filas",
-        "infoEmpty": "Mostrando 0 a 0 de 0 entries",
-        "infoFiltered": "(Filtrado de _MAX_ entradas totales)",
-        "lengthMenu": "Mostrar _MENU_ filas",
-        "loadingRecords": "Cargando...",
-        "search": "Buscar:",
-        "zeroRecords": "No se encontraron coincidencias",
-        "paginate": {
-          "first": "Primera",
-          "last": "Última",
-          "next": "Siguiente",
-          "previous": "Anterior"
-        },
-        "aria": {
-          "sortAscending": ": activate to sort column ascending",
-          "sortDescending": ": activate to sort column descending"
-        }
-      }
-    };
+
+    this.configuration = { ...DefaultConfig };
+    this.columns = [
+      { key: '', title: '#', width: '3%' },
+      { key: 'paciente', title: 'Paciente' },
+      { key: 'especialidadElegida', title: 'Especialidad' },
+      { key: 'fecha', title: 'Fecha' },
+      { key: 'diagnostico', title: 'Diagnostico', width: '50%' },
+      { key: 'estado', title: 'Estado' },
+      { key: '', title: 'Acciones' }
+    ];
+    this.configuration2 = { ...DefaultConfig };
+    this.columns2 = [
+      { key: '', title: '#', width: '3%' },
+      { key: 'especialista', title: 'Especialista' },
+      { key: 'especialidadElegida', title: 'Especialidad' },
+      { key: 'fecha', title: 'Fecha' },
+      { key: 'diagnostico', title: 'Diagnostico', width: '50%' },
+      { key: 'estado', title: 'Estado' },
+      { key: '', title: 'Acciones' }
+    ];
+    this.data$ = this.auth.traerColeccionOrdenada(`usuarios/${this.usuarioActual.uid}/turnos`, 'fecha');
     this.formulario = this.fb.group({
       'comentario': ['', [Validators.required]],
     });
   }
 
-
-  filterTable(valor: string, columna: number): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.column(columna).search(valor).draw();
-    });
-  }
 
   realizarAccion(turno: Turno, accion: string) { //Hacer un switch? Ya nadie los usa :P
     this.turnoSeleccionado = turno;
@@ -196,9 +204,9 @@ export class MisturnosComponent implements OnInit {
     this.spinner.show();
     this.auth.actualizarEstadoTurno(obj, this.turnoSeleccionado.uid, this.turnoSeleccionado.paciente.uid!, this.usuarioActual.uid).then(
       () => {
-        if(!this.turnoSeleccionado.paciente.tieneHC){
+        if (!this.turnoSeleccionado.paciente.tieneHC) {
           this.auth.updateTieneHC(this.turnoSeleccionado.paciente.uid).then(
-            () =>{
+            () => {
               this.spinner.hide();
               Swal.fire({
                 title: 'Turno finalizado.',
@@ -237,7 +245,7 @@ export class MisturnosComponent implements OnInit {
         )
       }
     )
-    
+
   }
 
 

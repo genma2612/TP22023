@@ -131,14 +131,13 @@ export class UserAuthService {
     delete turnoParaPacienteFiltrado.especialista.email;
     delete turnoParaPacienteFiltrado.especialista.especialidades;
     delete turnoParaPacienteFiltrado.especialista.horario;
-    delete turnoParaPacienteFiltrado.especialista.imagenUno;
     delete turnoParaPacienteFiltrado.especialista.rol;
     delete turnoParaPacienteFiltrado.especialista.tieneAcceso;
 
       //Especialista
     delete turnoParaEspecialistaFiltrado.especialista;
     delete turnoParaEspecialistaFiltrado.paciente.email;
-    delete turnoParaEspecialistaFiltrado.paciente.imagenUno;
+    delete turnoParaEspecialistaFiltrado.paciente.imagenDos;
     delete turnoParaEspecialistaFiltrado.paciente.rol;
 
       //Turno

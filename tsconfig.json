@@ -23,7 +23,8 @@
       "ES2022",
       "dom",
       "DOM.Iterable"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

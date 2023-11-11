@@ -1,13 +1,18 @@
-<div class="container">
-
+<div class="container" id="hc">
     <div class="row mt-2">
-        <!--app-detalle-perfil [perfil]="perfilActual" ></app-detalle-perfil-->
         <app-detalle-perfil [perfil]="perfilActual"></app-detalle-perfil>
     </div>
     <hr>
     <div class="row mt-2">
-        <app-historia-clinica *ngIf="perfilActual.rol == 'paciente'" [usuario]="perfilActual"></app-historia-clinica>
+        <div *ngIf="perfilActual.rol == 'paciente'">
+            <app-historia-clinica  [usuario]="perfilActual"></app-historia-clinica>
+            <div id="fecha" style="visibility:hidden;">
+                Fecha de emisión: {{fechaDeGeneracion | date: 'dd/MM HH:mm'}}
+            </div>
+            <button type="button" class="btn btn-primary pe-3" (click)="downloadPDF()" data-html2canvas-ignore="true">
+                Descargar
+            </button>
+        </div>
         <app-disponibilidad *ngIf="perfilActual.rol == 'especialista'" [usuario]="perfilActual"></app-disponibilidad>
     </div>
-
 </div>
