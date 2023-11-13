@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Observable, Subscription } from 'rxjs';
 import { Especialista } from 'src/app/Clases/interfaces';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 import * as XLSX from 'xlsx'; //excel
@@ -12,9 +13,8 @@ import * as XLSX from 'xlsx'; //excel
 export class UsuariosComponent {
   tipoUsuario = 'administrador';
   coleccionUsuarios: any;
-  hc: any;
   pacienteSeleccionado: any;
-
+  turnosPaciente$! : Observable<any>;
   fileName = 'usuarios.xlsx';
 
 
@@ -24,6 +24,7 @@ export class UsuariosComponent {
     )
   }
 
+
   cambiarTipo(tipo: string) {
     this.tipoUsuario = tipo;
   }
@@ -32,16 +33,8 @@ export class UsuariosComponent {
     this.auth.updateDocument('usuarios', item.uid, !item.tieneAcceso);
   }
 
-  verHC(paciente: any) {
-    this.spinner.show();
+  seleccionarUsuario(paciente: any) {
     this.pacienteSeleccionado = paciente;
-    this.auth.traerColeccionTurnosConDiagnostico(paciente.uid).subscribe(
-      response => {
-        this.hc = response;
-        document.getElementById('btnModalHC')?.click();
-        this.spinner.hide();
-      }
-    )
   }
 
 
@@ -52,14 +45,24 @@ export class UsuariosComponent {
   exportexcel() {
     /* table id is passed over here */
     //let element = document.getElementById('tablaPacientes');
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaPacientes'));
-    const ws2: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaEspecialistas'));
-    const ws3: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaAdmin'));
+
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.coleccionUsuarios);
+
+    //const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaPacientes'));
+    //const ws2: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaEspecialistas'));
+    //const ws3: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaAdmin'));
+
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Pacientes');
-    XLSX.utils.book_append_sheet(wb, ws2, 'Especialistas');
-    XLSX.utils.book_append_sheet(wb, ws3, 'Admins');
+
+    let data_headers = [ "Nombre", "Apellido", "e", "e_1", "t", "J", "S_1" ];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
+
+    //XLSX.utils.book_append_sheet(wb, ws, 'Pacientes');
+    //XLSX.utils.book_append_sheet(wb, ws2, 'Especialistas');
+    //XLSX.utils.book_append_sheet(wb, ws3, 'Admins');
+
     /* save to file */
     XLSX.writeFile(wb, this.fileName);
   }

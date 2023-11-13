@@ -11,9 +11,12 @@ import Swal from 'sweetalert2';
 })
 export class TurnosComponent implements OnInit {
   @ViewChild('table') table!: APIDefinition;
+
   public configuration!: Config;
   public data$!: Observable<any>;
   public columns!: Columns[];
+  
+
 
   constructor(private auth: UserAuthService) {
   }

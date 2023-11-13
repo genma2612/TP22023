@@ -8,7 +8,10 @@ import { ABMespecialidadesComponent } from './Componentes/abmespecialidades/abme
 import { EncuestasComponent } from './Componentes/encuestas/encuestas.component';
 import { TableModule } from 'ngx-easy-table';
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatTableModule} from '@angular/material/table'; 
+import {MatCardModule} from '@angular/material/card'; 
+import { MatGridListModule } from '@angular/material/grid-list';
+import { HomeModule } from '../home/home.module';
+import { TurnosPacienteComponent } from './Componentes/turnos-paciente/turnos-paciente.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +19,7 @@ import {MatTableModule} from '@angular/material/table';
     CrearUsuarioComponent,
     ABMespecialidadesComponent,
     EncuestasComponent,
+    TurnosPacienteComponent,
   ],
   imports: [
     CommonModule,
@@ -24,7 +28,9 @@ import {MatTableModule} from '@angular/material/table';
     ReactiveFormsModule,
     TableModule,
     MatTabsModule,
-    MatTableModule
+    MatCardModule,
+    MatGridListModule,
+    HomeModule
   ]
 })
 export class UsuariosModule { }

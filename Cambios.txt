@@ -21,7 +21,7 @@ Una vez seleccionada mostrará los PROFESIONALES, en botones con la imagen de pe
 Una vez seleccionado el profesional, aparecerán los días y horarios con turnos disponibles para ese PROFESIONAL. Estos botones deben ser rectangulares. Formato (09/09 13:15")
 
 
-Cambios Sprint 3 (Falta agregar descarga de PDF y Excel)
+Cambios Sprint 3
 
 Sección Pacientes: "Para los especialistas. Solo deberá mostrar los usuarios que el especialista haya atendido al menos 1 vez."
 Mostrar los usuarios con un favbutton redondo , imagen y nombre, al seleccionar un paciente se muestra los dellaes de los turnos y un acceso a la reseña  de cada consulta

@@ -245,7 +245,13 @@ export class UserAuthService {
     const q = query(colRef,where("estado", "==", 'Realizado'), orderBy('fecha', 'desc'));
     return collectionData(q);
   }
-
+  
+  traerColeccionTurnosCompleta(uid:string) {
+    const colRef = collection(this.firestore, `usuarios/${uid}/turnos` );
+    const q = query(colRef, orderBy('fecha', 'desc'));
+    return collectionData(q);
+  }
+  
   traerColeccionUsuarios() { //Trae pacientes y especialistas con el funcion/operador OR en la query
     const colRef = collection(this.firestore, 'usuarios');
     const q = query(colRef, or(where("rol", "==", 'paciente'), where("rol", "==", 'especialista')));

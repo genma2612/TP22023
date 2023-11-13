@@ -1,0 +1,14 @@
+.example-card {
+    max-width: 46vw;
+    min-width: 46vw;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+
+  .row {
+    margin-right: 0px;
+  }
+
+  .btn {
+    border-radius: 0%;
+  }

@@ -52,7 +52,7 @@ import { TableModule } from 'ngx-easy-table';
     MatGridListModule
   ],
   exports: [
-    
+    HistoriaClinicaComponent
   ]
 })
 export class HomeModule { }
