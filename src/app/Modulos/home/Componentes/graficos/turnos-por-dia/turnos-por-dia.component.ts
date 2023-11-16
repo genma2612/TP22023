@@ -71,7 +71,8 @@ export class TurnosPorDiaComponent {
 
   ngOnInit(): void {
     let fecha:any;
-    this.auth.traerColeccionOrdenada('turnos', 'fecha').subscribe((turnos) => {
+    this.auth.traerColeccionOrdenada('turnos', 'fecha').pipe(take(1))
+    .subscribe((turnos) => {
       this.arrayTurnos = turnos;
       let arrayFechas: any = [];
       //console.info(this.arrayTurnos);
