@@ -25,11 +25,13 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/animate.css/animate.min.css",
               "node_modules/ngx-easy-table/style.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/theme.scss"
             ],
             "scripts": [
               "node_modules/jspdf-html2canvas/dist/jspdf-html2canvas.min.js",

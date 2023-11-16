@@ -1,144 +1,133 @@
-<div class="row">
-    <div class="col">
-        <button type="button" class="btn btn-primary me-1"
-            data-bs-toggle="modal" data-bs-target="#staticBackdrop">Crear
-            Usuario</button>
-        <button type="button" class="btn btn-primary me-1"
-            data-bs-toggle="modal" data-bs-target="#modalEspecialidades">Especialidades</button>
-        <button id="excel-table" class="btn btn-primary me-1"
-            (click)="exportexcel()">Descargar Excel</button>
+<div *ngIf="coleccionUsuarios">
+
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary me-1" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">Crear
+                Usuario</button>
+            <button type="button" class="btn btn-primary me-1" data-bs-toggle="modal"
+                data-bs-target="#modalEspecialidades">Especialidades</button>
+            <button id="excel-table" class="btn btn-primary me-1" (click)="exportUsuarios()">Descargar Excel</button>
+        </div>
     </div>
-</div>
 
-<div class="row pt-2">
-    <mat-tab-group backgroundColor="primary">
+    <div class="row pt-2">
+        <mat-tab-group backgroundColor="primary">
 
-        <mat-tab label="Administradores">
-            <div class="row d-flex flex-row">
-                <ng-container
-                    *ngFor="let item of coleccionUsuarios; let i = index">
-                    <ng-container *ngIf="item.rol == 'administrador'">
-                        <mat-card class="example-card">
-                            <mat-card-header>
-                                <mat-card-title-group>
-                                    <mat-card-title>{{item.nombre}}
-                                        {{item.apellido}}</mat-card-title>
-                                    <mat-card-subtitle>DNI: {{item.dni}} |
-                                        Edad: {{item.edad}} | Sexo:
-                                        {{item.sexo}}</mat-card-subtitle>
-                                    <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
-                                    <img mat-card-sm-image
-                                        src="{{item.imagenUno}}">
-                                </mat-card-title-group>
-                            </mat-card-header>
-                            <mat-card-content>
-                            </mat-card-content>
-                        </mat-card>
+            <mat-tab label="Administradores">
+                <div class="row d-flex flex-row">
+                    <ng-container *ngFor="let item of coleccionUsuarios; let i = index">
+                        <ng-container *ngIf="item.rol == 'administrador'">
+                            <mat-card class="example-card">
+                                <mat-card-header>
+                                    <mat-card-title-group>
+                                        <mat-card-title>{{item.nombre}}
+                                            {{item.apellido}}</mat-card-title>
+                                        <mat-card-subtitle>DNI: {{item.dni}} |
+                                            Edad: {{item.edad}} | Sexo:
+                                            {{item.sexo}}</mat-card-subtitle>
+                                        <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                                        <img mat-card-sm-image src="{{item.imagenUno}}">
+                                    </mat-card-title-group>
+                                </mat-card-header>
+                                <mat-card-content>
+                                </mat-card-content>
+                            </mat-card>
+                        </ng-container>
                     </ng-container>
-                </ng-container>
-            </div>
+                </div>
 
-        </mat-tab>
+            </mat-tab>
 
-        <mat-tab label="Especialistas">
-            <div class="row d-flex flex-row">
-                <ng-container
-                    *ngFor="let item of coleccionUsuarios; let i = index">
-                    <div class="col" *ngIf="item.rol == 'especialista'">
-                        <mat-card class="example-card">
-                            <mat-card-header>
-                                <mat-card-title-group>
-                                    <mat-card-title>{{item.nombre}}
-                                        {{item.apellido}}</mat-card-title>
-                                    <mat-card-subtitle>DNI: {{item.dni}} |
-                                        Edad: {{item.edad}} | Sexo:
-                                        {{item.sexo}}</mat-card-subtitle>
-                                    <mat-card-subtitle>Especialidades
-                                        {{item.especialidades}}</mat-card-subtitle>
-                                    <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
-                                    <img mat-card-sm-image
-                                        src="{{item.imagenUno}}">
-                                </mat-card-title-group>
-                            </mat-card-header>
-                            <mat-card-content class="mt-2">
-                                <a name id class="btn btn-sm"
-                                    [ngClass]="item.tieneAcceso ? 'btn-danger' : 'btn-success'"
-                                    (click)="cambiarAcceso(item)"
-                                    role="button">
-                                    <div *ngIf="item.tieneAcceso; else sino">Quitar
-                                        acceso</div>
-                                    <ng-template #sino>Dar acceso</ng-template>
-                                </a>
-                            </mat-card-content>
-                        </mat-card>
-                    </div>
-                </ng-container>
-            </div>
+            <mat-tab label="Especialistas">
+                <div class="row d-flex flex-row">
+                    <ng-container *ngFor="let item of coleccionUsuarios; let i = index">
+                        <div class="col" *ngIf="item.rol == 'especialista'">
+                            <mat-card class="example-card">
+                                <mat-card-header>
+                                    <mat-card-title-group>
+                                        <mat-card-title>{{item.nombre}}
+                                            {{item.apellido}}</mat-card-title>
+                                        <mat-card-subtitle>DNI: {{item.dni}} |
+                                            Edad: {{item.edad}} | Sexo:
+                                            {{item.sexo}}</mat-card-subtitle>
+                                        <mat-card-subtitle>Especialidades
+                                            {{item.especialidades}}</mat-card-subtitle>
+                                        <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                                        <img mat-card-sm-image src="{{item.imagenUno}}">
+                                    </mat-card-title-group>
+                                </mat-card-header>
+                                <mat-card-content class="mt-2">
+                                    <a name id class="btn btn-sm"
+                                        [ngClass]="item.tieneAcceso ? 'btn-danger' : 'btn-success'"
+                                        (click)="cambiarAcceso(item)" role="button">
+                                        <div *ngIf="item.tieneAcceso; else sino">Quitar
+                                            acceso</div>
+                                        <ng-template #sino>Dar acceso</ng-template>
+                                    </a>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
 
-        </mat-tab>
+            </mat-tab>
 
-        <mat-tab label="Pacientes">
+            <mat-tab label="Pacientes">
 
-            <div class="row d-flex flex-row">
-                <ng-container
-                    *ngFor="let item of coleccionUsuarios; let i = index">
-                    <div class="col" *ngIf="item.rol == 'paciente'">
-                        <mat-card class="example-card">
-                            <mat-card-header>
-                                <mat-card-title-group>
-                                    <mat-card-title>{{item.nombre}}
-                                        {{item.apellido}}</mat-card-title>
-                                    <mat-card-subtitle>DNI: {{item.dni}} |
-                                        Edad: {{item.edad}} | Sexo:
-                                        {{item.sexo}}</mat-card-subtitle>
-                                    <mat-card-subtitle>Obra social:
-                                        {{item.obraSocial}} | N° afiliado:
-                                        {{item.numAfiliado}}</mat-card-subtitle>
-                                    <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
-                                    <img mat-card-sm-image
-                                        src="{{item.imagenUno}}">
-                                </mat-card-title-group>
-                            </mat-card-header>
-                            <mat-card-content class="mt-2">
-                                <a *ngIf="item.tieneHC"
-                                    class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal" data-bs-target="#modalHC" 
-                                    (click)="seleccionarUsuario(item)" role="button">Historia Clínica</a>
-                                    <a *ngIf="item.tieneHC"
-                                    data-bs-toggle="modal" data-bs-target="#modalTurnos" 
-                                    class="btn btn-sm btn-primary ms-2"
-                                    (click)="seleccionarUsuario(item)" role="button">Turnos</a>
-                            </mat-card-content>
-                        </mat-card>
-                    </div>
-                </ng-container>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+                <div class="row d-flex flex-row">
+                    <ng-container *ngFor="let item of coleccionUsuarios; let i = index">
+                        <div class="col" *ngIf="item.rol == 'paciente'">
+                            <mat-card class="example-card">
+                                <mat-card-header>
+                                    <mat-card-title-group>
+                                        <mat-card-title>{{item.nombre}}
+                                            {{item.apellido}}</mat-card-title>
+                                        <mat-card-subtitle>DNI: {{item.dni}} |
+                                            Edad: {{item.edad}} | Sexo:
+                                            {{item.sexo}}</mat-card-subtitle>
+                                        <mat-card-subtitle>Obra social:
+                                            {{item.obraSocial}} | N° afiliado:
+                                            {{item.numAfiliado}}</mat-card-subtitle>
+                                        <mat-card-subtitle>{{item.email}}</mat-card-subtitle>
+                                        <img mat-card-sm-image src="{{item.imagenUno}}">
+                                    </mat-card-title-group>
+                                </mat-card-header>
+                                <mat-card-content class="mt-2">
+                                    <a *ngIf="item.tieneHC" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalHC" (click)="seleccionarUsuario(item)"
+                                        role="button">Historia Clínica</a>
+                                    <a data-bs-toggle="modal" data-bs-target="#modalTurnos"
+                                        class="btn btn-sm btn-primary ms-2" (click)="seleccionarUsuario(item)"
+                                        role="button">Turnos</a>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
 </div>
 
 <!-- Modal creación usuarios-->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-    data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="btn-group" role="group"
-                    aria-label="Button group name">
+                <div class="btn-group" role="group" aria-label="Button group name">
                     <button type="button" (click)="cambiarTipo('administrador')"
                         class="btn btn-primary">Administrador</button>
                     <button type="button" (click)="cambiarTipo('especialista')"
                         class="btn btn-primary">Especialista</button>
-                    <button type="button" (click)="cambiarTipo('paciente')"
-                        class="btn btn-primary">Paciente</button>
+                    <button type="button" (click)="cambiarTipo('paciente')" class="btn btn-primary">Paciente</button>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-crear-usuario (cerrarModal)="cerrarModal()"
-                    [tipo]="tipoUsuario"></app-crear-usuario>
+                <app-crear-usuario (cerrarModal)="cerrarModal()" [tipo]="tipoUsuario"></app-crear-usuario>
             </div>
             <div class="modal-footer">
                 <button id="closeModalBtn" type="button" class="btn btn-danger"
@@ -149,14 +138,12 @@
 </div>
 
 <!-- Modal especialidades-->
-<div class="modal fade" id="modalEspecialidades" data-bs-backdrop="static"
-    data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="modalEspecialidades" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="modalEspecialidadesLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <app-abmespecialidades></app-abmespecialidades>
@@ -170,36 +157,34 @@
 </div>
 
 <!-- Modal HC paciente -->
-<div class="modal fade" id="modalHC" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalHC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
                 <!--Armar componente-->
-                <app-historia-clinica *ngIf="pacienteSeleccionado" [usuario]="pacienteSeleccionado"></app-historia-clinica>
+                <app-historia-clinica *ngIf="pacienteSeleccionado"
+                    [usuario]="pacienteSeleccionado"></app-historia-clinica>
                 <!---->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal turnos pacientes -->
-<div class="modal fade" id="modalTurnos" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalTurnos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-body">
                 <!--Armar componente-->
-                <app-turnos-paciente *ngIf="pacienteSeleccionado" [paciente]="pacienteSeleccionado"></app-turnos-paciente>
+                <app-turnos-paciente *ngIf="pacienteSeleccionado" [paciente]="pacienteSeleccionado"
+                    (descargarTurnos)="exportTurnosUsuario()"></app-turnos-paciente>
                 <!---->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

@@ -6,11 +6,11 @@ import { estaLogueadoGuard } from './Guards/esta-logueado.guard';
 import { LobbyComponent } from './Pages/lobby/lobby.component';
 
 const routes: Routes = [
-  { path:"lobby", component:LobbyComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'welcome', component:BienvenidaComponent},
+  { path:"lobby", component:LobbyComponent, data: { animation: 'lobby' }},
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: 'welcome', component:BienvenidaComponent, data: {animation: 'welcome'}},
   { path: 'registro/:tipo', component:RegistrarComponent},
-  { path: 'home', loadChildren: () => import('./Modulos/home/home.module').then(m => m.HomeModule), canActivate:[estaLogueadoGuard] },
+  { path: 'home', loadChildren: () => import('./Modulos/home/home.module').then(m => m.HomeModule), canActivate:[estaLogueadoGuard], data: {animation: 'home'} },
   { path: "**", redirectTo: '/home' }
 
 ];

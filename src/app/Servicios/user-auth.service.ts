@@ -14,7 +14,8 @@ import {
   setDoc,
   updateDoc,
   or,
-  Timestamp
+  Timestamp,
+  onSnapshot
 } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import {
@@ -204,9 +205,10 @@ export class UserAuthService {
   }
 
   guardarInicioDeSesion(usuario: any) {
-    let ingreso: object = { mail: usuario.mail, uid: usuario.uid, rol: usuario.rol, ingreso: new Date().toLocaleString() };
-    const userRef = collection(this.firestore, `ingresos`); //Esto agrega a colección sin ID específica
-    return addDoc(userRef, ingreso);
+    let ingreso: object = { email: usuario.email, nombre: usuario.nombre + ' ' + usuario.apellido, uid: usuario.uid, rol: usuario.rol, fecha: new Date() };
+    const ingresoRef = collection(this.firestore, `ingresos`); //Esto agrega a colección sin ID específica
+    return addDoc(ingresoRef, ingreso);
+    
   }
 
   guardarResultado(resultado: any) {
@@ -246,6 +248,18 @@ export class UserAuthService {
     return collectionData(q);
   }
   
+  traerTodosLosTurnosConDiagnostico() {
+    const colRef = collection(this.firestore, `turnos` );
+    const q = query(colRef,where("estado", "==", 'Realizado'), orderBy('fecha', 'asc'));
+    return collectionData(q);
+  }
+
+  traerTodosLosTurnosPendientes() {
+    const colRef = collection(this.firestore, `turnos` );
+    const q = query(colRef,where("estado", "==", 'Pendiente'), orderBy('fecha', 'asc'));
+    return collectionData(q);
+  }
+
   traerColeccionTurnosCompleta(uid:string) {
     const colRef = collection(this.firestore, `usuarios/${uid}/turnos` );
     const q = query(colRef, orderBy('fecha', 'desc'));
@@ -333,6 +347,8 @@ export class UserAuthService {
     const imageRef = ref(this.storage, path);
     return getDownloadURL(imageRef);
   }
+
+  // dinamic query test
 
 
 

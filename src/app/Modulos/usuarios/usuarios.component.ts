@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable, Subscription } from 'rxjs';
 import { Especialista } from 'src/app/Clases/interfaces';
@@ -11,6 +12,9 @@ import * as XLSX from 'xlsx'; //excel
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent {
+exportarTurnosUsuario() {
+throw new Error('Method not implemented.');
+}
   tipoUsuario = 'administrador';
   coleccionUsuarios: any;
   pacienteSeleccionado: any;
@@ -42,28 +46,48 @@ export class UsuariosComponent {
     document.getElementById('closeModalBtn')?.click();
   }
 
-  exportexcel() {
-    /* table id is passed over here */
-    //let element = document.getElementById('tablaPacientes');
+  exportTurnosUsuario() {
+    let jsonForExport;
+    this.spinner.show();
+    this.auth.traerColeccionTurnosCompleta(this.pacienteSeleccionado.uid).subscribe(
+      response => {
+        jsonForExport = response;
+        const rows = jsonForExport.map((item:any) => ({
+          Paciente: this.pacienteSeleccionado.nombre + ' ' + this.pacienteSeleccionado.apellido,
+          Especialista: item.especialista.nombre + ' ' + item.especialista.apellido,
+          Especialidad: item.especialidadElegida,
+          Fecha: item.fecha.toDate().toLocaleString(),
+          Duracion: item.duracion,
+          Estado: item.estado,
+          Comentario: item.comentario
+    
+        }));
+        rows.sort((l:any,r:any) => l.Fecha.localeCompare(r.Fecha))
+        const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(rows, {cellDates: true});
+        const wb: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Turnos ' + this.pacienteSeleccionado.nombre + ' ' + this.pacienteSeleccionado.apellido);
+        XLSX.writeFile(wb, 'Turnos ' + this.pacienteSeleccionado.nombre + ' ' + this.pacienteSeleccionado.apellido + '.xlsx');
+        this.spinner.hide();
+      }
+    )
+  }
 
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.coleccionUsuarios);
+  exportUsuarios() {
+    let jsonForExport = this.coleccionUsuarios;
+    const rows = jsonForExport.map((item:any) => ({
+      Nombre: item.nombre,
+      Apellido: item.apellido,
+      Sexo: item.sexo,
+      Dni: item.dni,
+      Edad: item.edad,
+      Email: item.email,
+      Rol: item.rol
 
-    //const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaPacientes'));
-    //const ws2: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaEspecialistas'));
-    //const ws3: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tablaAdmin'));
-
-    /* generate workbook and add the worksheet */
+    }));
+    rows.sort((l:any,r:any) => l.Rol.localeCompare(r.Rol))
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(rows);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-
-    let data_headers = [ "Nombre", "Apellido", "e", "e_1", "t", "J", "S_1" ];
-
     XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
-
-    //XLSX.utils.book_append_sheet(wb, ws, 'Pacientes');
-    //XLSX.utils.book_append_sheet(wb, ws2, 'Especialistas');
-    //XLSX.utils.book_append_sheet(wb, ws3, 'Admins');
-
-    /* save to file */
     XLSX.writeFile(wb, this.fileName);
   }
   

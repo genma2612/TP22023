@@ -9,9 +9,11 @@
     <div class="row mt-5 pt-3">
         <div *ngIf="isHomeRoute()" class="text-center p-5">
             <p>Seleccione una opción en el menu principal para comenzar!</p>
-            <img src="../../../assets/medical-symbol-icon.png" class="text-center" alt="">
+            <img src="../../../assets/medical-symbol-icon.png" class="text-center animate__animated animate__heartBeat animate__slower animate__infinite" alt="">
         </div>
-        <router-outlet></router-outlet>
+        <main [@routeAnimations]="getRouteAnimationData()">
+            <router-outlet #outlet="outlet"></router-outlet>
+        </main>
     </div>
 
 </div>

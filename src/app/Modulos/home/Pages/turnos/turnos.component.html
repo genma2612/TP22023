@@ -4,80 +4,78 @@
       <form class="form-horizontal">
         <div class="form-group">
           <div class="col-3 col-sm-12 col-ml-auto">
-            <input class="form-input" type="text" id="globalSearch"
-              (input)="onChange($event)" placeholder="Buscar" />
+            <input class="form-input" type="text" id="globalSearch" (input)="onChange($event)" placeholder="Buscar" />
           </div>
         </div>
       </form>
     </div>
+  </div>
+  <div class="columns">
     <div class="column col-12">
-      <ngx-table [data]="data$ | async" [configuration]="configuration"
-        [columns]="columns" #table class="table table-light table-striped">
-        <ng-template let-turno let-index="index">
-          <td>
-            {{ index + 1 }}
-          </td>
-          <td>
-            {{ turno.especialista.nombre }} {{turno.especialista.apellido}}
-          </td>
-          <td>
-            {{ turno.paciente.nombre }} {{turno.paciente.apellido}}
-          </td>
-          <td>
-            {{ turno.especialidadElegida }}
-          </td>
-          <td>
-            {{ turno.fecha.toDate() | date: 'dd/MM HH:mm' }}
-          </td>
-          <td colspan="1">
-            <ng-container *ngIf="turno.estado == 'Realizado'">
-              <table class="table table-light table-striped table-bordered">
-                <tbody>
-                  <tr>
-                    <td>Diagnóstico</td>
-                    <td>{{turno.diagnostico.diagnostico}}</td>
-                  </tr>
-                  <tr>
-                    <td>Altura</td>
-                    <td>{{turno.diagnostico.altura}}</td>
-                  </tr>
-                  <tr>
-                    <td>Peso</td>
-                    <td>{{turno.diagnostico.peso}}</td>
-                  </tr>
-                  <tr>
-                    <td>Presión</td>
-                    <td>{{turno.diagnostico.presion}}</td>
-                  </tr>
-                  <tr>
-                    <td>Temperatura</td>
-                    <td>{{turno.diagnostico.temperatura}}</td>
-                  </tr>
-                  <tr *ngFor="let dato of turno.diagnostico.datosDinamicos">
-                    <td>{{dato.clave}}</td>
-                    <td>{{dato.valor}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </ng-container>
-          </td>
-          <td>
-            {{ turno.estado }}
-          </td>
-          <td>
-            <div class="dropdown-center">
-              <button class="btn btn-sm btn-secondary dropdown-toggle"
-                type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Opciones
-              </button>
-              <ul class="dropdown-menu">
-                <li *ngIf="turno.estado == 'Pendiente'"><a role="button"
-                    class="dropdown-item"
-                    (click)="cancelarTurno(turno)">Cancelar</a></li>
-                <li *ngIf="turno.comentario != ''"><a role="button"
-                    class="dropdown-item"
-                    (click)="verComentario(turno)">Reseña</a></li>
+      <ngx-table [data]="data$ | async" [configuration]="configuration" [columns]="columns" #table
+      class="table table-light table-striped">
+      <ng-template let-turno let-index="index">
+        <td>
+          {{ index + 1 }}
+        </td>
+        <td>
+          {{ turno.especialista.nombre }} {{turno.especialista.apellido}}
+        </td>
+        <td>
+          {{ turno.paciente.nombre }} {{turno.paciente.apellido}}
+        </td>
+        <td>
+          {{ turno.especialidadElegida }}
+        </td>
+        <td>
+          {{ turno.fecha.toDate() | date: 'dd/MM HH:mm' }}
+        </td>
+        <td colspan="1">
+          <ng-container *ngIf="turno.estado == 'Realizado'">
+            <table class="table table-light table-striped table-bordered">
+              <tbody>
+                <tr>
+                  <td>Diagnóstico</td>
+                  <td>{{turno.diagnostico.diagnostico}}</td>
+                </tr>
+                <tr>
+                  <td>Altura</td>
+                  <td>{{turno.diagnostico.altura}}</td>
+                </tr>
+                <tr>
+                  <td>Peso</td>
+                  <td>{{turno.diagnostico.peso}}</td>
+                </tr>
+                <tr>
+                  <td>Presión</td>
+                  <td>{{turno.diagnostico.presion}}</td>
+                </tr>
+                <tr>
+                  <td>Temperatura</td>
+                  <td>{{turno.diagnostico.temperatura}}</td>
+                </tr>
+                <tr *ngFor="let dato of turno.diagnostico.datosDinamicos">
+                  <td>{{dato.clave}}</td>
+                  <td>{{dato.valor}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+        </td>
+        <td>
+          {{ turno.estado }}
+        </td>
+        <td>
+          <div class="dropdown-center">
+            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Opciones
+          </button>
+          <ul class="dropdown-menu">
+            <li *ngIf="turno.estado == 'Pendiente'"><a role="button" class="dropdown-item"
+              (click)="cancelarTurno(turno)">Cancelar</a></li>
+              <li *ngIf="turno.comentario != ''"><a role="button" class="dropdown-item"
+                (click)="verComentario(turno)">Reseña</a></li>
               </ul>
             </div>
           </td>
@@ -85,3 +83,5 @@
       </ngx-table>
     </div>
   </div>
+</div>
+  

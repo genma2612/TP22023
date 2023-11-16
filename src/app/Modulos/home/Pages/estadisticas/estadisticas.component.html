@@ -1,0 +1,94 @@
+<!--
+<div class="row pt-2">
+    <mat-tab-group backgroundColor="primary">
+
+        <mat-tab label="Ingresos">
+
+            <div *ngIf="data$ | async as user" class="columns">
+                <div class="columns">
+                    <div class="column col-12 mb-2">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-3 col-sm-12 col-ml-auto">
+                                    <input class="form-input" type="text" id="globalSearch"
+                                        (input)="onChange($event)" placeholder="Buscar" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="column col-12">
+                        <ngx-table [data]="data$ | async" [configuration]="configuration"
+                            [columns]="columns" #table
+                            class="table table-light table-striped">
+                            <ng-template let-ingreso let-index="index">
+                                <td scope="row">{{index+1}}</td>
+                                <td scope="row">{{ingreso.email}}</td>
+                                <td scope="row">{{ingreso.nombre}}</td>
+                                <td>{{ingreso.rol}}</td>
+                                <td>{{ingreso.fecha.toDate() | date:'dd/MM/yyyy h:mm:ss a'}}</td>
+                            </ng-template>
+                        </ngx-table>
+                    </div>
+                </div>
+            </div>
+
+
+        </mat-tab>
+
+        <mat-tab label="Gráficos">
+
+            <mat-tab-group backgroundColor="accent">
+
+                <mat-tab label="Turnos por especialidad">
+        
+                    <app-turnos-por-especialidad></app-turnos-por-especialidad>
+        
+        
+                </mat-tab>
+        
+                <mat-tab label="Turnos por día">
+        
+                    <app-turnos-por-dia></app-turnos-por-dia>
+        
+                </mat-tab>
+
+                <mat-tab label="Turnos solicitados">
+        
+                    
+                    <app-turnos-solicitados></app-turnos-solicitados>
+                    
+                </mat-tab>
+                
+                
+                <mat-tab label="Turnos finalizados">
+                    
+                    <app-turnos-finalizados></app-turnos-finalizados>
+                    
+                </mat-tab>
+            </mat-tab-group>
+            
+            
+            
+        </mat-tab>
+    </mat-tab-group>
+</div>
+    -->
+
+<div class="container.fluid" style="background-color: white" id="idGraficos">
+  <div class="row">
+    <div class="col-6">
+      <app-turnos-por-especialidad></app-turnos-por-especialidad>
+    </div>
+    <div class="col-6">
+      <app-turnos-por-dia></app-turnos-por-dia>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <app-turnos-solicitados></app-turnos-solicitados>
+    </div>
+    <div class="col-6">
+      <app-turnos-finalizados></app-turnos-finalizados>
+    </div>
+  </div>
+</div>

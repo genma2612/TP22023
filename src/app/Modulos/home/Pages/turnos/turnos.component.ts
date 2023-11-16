@@ -12,10 +12,9 @@ import Swal from 'sweetalert2';
 export class TurnosComponent implements OnInit {
   @ViewChild('table') table!: APIDefinition;
 
-  public configuration!: Config;
-  public data$!: Observable<any>;
-  public columns!: Columns[];
-  
+  configuration!: Config;
+  data$!: Observable<any>;
+  columns!: Columns[];  
 
 
   constructor(private auth: UserAuthService) {
@@ -30,13 +29,15 @@ export class TurnosComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.configuration = { ...DefaultConfig };
-    this.columns = [
+    this.configuration = {
+      ...DefaultConfig,
+      rows: 100 };
+    this.columns  = [
       { key: '', title: '#', width: '3%' },
       { key: 'especialista', title: 'Especialista' },
       { key: 'paciente', title: 'Paciente' },
       { key: 'especialidadElegida', title: 'Especialidad' },
-      { key: 'fecha', title: 'Fecha' },
+      { key: 'fecha', title: 'Fecha', orderBy: 'asc', searchEnabled: true },
       { key: 'diagnostico', title: 'Diagnostico', width: '50%' },
       { key: 'estado', title: 'Estado' },
       { key: '', title: 'Acciones' }

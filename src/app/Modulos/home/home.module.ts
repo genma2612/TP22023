@@ -22,6 +22,16 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { TableModule } from 'ngx-easy-table';
+import { EstadisticasComponent } from './Pages/estadisticas/estadisticas.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { TurnosPorEspecialidadComponent } from './Componentes/graficos/turnos-por-especialidad/turnos-por-especialidad.component';
+import { TurnosSolicitadosComponent } from './Componentes/graficos/turnos-solicitados/turnos-solicitados.component';
+import { TurnosFinalizadosComponent } from './Componentes/graficos/turnos-finalizados/turnos-finalizados.component';
+import { TurnosPorDiaComponent } from './Componentes/graficos/turnos-por-dia/turnos-por-dia.component';
+import { ChartModule } from 'angular-highcharts';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { LogComponent } from './Componentes/log/log.component';
+
 
 @NgModule({
   declarations: [
@@ -38,7 +48,13 @@ import { TableModule } from 'ngx-easy-table';
     CargarHistoriaClinicaComponent,
     EncuestaComponent,
     HistoriaClinicaComponent,
-    PacientesComponent
+    PacientesComponent,
+    EstadisticasComponent,
+    TurnosPorEspecialidadComponent,
+    TurnosSolicitadosComponent,
+    TurnosFinalizadosComponent,
+    TurnosPorDiaComponent,
+    LogComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +65,10 @@ import { TableModule } from 'ngx-easy-table';
     MatIconModule,
     MatInputModule,
     TableModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTabsModule,
+    ChartModule,
+    CanvasJSAngularChartsModule
   ],
   exports: [
     HistoriaClinicaComponent

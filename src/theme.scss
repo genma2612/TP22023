@@ -1,0 +1,77 @@
+@import 'node_modules/@angular/material/_theming.scss';
+@include mat-core();
+
+$md-blanco: (
+    50 : #ffffff,
+    100 : #ffffff,
+    200 : #ffffff,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #ffffff,
+    A700 : #ffffff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-mcgpalette0: (
+    50 : #e2eeff,
+    100 : #b6d4fe,
+    200 : #86b7fe,
+    300 : #569afe,
+    400 : #3184fd,
+    500 : #0d6efd,
+    600 : #0b66fd,
+    700 : #095bfc,
+    800 : #0751fc,
+    900 : #033ffc,
+    A100 : #ffffff,
+    A200 : #eff2ff,
+    A400 : #bcc8ff,
+    A700 : #a2b4ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$my-primary: mat-palette($md-mcgpalette0, 500);
+$my-accent:  mat-palette($md-blanco, 500);
+$my-warn:    mat-palette($mat-deep-orange);
+$my-theme: mat-light-theme($my-primary, $my-accent, $my-warn);
+
+@include angular-material-theme($my-theme);
+
+

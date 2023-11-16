@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ViewChild, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { API, APIDefinition, Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { Observable } from 'rxjs';
 import { UserAuthService } from 'src/app/Servicios/user-auth.service';
@@ -10,6 +10,7 @@ import { UserAuthService } from 'src/app/Servicios/user-auth.service';
 })
 export class TurnosPacienteComponent implements OnInit, OnChanges {
   @Input() paciente:any;
+  @Output() descargarTurnos = new EventEmitter<any>();
 
   @ViewChild('table') table!: APIDefinition;
 
@@ -28,7 +29,7 @@ export class TurnosPacienteComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges):void {
-    console.info(changes['paciente'].currentValue.uid);
+    //console.info(changes['paciente'].currentValue.uid);
     this.data$ = this.auth.traerColeccionTurnosCompleta(changes['paciente'].currentValue.uid);
   }
 
@@ -38,13 +39,17 @@ export class TurnosPacienteComponent implements OnInit, OnChanges {
       { key: '', title: '#', width: '3%' },
       { key: 'especialista', title: 'Especialista' },
       { key: 'especialidadElegida', title: 'Especialidad' },
-      { key: 'fecha', title: 'Fecha' },
+      { key: 'fecha', title: 'Fecha', orderBy: 'asc' },
       { key: 'diagnostico', title: 'Diagnostico', width: '50%' },
       { key: 'estado', title: 'Estado' },
       { key: 'calificacion', title: 'Calificación' },
       { key: 'duracion', title: 'Duración' },
       { key: 'comentario', title: 'Comentario' },
     ];
+  }
+
+  enviarTurnosPaciente(){
+    this.descargarTurnos.emit();
   }
 
 }

@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
             snapshot => {
               if(snapshot.data()!['rol'] == 'paciente' || snapshot.data()!['rol'] == 'administrador' || (snapshot.data()!['rol'] == 'especialista' && snapshot.data()!['tieneAcceso'])){
                 this.userAuth.saveToLocalstorage(snapshot.data());
+                this.userAuth.guardarInicioDeSesion(snapshot.data());
                 this.ruteador.navigate(['home']);
                 this.Toast.fire({
                   icon: 'success',
@@ -75,7 +76,6 @@ export class LoginComponent implements OnInit {
                   this.spinner.hide();
                 });
               }
-              //this.userAuth.guardarInicioDeSesion(snapshot.data());
             }
           );
         }

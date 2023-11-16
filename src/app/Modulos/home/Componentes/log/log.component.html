@@ -14,17 +14,14 @@
             <ngx-table [data]="data$ | async" [configuration]="configuration"
                 [columns]="columns" #table
                 class="table table-light table-striped">
-                <ng-template let-encuesta let-index="index">
+                <ng-template let-ingreso let-index="index">
                     <td scope="row">{{index+1}}</td>
-                    <td scope="row">{{encuesta.usuario.nombre}}
-                        {{encuesta.usuario.apellido}}</td>
-                    <td style="color: yellow; font-size: 36px; -webkit-text-stroke: 1px black;">{{encuesta.puntaje}}</td>
-                    <td *ngIf="encuesta.recomienda; else elseBlock">Si</td>
-                    <ng-template #elseBlock><td>No</td></ng-template>
-                    <td>{{codigosRango[encuesta.volveria]}}</td>
-                    <td>{{encuesta.comentario}}</td>
-                    <td>{{encuesta.fecha.toDate() | date:'dd/MM/yyyy h:mm:ss a'}}</td>
+                    <td scope="row">{{ingreso.email}}</td>
+                    <td scope="row">{{ingreso.nombre}}</td>
+                    <td>{{ingreso.rol}}</td>
+                    <td>{{ingreso.fecha.toDate() | date:'dd/MM/yyyy h:mm:ss a'}}</td>
                 </ng-template>
             </ngx-table>
         </div>
     </div>
+</div>
