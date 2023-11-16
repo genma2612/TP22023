@@ -8,6 +8,7 @@ export const transformer =
   trigger('routeAnimations', [
     transition('* => lobby', transformTo({ x: 100, y: -100, rotate: 90 }) ),
     transition('* => home', transformTo({ x: 100, y: -100, rotate: 90 }) ),
+    transition('* => registro', transformTo({ x: 100, y: -100, rotate: 90 }) ),
     //transition('* => lobby', transformTo({ x: -100, y: -100, rotate: -720 }) ),
     transition('* => welcome', transformTo({ x: 100, y: -100, rotate: 90 }) ),
 ]);

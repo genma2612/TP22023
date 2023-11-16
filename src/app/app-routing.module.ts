@@ -9,7 +9,7 @@ const routes: Routes = [
   { path:"lobby", component:LobbyComponent, data: { animation: 'lobby' }},
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: 'welcome', component:BienvenidaComponent, data: {animation: 'welcome'}},
-  { path: 'registro/:tipo', component:RegistrarComponent},
+  { path: 'registro/:tipo', component:RegistrarComponent, data: {animation: 'registro'}},
   { path: 'home', loadChildren: () => import('./Modulos/home/home.module').then(m => m.HomeModule), canActivate:[estaLogueadoGuard], data: {animation: 'home'} },
   { path: "**", redirectTo: '/home' }
 
