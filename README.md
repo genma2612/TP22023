@@ -1,27 +1,57 @@
-# TP22023
+![imagen](https://github.com/genma2612/TP22023/assets/36157180/8cecb800-ad73-44b3-810e-e8762563c174|width=80)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.4.
+# **TP Final: Clínica OnLine**
 
-## Development server
+**La clínica OnLine, especialista en salud, cuenta actualmente con consultorios (6 en la actualidad),
+dos laboratorios (físicos en la clínica), y una sala de espera general. Está abierta al público de lunes a
+viernes en el horario de 8:00 a 19:00, y los sábados en el horario de 8:00 a 14:00.
+Trabajan en ella profesionales de diversas especialidades, que ocupan los consultorios acorde a su
+disponibilidad, y reciben en ellos pacientes con turno para consulta o tratamiento. Dichos turnos son
+pedidos por la web seleccionando el profesional o la especialidad. La duración mínima de un turno es
+30 minutos.” pero los profesionales pueden cambiar la duración según su especialidad. Estos
+profesionales pueden tener más de una especialidad.
+También contamos con un sector dentro de la clínica que se encarga de la organización y
+administración de la misma.**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+● Página de bienvenida  
+○ Tiene que tener los accesos al login y registro del sistema  
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+![imagen](https://github.com/genma2612/TP22023/assets/36157180/9b384450-962f-40d4-acd2-2541d5f58350|width=80)
 
-## Build
+● Registro  
+  Desde esta sección vamos a poder registrar Pacientes y Especialistas.  
+  
+![Registro](https://github.com/genma2612/TP22023/assets/36157180/90ef12f4-da0a-451c-b74d-0ca801666379|width=100)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+● Sección Usuarios:
+Esta sección solamente la va a poder ver el usuario con perfil Administrador. Además de ver la información de los usuarios, desde esta sección se deberá habilitar inhabilitar el acceso al sistema de los usuarios Especialista. También se podrá generar nuevos usuarios, con el mismo requerimiento que en la sección registro. Pero desde esta sección se podrá generar un usuario Administrador.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+![panel usuarios](https://github.com/genma2612/TP22023/assets/36157180/b5c37da4-a4b8-4cc9-925a-e31768b436dc|width=100)
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+● Aceptar turno  
+○ Solamente debe ser visible si el turno no fue Realizado,  
+Cancelado o Rechazado.
 
-## Further help
+● Finalizar Turno  
+○ Solamente debe ser visible si el turno fue Aceptado.  
+○ Para finalizar el turno se debe dejar una reseña o comentario  
+de la consulta y diagnóstico realizado.  
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+![especialista](https://github.com/genma2612/TP22023/assets/36157180/9e4bbab4-ac35-4a8f-b3b7-e0afa3a8787e|width=100)
+
+Necesitamos incorporar una historia clínica para cada paciente, donde
+guardemos todas las atenciones y controles que se le hizo al paciente.
+
+![paciente](https://github.com/genma2612/TP22023/assets/36157180/41533e4f-37f6-4b52-9942-db1cd3256696|width=100)
+
+
+● Log de ingresos al sistema. Indicando el usuario, día y horario que ingreso al sistema.  
+● Cantidad de turnos por especialidad.  
+● Cantidad de turnos por día.  
+● Cantidad de turnos solicitado por médico en un lapso de tiempo.  
+● Cantidad de turnos finalizados por médico en un lapso de tiempo.  
+
+![estadisticas y perfil](https://github.com/genma2612/TP22023/assets/36157180/28f17cef-c8af-4735-89da-0b86e5cc3bae|width=100)
