@@ -1,5 +1,22 @@
 <div *ngIf="loaded">
-    <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)"></canvasjs-chart>    
-    <input data-html2canvas-ignore="true" type="date" (input)="filtrarPorFecha()" value="2023-11-01" name="fechaInicio" id="fechaInicio" />
-    <input data-html2canvas-ignore="true" type="date" (input)="filtrarPorFecha()" value="2023-12-01" name="fechaFinal" id="fechaFinal" />
-</div>                        
+  <canvasjs-chart
+    [options]="chartOptions"
+    (chartInstance)="getChartInstance($event)"
+  ></canvasjs-chart>
+  <input
+    data-html2canvas-ignore="true"
+    type="date"
+    (input)="filtrarPorFecha()"
+    value="2023-11-01"
+    name="fechaInicio"
+    id="fechaInicio"
+  />
+  <input
+    data-html2canvas-ignore="true"
+    type="date"
+    (input)="filtrarPorFecha()"
+    value="2023-12-01"
+    name="fechaFinal"
+    id="fechaFinal"
+  />
+</div>

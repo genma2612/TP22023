@@ -15,8 +15,8 @@ export class TurnosPorDiaComponent {
   arrayTurnos: any;
 
   options: any = {
-    accessibility:{
-      enabled:false
+    accessibility: {
+      enabled: false,
     },
     chart: {
       type: 'column',
@@ -26,8 +26,7 @@ export class TurnosPorDiaComponent {
       align: 'left',
     },
     subtitle: {
-      text:
-        '',
+      text: '',
       align: 'left',
     },
     xAxis: {
@@ -51,13 +50,13 @@ export class TurnosPorDiaComponent {
         pointPadding: 0.2,
         borderWidth: 0,
       },
-        series: {
-            borderWidth: 0,
-            dataLabels: {
-                enabled: true,
-                format: '{point.y}'
-            }
-        }
+      series: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: true,
+          format: '{point.y}',
+        },
+      },
     },
     series: [],
   };
@@ -66,51 +65,54 @@ export class TurnosPorDiaComponent {
 
   constructor(
     private auth: UserAuthService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
   ) {}
 
   ngOnInit(): void {
-    let fecha:any;
-    this.auth.traerColeccionOrdenada('turnos', 'fecha').pipe(take(1))
-    .subscribe((turnos) => {
-      this.arrayTurnos = turnos;
-      let arrayFechas: any = [];
-      //console.info(this.arrayTurnos);
+    let fecha: any;
+    this.auth
+      .traerColeccionOrdenada('turnos', 'fecha')
+      .pipe(take(1))
+      .subscribe((turnos) => {
+        this.arrayTurnos = turnos;
+        const arrayFechas: any = [];
+        //console.info(this.arrayTurnos);
 
-      this.arrayTurnos.forEach((element: any) => {
-        fecha = moment(element.fecha.toDate());
-        arrayFechas.push({
-          mes: fecha.utc().month(),
-          dia: fecha.utc().date(),
+        this.arrayTurnos.forEach((element: any) => {
+          fecha = moment(element.fecha.toDate());
+          arrayFechas.push({
+            mes: fecha.utc().month(),
+            dia: fecha.utc().date(),
+          });
         });
+
+        //console.info(arrayFechas);
+        //Agrupo por mismo mes y día
+        const groupingViaCommonProperty = Object.values(
+          arrayFechas.reduce((acc: any, current: any) => {
+            acc[current.dia] = acc[current.dia] ?? [];
+            acc[current.dia].push(current);
+            return acc;
+          }, {}),
+        );
+
+        //Ordeno por mes luego del agrupamiento
+        groupingViaCommonProperty.sort((a: any, b: any) => a[0].mes - b[0].mes); // b - a for reverse sort
+        //console.log(groupingViaCommonProperty);
+
+        const series: any = { name: 'Turnos', data: [] };
+
+        groupingViaCommonProperty.forEach((item: any) => {
+          series.data.push(item.length);
+          //console.info(moment().month(item[0].mes-1).date(item[0].dia).format('DD-MM'));
+          this.options.xAxis.categories.push(
+            moment().month(item[0].mes).date(item[0].dia).format('DD-MM'),
+          );
+        });
+
+        this.options.series[0] = series;
+        //console.info(this.options);
+        this.chart = new Chart(this.options);
       });
-
-      //console.info(arrayFechas);
-      //Agrupo por mismo mes y día
-      let groupingViaCommonProperty = Object.values(
-        arrayFechas.reduce((acc: any, current: any) => {
-          acc[current.dia] = acc[current.dia] ?? [];
-          acc[current.dia].push(current);
-          return acc;
-        }, {})
-      );
-
-      //Ordeno por mes luego del agrupamiento
-      groupingViaCommonProperty.sort((a:any,b:any) => a[0].mes - b[0].mes); // b - a for reverse sort      
-      //console.log(groupingViaCommonProperty);
-
-      let series: any = { name: 'Turnos', data: [] };
-
-
-      groupingViaCommonProperty.forEach((item: any) => {
-        series.data.push(item.length);
-        //console.info(moment().month(item[0].mes-1).date(item[0].dia).format('DD-MM'));
-        this.options.xAxis.categories.push(moment().month(item[0].mes).date(item[0].dia).format('DD-MM'));
-      });
-
-      this.options.series[0] = series;
-      //console.info(this.options);
-      this.chart = new Chart(this.options);
-    });
   }
 }

@@ -1,23 +1,40 @@
 <app-navbar></app-navbar>
-<div class="d-flex justify-content-center animate__animated animate__heartBeat animate__infinite">
-    <img class="mb-4" src="../../../assets/medical-symbol-icon.png" alt="" width="128" height="128">
+<div class="d-flex justify-content-center">
+  <img
+    class="mb-4"
+    src="../../../assets/medical-symbol-icon.png"
+    alt=""
+    width="128"
+    height="128"
+  />
 </div>
 <div class="row d-flex justify-content-center">
-    <div class="col-6">
-        <app-login></app-login>
+  <div class="col-6">
+    <app-login></app-login>
+  </div>
+  <div class="col-6">
+    <h1 class="h3 mb-3 fw-normal">Usuario nuevo?</h1>
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <div class="row d-flex justify-content-center">
+        <img
+          class="rounded-circle me-2"
+          title="Registrarse como paciente"
+          style="border: solid; border-color: cornflowerblue; width: 250px"
+          src="../../../assets/images/patient.png"
+          role="button"
+          routerLink="/registro/paciente"
+          alt=""
+        />
+        <img
+          class="rounded-circle"
+          title="Registrarse como especialista"
+          style="border: solid; border-color: cornflowerblue; width: 250px"
+          src="../../../assets/images/doctor.png"
+          role="button"
+          routerLink="/registro/especialista"
+          alt=""
+        />
+      </div>
     </div>
-    <div class="col-6">
-        <h1 class="h3 mb-3 fw-normal">Usuario nuevo?</h1>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <div class="row d-flex justify-content-center">
-                    <img class="rounded-circle me-2" title="Registrarse como paciente"
-                        style="border: solid; border-color: cornflowerblue; width: 250px;"
-                        src="../../../assets/images/patient.png" role="button" routerLink="/registro/paciente" alt="">
-                    <img class="rounded-circle" title="Registrarse como especialista"
-                        style="border: solid; border-color: cornflowerblue; width: 250px;"
-                        src="../../../assets/images/doctor.png" role="button" routerLink="/registro/especialista"
-                        alt="">
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
